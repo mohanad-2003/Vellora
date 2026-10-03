@@ -11,15 +11,23 @@ class AppConstants {
 
   static const String supportEmail = 'support@vellora.com';
 
+  /// The deployed Vellora API (Render).
+  static const String productionApiUrl =
+      'https://vellora-api-3kxz.onrender.com';
+
   /// Vellora API root. Override at build time:
   /// `flutter run --dart-define=API_BASE_URL=https://api.example.com`.
   ///
-  /// The default targets a backend running on the development machine: the
-  /// Android emulator reaches the host as `10.0.2.2`; everything else
-  /// (iOS simulator, desktop, web) can use `localhost`.
+  /// Debug builds default to a backend on the development machine: the Android
+  /// emulator reaches the host as `10.0.2.2`; everything else (iOS simulator,
+  /// desktop, web) can use `localhost`. Release builds default to
+  /// [productionApiUrl].
   static String get baseUrl {
     const configured = String.fromEnvironment('API_BASE_URL');
     if (configured.isNotEmpty) return configured;
+    // Release builds talk to the live service; debug builds to a backend on
+    // the development machine.
+    if (kReleaseMode) return productionApiUrl;
     final androidEmulator =
         !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
     return androidEmulator ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
