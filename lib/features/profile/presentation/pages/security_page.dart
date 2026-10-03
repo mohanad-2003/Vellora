@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
+import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/input_validators.dart';
 import '../../../../core/widgets/app_bar_widget.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/widgets/auth_error_banner.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/settings_tile.dart';
@@ -20,7 +24,7 @@ class SecurityPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => SecurityCubit(),
+      create: (_) => sl<SecurityCubit>(),
       child: const _SecurityView(),
     );
   }
@@ -106,9 +110,13 @@ class _SecurityView extends StatelessWidget {
   }
 
   void _changePassword(BuildContext context) {
+    // The sheet lives in the Navigator's overlay, outside this page's
+    // providers, so take what it needs before opening it.
+    final cubit = context.read<SecurityCubit>();
     AppBottomSheet.show(
       context,
       child: _ChangePasswordForm(
+        onSubmit: cubit.changePassword,
         onDone: () {
           Navigator.of(context).pop();
           AppSnackbar.success(context, context.l10n.passwordChanged);
@@ -119,55 +127,133 @@ class _SecurityView extends StatelessWidget {
 
   void _deleteAccount(BuildContext context) {
     final l10n = context.l10n;
+    final cubit = context.read<SecurityCubit>();
+    final router = GoRouter.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     AppBottomSheet.show(
       context,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.warning_amber_rounded,
-            color: context.colors.error,
-            size: 48,
-          ),
-          SizedBox(height: AppSpacing.vMd),
-          Text(
-            l10n.deleteAccountConfirmTitle,
-            style: context.textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: AppSpacing.vSm),
-          Text(
-            l10n.deleteAccountConfirmBody,
-            style: context.textTheme.bodyMedium?.copyWith(
-              color: context.colors.onSurfaceVariant,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: AppSpacing.vXl),
-          AppButton(
-            label: l10n.deleteAccount,
-            icon: Icons.delete_outline_rounded,
-            onPressed: () {
-              Navigator.of(context).pop();
-              AppSnackbar.show(context, message: l10n.comingSoon);
-            },
-          ),
-          SizedBox(height: AppSpacing.vMd),
-          AppButton(
-            label: l10n.cancel,
-            variant: AppButtonVariant.outline,
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
+      child: _DeleteAccountSheet(
+        onConfirm: cubit.deleteAccount,
+        onDeleted: () {
+          Navigator.of(context).pop();
+          router.go(RouteNames.login);
+          messenger.showSnackBar(SnackBar(content: Text(l10n.accountDeleted)));
+        },
       ),
     );
   }
 }
 
-class _ChangePasswordForm extends StatefulWidget {
-  const _ChangePasswordForm({required this.onDone});
+/// Confirms deleting the account with the password, then calls the server.
+class _DeleteAccountSheet extends StatefulWidget {
+  const _DeleteAccountSheet({required this.onConfirm, required this.onDeleted});
 
+  /// Returns a failure key, or null once the account is deleted.
+  final Future<String?> Function(String password) onConfirm;
+  final VoidCallback onDeleted;
+
+  @override
+  State<_DeleteAccountSheet> createState() => _DeleteAccountSheetState();
+}
+
+class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
+  final _password = TextEditingController();
+  bool _busy = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _password.dispose();
+    super.dispose();
+  }
+
+  Future<void> _confirm() async {
+    if (_password.text.isEmpty) {
+      setState(() => _error = 'fieldRequired');
+      return;
+    }
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    final failure = await widget.onConfirm(_password.text);
+    if (!mounted) return;
+    if (failure == null) {
+      widget.onDeleted();
+    } else {
+      setState(() {
+        _busy = false;
+        _error = failure;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          Icons.warning_amber_rounded,
+          color: context.colors.error,
+          size: 48,
+        ),
+        SizedBox(height: AppSpacing.vMd),
+        Text(
+          l10n.deleteAccountConfirmTitle,
+          style: context.textTheme.titleLarge,
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: AppSpacing.vSm),
+        Text(
+          l10n.deleteAccountConfirmBody,
+          style: context.textTheme.bodyMedium?.copyWith(
+            color: context.colors.onSurfaceVariant,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: AppSpacing.vLg),
+        AppTextField(
+          controller: _password,
+          label: l10n.password,
+          hint: l10n.deleteAccountPasswordHint,
+          prefixIcon: Icons.lock_outline_rounded,
+          obscureText: true,
+        ),
+        if (_error != null) ...[
+          SizedBox(height: AppSpacing.vSm),
+          Text(
+            tr(context, _error!),
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colors.error,
+            ),
+          ),
+        ],
+        SizedBox(height: AppSpacing.vXl),
+        AppButton(
+          label: l10n.deleteAccount,
+          icon: Icons.delete_outline_rounded,
+          isLoading: _busy,
+          onPressed: _confirm,
+        ),
+        SizedBox(height: AppSpacing.vMd),
+        AppButton(
+          label: l10n.cancel,
+          variant: AppButtonVariant.outline,
+          onPressed: _busy ? null : () => Navigator.of(context).pop(),
+        ),
+      ],
+    );
+  }
+}
+
+class _ChangePasswordForm extends StatefulWidget {
+  const _ChangePasswordForm({required this.onSubmit, required this.onDone});
+
+  /// Returns a failure key, or null once the password was changed.
+  final Future<String?> Function(String current, String next) onSubmit;
   final VoidCallback onDone;
 
   @override
@@ -179,6 +265,8 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
   final _current = TextEditingController();
   final _next = TextEditingController();
   final _confirm = TextEditingController();
+  bool _busy = false;
+  String? _error;
 
   @override
   void dispose() {
@@ -188,9 +276,22 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    widget.onDone();
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    final failure = await widget.onSubmit(_current.text, _next.text);
+    if (!mounted) return;
+    if (failure == null) {
+      widget.onDone();
+    } else {
+      setState(() {
+        _busy = false;
+        _error = failure;
+      });
+    }
   }
 
   @override
@@ -208,6 +309,13 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: AppSpacing.vLg),
+          if (_error != null) ...[
+            AuthErrorBanner(
+              failureKey: _error!,
+              onDismiss: () => setState(() => _error = null),
+            ),
+            SizedBox(height: AppSpacing.vMd),
+          ],
           AppTextField(
             controller: _current,
             label: l10n.currentPassword,
@@ -244,6 +352,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
           AppButton(
             label: l10n.updatePassword,
             icon: Icons.check_rounded,
+            isLoading: _busy,
             onPressed: _submit,
           ),
         ],

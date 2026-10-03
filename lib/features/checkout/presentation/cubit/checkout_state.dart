@@ -82,16 +82,16 @@ class CheckoutState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        items,
-        summary,
-        addresses,
-        selectedAddressId,
-        paymentMethods,
-        selectedPaymentId,
-        deliveryOptions,
-        selectedDeliveryId,
-        order,
-        failureKey,
-      ];
+    status,
+    items,
+    summary,
+    addresses,
+    selectedAddressId,
+    paymentMethods,
+    selectedPaymentId,
+    deliveryOptions,
+    selectedDeliveryId,
+    order,
+    failureKey,
+  ];
 }

@@ -29,6 +29,14 @@ String _lookup(AppLocalizations l, String key) {
       return l.emailTaken;
     case 'pleaseLogin':
       return l.pleaseLogin;
+    case 'wrongPassword':
+      return l.wrongPassword;
+    case 'addressRequired':
+      return l.addressRequired;
+    case 'invalidCardNumber':
+      return l.invalidCardNumber;
+    case 'invalidExpiry':
+      return l.invalidExpiry;
     case 'mustAcceptTerms':
       return l.mustAcceptTerms;
     // Failures.

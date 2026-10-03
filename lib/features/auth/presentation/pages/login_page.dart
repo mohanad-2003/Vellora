@@ -57,11 +57,11 @@ class _LoginViewState extends State<_LoginView> {
     context.hideKeyboard();
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
-            AuthLoginRequested(
-              email: _emailController.text,
-              password: _passwordController.text,
-            ),
-          );
+        AuthLoginRequested(
+          email: _emailController.text,
+          password: _passwordController.text,
+        ),
+      );
     }
   }
 
@@ -91,8 +91,7 @@ class _LoginViewState extends State<_LoginView> {
           },
           builder: (context, state) {
             return SingleChildScrollView(
-              keyboardDismissBehavior:
-                  ScrollViewKeyboardDismissBehavior.onDrag,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: EdgeInsets.fromLTRB(
                 gutter,
                 AppSpacing.sm,
@@ -166,8 +165,9 @@ class _LoginViewState extends State<_LoginView> {
                                       setState(() => _rememberMe = v),
                                 ),
                                 TextButton(
-                                  onPressed: () => context
-                                      .pushNamed(RouteNames.nForgotPassword),
+                                  onPressed: () => context.pushNamed(
+                                    RouteNames.nForgotPassword,
+                                  ),
                                   child: Text(l10n.forgotPassword),
                                 ),
                               ],
@@ -203,8 +203,9 @@ class _LoginViewState extends State<_LoginView> {
                           ),
                           TextButton(
                             // Swap rather than stack (see Register).
-                            onPressed: () => context
-                                .pushReplacementNamed(RouteNames.nRegister),
+                            onPressed: () => context.pushReplacementNamed(
+                              RouteNames.nRegister,
+                            ),
                             child: Text(l10n.register),
                           ),
                         ],

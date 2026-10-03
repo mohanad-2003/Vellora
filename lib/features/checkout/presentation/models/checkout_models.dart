@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-/// A saved shipping address. Presentation-level mock data — there is no
-/// backend in Phase 1, so these are provided by [CheckoutMockData].
+/// A saved shipping address (stored on the server for the signed-in user).
 class ShippingAddress extends Equatable {
   const ShippingAddress({
     required this.id,
@@ -36,9 +35,21 @@ class PaymentMethodOption extends Equatable {
     required this.subtitle,
   });
 
+  /// Cash on delivery needs no saved details, so it is always on offer.
+  static const PaymentMethodOption cashOnDelivery = PaymentMethodOption(
+    id: 'pay_cod',
+    kind: PaymentKind.cashOnDelivery,
+    title: '',
+    subtitle: '',
+  );
+
   final String id;
   final PaymentKind kind;
+
+  /// e.g. `Visa •••• 4242`.
   final String title;
+
+  /// A card's expiry (`08/28`); the tile adds the localized "Expires".
   final String subtitle;
 
   @override
@@ -70,28 +81,9 @@ class DeliveryOption extends Equatable {
   List<Object?> get props => [id, kind, minDays, maxDays, flatFee];
 }
 
-/// Static checkout options standing in for a real account/backend.
+/// Fixed checkout configuration: the delivery speeds on offer.
 class CheckoutMockData {
   CheckoutMockData._();
-
-  static const List<ShippingAddress> addresses = [
-    ShippingAddress(
-      id: 'addr_home',
-      label: 'Home',
-      recipient: 'Alex Johnson',
-      line: '24 Maple Avenue, Apt 5B',
-      city: 'San Francisco, CA 94103',
-      phone: '+1 415 555 0142',
-    ),
-    ShippingAddress(
-      id: 'addr_work',
-      label: 'Work',
-      recipient: 'Alex Johnson',
-      line: '900 Market Street, Floor 7',
-      city: 'San Francisco, CA 94102',
-      phone: '+1 415 555 0199',
-    ),
-  ];
 
   static const List<DeliveryOption> deliveryOptions = [
     DeliveryOption(
@@ -106,27 +98,6 @@ class CheckoutMockData {
       minDays: 1,
       maxDays: 2,
       flatFee: 14.99,
-    ),
-  ];
-
-  static const List<PaymentMethodOption> paymentMethods = [
-    PaymentMethodOption(
-      id: 'pay_visa',
-      kind: PaymentKind.card,
-      title: 'Visa •••• 4242',
-      subtitle: 'Expires 08/28',
-    ),
-    PaymentMethodOption(
-      id: 'pay_paypal',
-      kind: PaymentKind.paypal,
-      title: 'PayPal',
-      subtitle: 'alex.johnson@email.com',
-    ),
-    PaymentMethodOption(
-      id: 'pay_cod',
-      kind: PaymentKind.cashOnDelivery,
-      title: 'Cash on Delivery',
-      subtitle: 'Pay when your order arrives',
     ),
   ];
 }

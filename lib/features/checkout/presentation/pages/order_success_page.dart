@@ -66,8 +66,7 @@ class _OrderSuccessPageState extends State<OrderSuccessPage>
             builder: (context, constraints) => SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: context.pageGutter),
               child: ConstrainedBox(
-                constraints:
-                    BoxConstraints(minHeight: constraints.maxHeight),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: ResponsiveCenter(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -130,8 +129,12 @@ class _OrderSuccessPageState extends State<OrderSuccessPage>
                               ),
                               child: Column(
                                 children: [
-                                  _row(context, l10n.orderNumber, order.number,
-                                      emphasize: true),
+                                  _row(
+                                    context,
+                                    l10n.orderNumber,
+                                    order.number,
+                                    emphasize: true,
+                                  ),
                                   const SizedBox(height: AppSpacing.sm),
                                   _row(
                                     context,

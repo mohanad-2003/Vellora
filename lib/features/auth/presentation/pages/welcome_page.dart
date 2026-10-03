@@ -42,135 +42,141 @@ class _WelcomePageState extends State<WelcomePage> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-      backgroundColor: kBrandNavy,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            AssetPaths.onboardingRack,
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
-            errorBuilder: (_, _, _) =>
-                const ColoredBox(color: kBrandNavy),
-          ),
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0x99000000),
-                  Color(0x00000000),
-                  Color(0x660B0E2E),
-                  Color(0xF20B0E2E),
-                ],
-                stops: [0, 0.28, 0.55, 1],
+        backgroundColor: kBrandNavy,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              AssetPaths.onboardingRack,
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+              errorBuilder: (_, _, _) => const ColoredBox(color: kBrandNavy),
+            ),
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0x99000000),
+                    Color(0x00000000),
+                    Color(0x660B0E2E),
+                    Color(0xF20B0E2E),
+                  ],
+                  stops: [0, 0.28, 0.55, 1],
+                ),
               ),
             ),
-          ),
-          SafeArea(
-            child: LayoutBuilder(
-              builder: (context, constraints) => SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: gutter),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(top: AppSpacing.lg),
-                          child: Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: VelloraLogo(height: 44, onDark: true),
+            SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: gutter),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(top: AppSpacing.lg),
+                            child: Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              child: VelloraLogo(height: 44, onDark: true),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: AppSpacing.huge),
-                        ResponsiveCenter(
-                          child: StaggeredReveal(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(bottom: AppSpacing.xl),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Semantics(
-                                    header: true,
-                                    child: Text(
-                                      l10n.welcomeTitle,
-                                      style: text.displayMedium
-                                          ?.copyWith(color: Colors.white),
-                                    ),
-                                  ),
-                                  const SizedBox(height: AppSpacing.md),
-                                  Text(
-                                    l10n.welcomeTagline,
-                                    style: text.bodyLarge?.copyWith(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.85),
-                                    ),
-                                  ),
-                                  const SizedBox(height: AppSpacing.xxl),
-                                  _LightButton(
-                                    label: l10n.createAccount,
-                                    onPressed: () => context
-                                        .pushNamed(RouteNames.nRegister),
-                                  ),
-                                  const SizedBox(height: AppSpacing.md),
-                                  _GhostButton(
-                                    label: l10n.login,
-                                    onPressed: () =>
-                                        context.pushNamed(RouteNames.nLogin),
-                                  ),
-                                  const SizedBox(height: AppSpacing.sm),
-                                  Center(
-                                    child: TextButton(
-                                      onPressed: () =>
-                                          context.goNamed(RouteNames.nHome),
-                                      style: TextButton.styleFrom(
-                                        foregroundColor: Colors.white,
-                                      ),
-                                      child: Text(l10n.continueAsGuest),
-                                    ),
-                                  ),
-                                  const SizedBox(height: AppSpacing.xs),
-                                  Text.rich(
-                                    TextSpan(
-                                      style: text.bodySmall?.copyWith(
-                                        color: Colors.white
-                                            .withValues(alpha: 0.7),
-                                      ),
-                                      children: [
-                                        TextSpan(text: l10n.agreeToTerms),
-                                        TextSpan(
-                                          text: l10n.termsAndPrivacy,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                            decoration:
-                                                TextDecoration.underline,
-                                            decorationColor: Colors.white,
-                                          ),
-                                          recognizer: _termsTap,
+                          const SizedBox(height: AppSpacing.huge),
+                          ResponsiveCenter(
+                            child: StaggeredReveal(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: AppSpacing.xl,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Semantics(
+                                      header: true,
+                                      child: Text(
+                                        l10n.welcomeTitle,
+                                        style: text.displayMedium?.copyWith(
+                                          color: Colors.white,
                                         ),
-                                      ],
+                                      ),
                                     ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
+                                    const SizedBox(height: AppSpacing.md),
+                                    Text(
+                                      l10n.welcomeTagline,
+                                      style: text.bodyLarge?.copyWith(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.85,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: AppSpacing.xxl),
+                                    _LightButton(
+                                      label: l10n.createAccount,
+                                      onPressed: () => context.pushNamed(
+                                        RouteNames.nRegister,
+                                      ),
+                                    ),
+                                    const SizedBox(height: AppSpacing.md),
+                                    _GhostButton(
+                                      label: l10n.login,
+                                      onPressed: () =>
+                                          context.pushNamed(RouteNames.nLogin),
+                                    ),
+                                    const SizedBox(height: AppSpacing.sm),
+                                    Center(
+                                      child: TextButton(
+                                        onPressed: () =>
+                                            context.goNamed(RouteNames.nHome),
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: Colors.white,
+                                        ),
+                                        child: Text(l10n.continueAsGuest),
+                                      ),
+                                    ),
+                                    const SizedBox(height: AppSpacing.xs),
+                                    Text.rich(
+                                      TextSpan(
+                                        style: text.bodySmall?.copyWith(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.7,
+                                          ),
+                                        ),
+                                        children: [
+                                          TextSpan(text: l10n.agreeToTerms),
+                                          TextSpan(
+                                            text: l10n.termsAndPrivacy,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              decorationColor: Colors.white,
+                                            ),
+                                            recognizer: _termsTap,
+                                          ),
+                                        ],
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }

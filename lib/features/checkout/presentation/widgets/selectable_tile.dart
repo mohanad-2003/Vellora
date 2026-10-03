@@ -54,7 +54,9 @@ class SelectableTile extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.md),
           constraints: const BoxConstraints(minHeight: 64),
           decoration: BoxDecoration(
-            color: selected ? colors.primaryContainer.withValues(alpha: 0.5) : colors.surface,
+            color: selected
+                ? colors.primaryContainer.withValues(alpha: 0.5)
+                : colors.surface,
             borderRadius: AppRadius.rLg,
             border: Border.all(
               color: selected ? colors.primary : colors.outlineVariant,

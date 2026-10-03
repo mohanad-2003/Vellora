@@ -9,6 +9,16 @@ class ApiEndpoints {
   static const String verifyOtp = '/auth/verify-otp';
   static const String resetPassword = '/auth/reset-password';
   static const String me = '/me';
+  static const String changePassword = '/me/change-password';
+
+  // Saved addresses and payment methods.
+  static const String addresses = '/addresses';
+  static String addressDefault(String id) => '/addresses/$id/default';
+  static String address(String id) => '/addresses/$id';
+  static const String paymentMethods = '/payment-methods';
+  static String paymentMethodDefault(String id) =>
+      '/payment-methods/$id/default';
+  static String paymentMethod(String id) => '/payment-methods/$id';
 
   // Catalogue.
   static const String home = '/home';

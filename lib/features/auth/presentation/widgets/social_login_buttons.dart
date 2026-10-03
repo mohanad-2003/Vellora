@@ -81,7 +81,8 @@ class _SocialButton extends StatelessWidget {
             cacheWidth: 72,
             filterQuality: FilterQuality.medium,
             color: provider.tint ? colors.onSurface : null,
-            errorBuilder: (_, _, _) => const Icon(Icons.login_rounded, size: 22),
+            errorBuilder: (_, _, _) =>
+                const Icon(Icons.login_rounded, size: 22),
           ),
         ),
       ),

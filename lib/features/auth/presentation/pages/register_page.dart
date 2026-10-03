@@ -92,8 +92,7 @@ class _RegisterViewState extends State<_RegisterView> {
           },
           builder: (context, state) {
             return SingleChildScrollView(
-              keyboardDismissBehavior:
-                  ScrollViewKeyboardDismissBehavior.onDrag,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: EdgeInsets.fromLTRB(
                 context.pageGutter,
                 AppSpacing.sm,
@@ -102,122 +101,122 @@ class _RegisterViewState extends State<_RegisterView> {
               ),
               child: ResponsiveCenter(
                 child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    AuthHeader(
-                      showLogo: true,
-                      title: l10n.createAccount,
-                      subtitle: l10n.registerSubtitle,
-                    ),
-                    if (_showBanner && _bannerKey != null)
-                      AuthErrorBanner(
-                        failureKey: _bannerKey!,
-                        onDismiss: () => setState(() => _showBanner = false),
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AuthHeader(
+                        showLogo: true,
+                        title: l10n.createAccount,
+                        subtitle: l10n.registerSubtitle,
                       ),
-                    AppTextField(
-                      controller: _nameController,
-                      label: l10n.fullName,
-                      prefixIcon: Icons.person_outline_rounded,
-                      textCapitalization: TextCapitalization.words,
-                      autofillHints: const [AutofillHints.name],
-                      textInputAction: TextInputAction.next,
-                      validator: (v) {
-                        final key = InputValidators.name(v);
-                        return key == null ? null : tr(context, key);
-                      },
-                    ),
-                    SizedBox(height: AppSpacing.vLg),
-                    AppTextField(
-                      controller: _emailController,
-                      label: l10n.email,
-                      prefixIcon: Icons.mail_outline_rounded,
-                      keyboardType: TextInputType.emailAddress,
-                      autofillHints: const [AutofillHints.email],
-                      autocorrect: false,
-                      textInputAction: TextInputAction.next,
-                      validator: (v) {
-                        final key = InputValidators.email(v);
-                        return key == null ? null : tr(context, key);
-                      },
-                    ),
-                    SizedBox(height: AppSpacing.vLg),
-                    AppTextField(
-                      controller: _passwordController,
-                      label: l10n.password,
-                      prefixIcon: Icons.lock_outline_rounded,
-                      obscureText: true,
-                      autofillHints: const [AutofillHints.newPassword],
-                      autocorrect: false,
-                      textInputAction: TextInputAction.next,
-                      validator: (v) {
-                        final key = InputValidators.password(v);
-                        return key == null ? null : tr(context, key);
-                      },
-                    ),
-                    // Live strength feedback as the user types.
-                    ValueListenableBuilder<TextEditingValue>(
-                      valueListenable: _passwordController,
-                      builder: (_, value, _) =>
-                          PasswordStrengthIndicator(password: value.text),
-                    ),
-                    SizedBox(height: AppSpacing.vLg),
-                    AppTextField(
-                      controller: _confirmController,
-                      label: l10n.confirmPassword,
-                      prefixIcon: Icons.lock_outline_rounded,
-                      obscureText: true,
-                      autofillHints: const [AutofillHints.newPassword],
-                      autocorrect: false,
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (_) => _submit(),
-                      validator: (v) {
-                        final key = InputValidators.confirmPassword(
-                          v,
-                          _passwordController.text,
-                        );
-                        return key == null ? null : tr(context, key);
-                      },
-                    ),
-                    SizedBox(height: AppSpacing.vLg),
-                    TermsCheckbox(
-                      value: _agreedToTerms,
-                      onChanged: (v) => setState(() => _agreedToTerms = v),
-                      onTermsTap: () =>
-                          context.pushNamed(RouteNames.nTermsPrivacy),
-                    ),
-                    SizedBox(height: AppSpacing.vXl),
-                    AppButton(
-                      label: l10n.register,
-                      isLoading: state.isLoading,
-                      onPressed: _agreedToTerms ? _submit : null,
-                    ),
-                    const SizedBox(height: AppSpacing.xxl),
-                    _OrDivider(label: l10n.orContinueWith),
-                    const SizedBox(height: AppSpacing.xl),
-                    const SocialLoginButtons(),
-                    const SizedBox(height: AppSpacing.xl),
-                    Wrap(
-                      alignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(
-                          l10n.alreadyHaveAccount,
-                          style: context.textTheme.bodyMedium,
+                      if (_showBanner && _bannerKey != null)
+                        AuthErrorBanner(
+                          failureKey: _bannerKey!,
+                          onDismiss: () => setState(() => _showBanner = false),
                         ),
-                        TextButton(
-                          // Swap rather than stack, so Login <-> Sign up never
-                          // builds a long back-stack.
-                          onPressed: () =>
-                              context.pushReplacementNamed(RouteNames.nLogin),
-                          child: Text(l10n.login),
-                        ),
-                      ],
-                    ),
-                  ],
+                      AppTextField(
+                        controller: _nameController,
+                        label: l10n.fullName,
+                        prefixIcon: Icons.person_outline_rounded,
+                        textCapitalization: TextCapitalization.words,
+                        autofillHints: const [AutofillHints.name],
+                        textInputAction: TextInputAction.next,
+                        validator: (v) {
+                          final key = InputValidators.name(v);
+                          return key == null ? null : tr(context, key);
+                        },
+                      ),
+                      SizedBox(height: AppSpacing.vLg),
+                      AppTextField(
+                        controller: _emailController,
+                        label: l10n.email,
+                        prefixIcon: Icons.mail_outline_rounded,
+                        keyboardType: TextInputType.emailAddress,
+                        autofillHints: const [AutofillHints.email],
+                        autocorrect: false,
+                        textInputAction: TextInputAction.next,
+                        validator: (v) {
+                          final key = InputValidators.email(v);
+                          return key == null ? null : tr(context, key);
+                        },
+                      ),
+                      SizedBox(height: AppSpacing.vLg),
+                      AppTextField(
+                        controller: _passwordController,
+                        label: l10n.password,
+                        prefixIcon: Icons.lock_outline_rounded,
+                        obscureText: true,
+                        autofillHints: const [AutofillHints.newPassword],
+                        autocorrect: false,
+                        textInputAction: TextInputAction.next,
+                        validator: (v) {
+                          final key = InputValidators.password(v);
+                          return key == null ? null : tr(context, key);
+                        },
+                      ),
+                      // Live strength feedback as the user types.
+                      ValueListenableBuilder<TextEditingValue>(
+                        valueListenable: _passwordController,
+                        builder: (_, value, _) =>
+                            PasswordStrengthIndicator(password: value.text),
+                      ),
+                      SizedBox(height: AppSpacing.vLg),
+                      AppTextField(
+                        controller: _confirmController,
+                        label: l10n.confirmPassword,
+                        prefixIcon: Icons.lock_outline_rounded,
+                        obscureText: true,
+                        autofillHints: const [AutofillHints.newPassword],
+                        autocorrect: false,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _submit(),
+                        validator: (v) {
+                          final key = InputValidators.confirmPassword(
+                            v,
+                            _passwordController.text,
+                          );
+                          return key == null ? null : tr(context, key);
+                        },
+                      ),
+                      SizedBox(height: AppSpacing.vLg),
+                      TermsCheckbox(
+                        value: _agreedToTerms,
+                        onChanged: (v) => setState(() => _agreedToTerms = v),
+                        onTermsTap: () =>
+                            context.pushNamed(RouteNames.nTermsPrivacy),
+                      ),
+                      SizedBox(height: AppSpacing.vXl),
+                      AppButton(
+                        label: l10n.register,
+                        isLoading: state.isLoading,
+                        onPressed: _agreedToTerms ? _submit : null,
+                      ),
+                      const SizedBox(height: AppSpacing.xxl),
+                      _OrDivider(label: l10n.orContinueWith),
+                      const SizedBox(height: AppSpacing.xl),
+                      const SocialLoginButtons(),
+                      const SizedBox(height: AppSpacing.xl),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text(
+                            l10n.alreadyHaveAccount,
+                            style: context.textTheme.bodyMedium,
+                          ),
+                          TextButton(
+                            // Swap rather than stack, so Login <-> Sign up never
+                            // builds a long back-stack.
+                            onPressed: () =>
+                                context.pushReplacementNamed(RouteNames.nLogin),
+                            child: Text(l10n.login),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
               ),
             );
           },

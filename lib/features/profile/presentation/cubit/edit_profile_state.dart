@@ -13,10 +13,7 @@ class EditProfileState extends Equatable {
 
   bool get isSaving => status == EditProfileStatus.saving;
 
-  EditProfileState copyWith({
-    EditProfileStatus? status,
-    String? failureKey,
-  }) {
+  EditProfileState copyWith({EditProfileStatus? status, String? failureKey}) {
     return EditProfileState(
       status: status ?? this.status,
       failureKey: failureKey,

@@ -40,12 +40,15 @@ class _EditProfileView extends StatefulWidget {
 
 class _EditProfileViewState extends State<_EditProfileView> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _name =
-      TextEditingController(text: widget.user?.name ?? '');
-  late final TextEditingController _email =
-      TextEditingController(text: widget.user?.email ?? '');
-  late final TextEditingController _phone =
-      TextEditingController(text: widget.user?.phone ?? '');
+  late final TextEditingController _name = TextEditingController(
+    text: widget.user?.name ?? '',
+  );
+  late final TextEditingController _email = TextEditingController(
+    text: widget.user?.email ?? '',
+  );
+  late final TextEditingController _phone = TextEditingController(
+    text: widget.user?.phone ?? '',
+  );
 
   @override
   void dispose() {
@@ -59,10 +62,10 @@ class _EditProfileViewState extends State<_EditProfileView> {
     context.hideKeyboard();
     if (!_formKey.currentState!.validate()) return;
     context.read<EditProfileCubit>().save(
-          name: _name.text.trim(),
-          email: _email.text.trim(),
-          phone: _phone.text.trim().isEmpty ? null : _phone.text.trim(),
-        );
+      name: _name.text.trim(),
+      email: _email.text.trim(),
+      phone: _phone.text.trim().isEmpty ? null : _phone.text.trim(),
+    );
   }
 
   @override

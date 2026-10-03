@@ -87,7 +87,10 @@ class AddressTile extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 2),
-                    Text('${address.line}\n${address.city}', style: text.bodySmall),
+                    Text(
+                      '${address.line}\n${address.city}',
+                      style: text.bodySmall,
+                    ),
                     const SizedBox(height: 2),
                     // Phone numbers read left-to-right in every locale.
                     Directionality(
@@ -174,9 +177,12 @@ class PaymentTile extends StatelessWidget {
     final title = method.kind == PaymentKind.cashOnDelivery
         ? l10n.cashOnDelivery
         : method.title;
-    final subtitle = method.kind == PaymentKind.cashOnDelivery
-        ? l10n.payOnArrival
-        : method.subtitle;
+    final subtitle = switch (method.kind) {
+      PaymentKind.cashOnDelivery => l10n.payOnArrival,
+      PaymentKind.card when method.subtitle.isNotEmpty =>
+        '${l10n.expires} ${method.subtitle}',
+      _ => method.subtitle,
+    };
 
     final icon = switch (method.kind) {
       PaymentKind.cashOnDelivery => Icons.payments_outlined,

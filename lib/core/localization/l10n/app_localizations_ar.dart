@@ -1206,4 +1206,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pleaseLogin => 'يرجى تسجيل الدخول للمتابعة.';
+
+  @override
+  String get wrongPassword => 'كلمة المرور الحالية غير صحيحة.';
+
+  @override
+  String get addressRequired => 'أضف عنوان شحن لإتمام طلبك.';
+
+  @override
+  String get invalidCardNumber => 'أدخل رقم بطاقة صحيحًا.';
+
+  @override
+  String get invalidExpiry => 'استخدم الصيغة MM/YY.';
+
+  @override
+  String get accountDeleted => 'تم حذف حسابك.';
+
+  @override
+  String get deleteAccountPasswordHint => 'أدخل كلمة المرور للتأكيد.';
+
+  @override
+  String get addAddressToContinue => 'إضافة عنوان';
 }

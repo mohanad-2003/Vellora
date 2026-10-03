@@ -41,4 +41,12 @@ abstract class AuthRepository {
   });
 
   Future<Either<Failure, Unit>> logout();
+
+  Future<Either<Failure, Unit>> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  });
+
+  /// Deletes the account on the server, then clears the local session.
+  Future<Either<Failure, Unit>> deleteAccount({required String password});
 }

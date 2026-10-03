@@ -30,6 +30,14 @@ abstract class AuthRemoteDataSource {
 
   /// Saves the display name on the server for the signed-in user.
   Future<void> updateName({required String name});
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  });
+
+  /// Permanently deletes the signed-in account (password confirms it).
+  Future<void> deleteAccount({required String password});
 }
 
 @mockOnly
@@ -113,6 +121,15 @@ class MockAuthRemoteDataSource implements AuthRemoteDataSource {
 
   @override
   Future<void> updateName({required String name}) async {}
+
+  @override
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {}
+
+  @override
+  Future<void> deleteAccount({required String password}) async {}
 
   String _nameFromEmail(String email) {
     final local = email.split('@').first;
@@ -202,5 +219,21 @@ class ApiAuthRemoteDataSource implements AuthRemoteDataSource {
   @override
   Future<void> updateName({required String name}) async {
     await _dio.patch<void>(ApiEndpoints.me, data: {'name': name.trim()});
+  }
+
+  @override
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    await _dio.post<void>(
+      ApiEndpoints.changePassword,
+      data: {'currentPassword': currentPassword, 'newPassword': newPassword},
+    );
+  }
+
+  @override
+  Future<void> deleteAccount({required String password}) async {
+    await _dio.delete<void>(ApiEndpoints.me, data: {'password': password});
   }
 }

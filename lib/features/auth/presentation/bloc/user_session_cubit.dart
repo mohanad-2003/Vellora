@@ -37,7 +37,7 @@ class SessionUser {
 @lazySingleton
 class UserSessionCubit extends Cubit<SessionUser?> {
   UserSessionCubit(@Named(AppConstants.userBox) this._box)
-      : super(_read(_box)) {
+    : super(_read(_box)) {
     _subscription = _box.watch().listen((_) => emit(_read(_box)));
   }
 

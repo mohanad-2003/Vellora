@@ -75,57 +75,59 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
             }
           },
           builder: (context, state) {
-            return ResponsiveCenter(child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSpacing.screenH,
-                vertical: AppSpacing.vSm,
-              ),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    AuthHeader(
-                      showLogo: true,
-                      title: l10n.forgotPasswordTitle,
-                      subtitle: l10n.forgotPasswordSubtitle,
-                    ),
-                    if (_showBanner && _bannerKey != null)
-                      AuthErrorBanner(
-                        failureKey: _bannerKey!,
-                        onDismiss: () => setState(() => _showBanner = false),
+            return ResponsiveCenter(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.screenH,
+                  vertical: AppSpacing.vSm,
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AuthHeader(
+                        showLogo: true,
+                        title: l10n.forgotPasswordTitle,
+                        subtitle: l10n.forgotPasswordSubtitle,
                       ),
-                    AppTextField(
-                      controller: _emailController,
-                      label: l10n.email,
-                      prefixIcon: Icons.mail_outline_rounded,
-                      keyboardType: TextInputType.emailAddress,
-                      autofillHints: const [AutofillHints.email],
-                      autocorrect: false,
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (_) => _submit(),
-                      validator: (v) {
-                        final key = InputValidators.email(v);
-                        return key == null ? null : tr(context, key);
-                      },
-                    ),
-                    SizedBox(height: AppSpacing.vXxl),
-                    AppButton(
-                      label: l10n.sendResetLink,
-                      isLoading: state.isLoading,
-                      onPressed: _submit,
-                    ),
-                    SizedBox(height: AppSpacing.vLg),
-                    TextButton.icon(
-                      onPressed: () => context.pop(),
-                      // Directional arrow: mirrors automatically in RTL.
-                      icon: const Icon(Icons.arrow_back_rounded, size: 18),
-                      label: Text(l10n.backToLogin),
-                    ),
-                  ],
+                      if (_showBanner && _bannerKey != null)
+                        AuthErrorBanner(
+                          failureKey: _bannerKey!,
+                          onDismiss: () => setState(() => _showBanner = false),
+                        ),
+                      AppTextField(
+                        controller: _emailController,
+                        label: l10n.email,
+                        prefixIcon: Icons.mail_outline_rounded,
+                        keyboardType: TextInputType.emailAddress,
+                        autofillHints: const [AutofillHints.email],
+                        autocorrect: false,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _submit(),
+                        validator: (v) {
+                          final key = InputValidators.email(v);
+                          return key == null ? null : tr(context, key);
+                        },
+                      ),
+                      SizedBox(height: AppSpacing.vXxl),
+                      AppButton(
+                        label: l10n.sendResetLink,
+                        isLoading: state.isLoading,
+                        onPressed: _submit,
+                      ),
+                      SizedBox(height: AppSpacing.vLg),
+                      TextButton.icon(
+                        onPressed: () => context.pop(),
+                        // Directional arrow: mirrors automatically in RTL.
+                        icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                        label: Text(l10n.backToLogin),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ));
+            );
           },
         ),
       ),

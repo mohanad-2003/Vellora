@@ -84,17 +84,17 @@ class _ProfileContent extends StatelessWidget {
 
     Widget group(List<Widget> children) => _TileGroup(children: children);
     Widget label(String text) => Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.xs,
-            AppSpacing.xl,
-            AppSpacing.xs,
-            AppSpacing.sm,
-          ),
-          child: Semantics(
-            header: true,
-            child: Text(text, style: context.textTheme.titleSmall),
-          ),
-        );
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.xs,
+        AppSpacing.xl,
+        AppSpacing.xs,
+        AppSpacing.sm,
+      ),
+      child: Semantics(
+        header: true,
+        child: Text(text, style: context.textTheme.titleSmall),
+      ),
+    );
 
     return ListView(
       padding: EdgeInsets.fromLTRB(
@@ -291,9 +291,12 @@ class _ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final text = context.textTheme;
-    final name = (user?.name.trim().isNotEmpty ?? false) ? user!.name : l10n.guest;
-    final email =
-        (user?.email.trim().isNotEmpty ?? false) ? user!.email : l10n.guestPrompt;
+    final name = (user?.name.trim().isNotEmpty ?? false)
+        ? user!.name
+        : l10n.guest;
+    final email = (user?.email.trim().isNotEmpty ?? false)
+        ? user!.email
+        : l10n.guestPrompt;
 
     return Row(
       children: [

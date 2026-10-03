@@ -2233,6 +2233,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please log in to continue.'**
   String get pleaseLogin;
+
+  /// No description provided for @wrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Your current password is incorrect.'**
+  String get wrongPassword;
+
+  /// No description provided for @addressRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a shipping address to place your order.'**
+  String get addressRequired;
+
+  /// No description provided for @invalidCardNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid card number.'**
+  String get invalidCardNumber;
+
+  /// No description provided for @invalidExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the format MM/YY.'**
+  String get invalidExpiry;
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account was deleted.'**
+  String get accountDeleted;
+
+  /// No description provided for @deleteAccountPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password to confirm.'**
+  String get deleteAccountPasswordHint;
+
+  /// No description provided for @addAddressToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an address'**
+  String get addAddressToContinue;
 }
 
 class _AppLocalizationsDelegate

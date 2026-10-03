@@ -61,60 +61,62 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
             }
           },
           builder: (context, state) {
-            return ResponsiveCenter(child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSpacing.screenH,
-                vertical: AppSpacing.vSm,
-              ),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    AuthHeader(
-                      icon: Icons.lock_reset_rounded,
-                      title: l10n.resetPasswordTitle,
-                      subtitle: l10n.resetPasswordSubtitle,
-                    ),
-                    AppTextField(
-                      controller: _passwordController,
-                      label: l10n.newPassword,
-                      prefixIcon: Icons.lock_outline_rounded,
-                      obscureText: true,
-                      textInputAction: TextInputAction.next,
-                      onChanged: (v) => setState(() => _password = v),
-                      validator: (v) {
-                        final key = InputValidators.password(v);
-                        return key == null ? null : tr(context, key);
-                      },
-                    ),
-                    PasswordStrengthIndicator(password: _password),
-                    SizedBox(height: AppSpacing.vLg),
-                    AppTextField(
-                      controller: _confirmController,
-                      label: l10n.confirmNewPassword,
-                      prefixIcon: Icons.lock_outline_rounded,
-                      obscureText: true,
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (_) => _submit(),
-                      validator: (v) {
-                        final key = InputValidators.confirmPassword(
-                          v,
-                          _passwordController.text,
-                        );
-                        return key == null ? null : tr(context, key);
-                      },
-                    ),
-                    SizedBox(height: AppSpacing.vXxl),
-                    AppButton(
-                      label: l10n.resetPassword,
-                      isLoading: state.isLoading,
-                      onPressed: _submit,
-                    ),
-                  ],
+            return ResponsiveCenter(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.screenH,
+                  vertical: AppSpacing.vSm,
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AuthHeader(
+                        icon: Icons.lock_reset_rounded,
+                        title: l10n.resetPasswordTitle,
+                        subtitle: l10n.resetPasswordSubtitle,
+                      ),
+                      AppTextField(
+                        controller: _passwordController,
+                        label: l10n.newPassword,
+                        prefixIcon: Icons.lock_outline_rounded,
+                        obscureText: true,
+                        textInputAction: TextInputAction.next,
+                        onChanged: (v) => setState(() => _password = v),
+                        validator: (v) {
+                          final key = InputValidators.password(v);
+                          return key == null ? null : tr(context, key);
+                        },
+                      ),
+                      PasswordStrengthIndicator(password: _password),
+                      SizedBox(height: AppSpacing.vLg),
+                      AppTextField(
+                        controller: _confirmController,
+                        label: l10n.confirmNewPassword,
+                        prefixIcon: Icons.lock_outline_rounded,
+                        obscureText: true,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _submit(),
+                        validator: (v) {
+                          final key = InputValidators.confirmPassword(
+                            v,
+                            _passwordController.text,
+                          );
+                          return key == null ? null : tr(context, key);
+                        },
+                      ),
+                      SizedBox(height: AppSpacing.vXxl),
+                      AppButton(
+                        label: l10n.resetPassword,
+                        isLoading: state.isLoading,
+                        onPressed: _submit,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ));
+            );
           },
         ),
       ),

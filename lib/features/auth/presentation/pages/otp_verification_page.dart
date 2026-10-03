@@ -99,67 +99,72 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
           },
           builder: (context, state) {
             final email = state.pendingEmail ?? '';
-            return ResponsiveCenter(child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSpacing.screenH,
-                vertical: AppSpacing.vSm,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AuthHeader(
-                    icon: Icons.mark_email_read_outlined,
-                    title: l10n.otpTitle,
-                    subtitle: '${l10n.otpSubtitle} $email',
-                  ),
-                  if (_bannerVisible)
-                    AuthErrorBanner(
-                      failureKey: 'invalidOtp',
-                      onDismiss: () => setState(() => _bannerVisible = false),
+            return ResponsiveCenter(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.screenH,
+                  vertical: AppSpacing.vSm,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    AuthHeader(
+                      icon: Icons.mark_email_read_outlined,
+                      title: l10n.otpTitle,
+                      subtitle: '${l10n.otpSubtitle} $email',
                     ),
-                  SizedBox(height: AppSpacing.vLg),
-                  OtpInputField(
-                    hasError: _hasError,
-                    onChanged: (v) => _code = v,
-                    onCompleted: (v) {
-                      _code = v;
-                      _verify(context);
-                    },
-                  ),
-                  SizedBox(height: AppSpacing.vXxl),
-                  AppButton(
-                    label: l10n.verify,
-                    isLoading: state.isLoading,
-                    onPressed: () => _verify(context),
-                  ),
-                  SizedBox(height: AppSpacing.vXl),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Text(
-                        l10n.didntReceiveCode,
-                        style: context.textTheme.bodyMedium,
+                    if (_bannerVisible)
+                      AuthErrorBanner(
+                        failureKey: 'invalidOtp',
+                        onDismiss: () => setState(() => _bannerVisible = false),
                       ),
-                      _remaining > 0
-                          ? Padding(
-                              padding: EdgeInsetsDirectional.only(start: AppSpacing.sm),
-                              child: Text(
-                                l10n.resendIn(_timerLabel),
-                                style: context.textTheme.labelMedium?.copyWith(
-                                  color: context.colors.onSurfaceVariant,
+                    SizedBox(height: AppSpacing.vLg),
+                    OtpInputField(
+                      hasError: _hasError,
+                      onChanged: (v) => _code = v,
+                      onCompleted: (v) {
+                        _code = v;
+                        _verify(context);
+                      },
+                    ),
+                    SizedBox(height: AppSpacing.vXxl),
+                    AppButton(
+                      label: l10n.verify,
+                      isLoading: state.isLoading,
+                      onPressed: () => _verify(context),
+                    ),
+                    SizedBox(height: AppSpacing.vXl),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(
+                          l10n.didntReceiveCode,
+                          style: context.textTheme.bodyMedium,
+                        ),
+                        _remaining > 0
+                            ? Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: AppSpacing.sm,
                                 ),
+                                child: Text(
+                                  l10n.resendIn(_timerLabel),
+                                  style: context.textTheme.labelMedium
+                                      ?.copyWith(
+                                        color: context.colors.onSurfaceVariant,
+                                      ),
+                                ),
+                              )
+                            : TextButton(
+                                onPressed: () => _resend(context, email),
+                                child: Text(l10n.resendCode),
                               ),
-                            )
-                          : TextButton(
-                              onPressed: () => _resend(context, email),
-                              child: Text(l10n.resendCode),
-                            ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ));
+            );
           },
         ),
       ),

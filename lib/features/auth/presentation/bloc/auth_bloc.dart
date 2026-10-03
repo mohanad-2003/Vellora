@@ -102,8 +102,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(state.copyWith(status: AuthStatus.loading));
-    final result =
-        await _forgotPassword(ForgotPasswordParams(email: event.email));
+    final result = await _forgotPassword(
+      ForgotPasswordParams(email: event.email),
+    );
     result.match(
       (failure) => emit(
         state.copyWith(status: AuthStatus.failure, failureKey: failure.l10nKey),

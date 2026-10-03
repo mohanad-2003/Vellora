@@ -11,8 +11,7 @@ part 'profile_state.dart';
 
 @injectable
 class ProfileCubit extends Cubit<ProfileState> {
-  ProfileCubit(this._getCachedUser, this._logout)
-      : super(const ProfileState());
+  ProfileCubit(this._getCachedUser, this._logout) : super(const ProfileState());
 
   final GetCachedUserUseCase _getCachedUser;
   final LogoutUseCase _logout;
@@ -21,24 +20,25 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(state.copyWith(status: ProfileStatus.loading));
     final result = await _getCachedUser(const NoParams());
     result.match(
-      (failure) => emit(state.copyWith(
-        status: ProfileStatus.error,
-        failureKey: failure.l10nKey,
-      )),
-      (user) => emit(ProfileState(
-        status: ProfileStatus.loaded,
-        user: user,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: ProfileStatus.error,
+          failureKey: failure.l10nKey,
+        ),
+      ),
+      (user) => emit(ProfileState(status: ProfileStatus.loaded, user: user)),
     );
   }
 
   Future<void> logout() async {
     final result = await _logout(const NoParams());
     result.match(
-      (failure) => emit(state.copyWith(
-        status: ProfileStatus.error,
-        failureKey: failure.l10nKey,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: ProfileStatus.error,
+          failureKey: failure.l10nKey,
+        ),
+      ),
       (_) => emit(state.copyWith(status: ProfileStatus.loggedOut)),
     );
   }

@@ -28,6 +28,7 @@ sealed class Failure with _$Failure {
             'invalid_credentials' => 'invalidCredentials',
             'conflict' => 'emailTaken',
             'invalid_code' => 'invalidOtp',
+            'wrong_password' => 'wrongPassword',
             _ => 'somethingWentWrong',
           },
         UnauthorizedFailure() => 'pleaseLogin',

@@ -47,9 +47,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     try {
       final raw = _userBox.get(_userKey);
       if (raw is! String) return null;
-      return UserModel.fromJson(
-        jsonDecode(raw) as Map<String, dynamic>,
-      );
+      return UserModel.fromJson(jsonDecode(raw) as Map<String, dynamic>);
     } catch (_) {
       throw const CacheException('Failed to read cached user');
     }

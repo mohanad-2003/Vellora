@@ -22,20 +22,20 @@ abstract class UserModel with _$UserModel {
       _$UserModelFromJson(json);
 
   factory UserModel.fromEntity(UserEntity entity) => UserModel(
-        id: entity.id,
-        name: entity.name,
-        email: entity.email,
-        phone: entity.phone,
-        avatarUrl: entity.avatarUrl,
-        token: entity.token,
-      );
+    id: entity.id,
+    name: entity.name,
+    email: entity.email,
+    phone: entity.phone,
+    avatarUrl: entity.avatarUrl,
+    token: entity.token,
+  );
 
   UserEntity toEntity() => UserEntity(
-        id: id,
-        name: name,
-        email: email,
-        phone: phone,
-        avatarUrl: avatarUrl,
-        token: token,
-      );
+    id: id,
+    name: name,
+    email: email,
+    phone: phone,
+    avatarUrl: avatarUrl,
+    token: token,
+  );
 }

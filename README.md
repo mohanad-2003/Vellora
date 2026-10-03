@@ -48,6 +48,8 @@ states throughout.
 | ❤️ **Wishlist** | Favourite products synced across every screen |
 | 🛒 **Cart & Checkout** | Quantity control, live totals, delivery methods, order success |
 | 🧾 **Orders** | Place orders, order history and details (server-side totals) |
+| 📍 **Addresses & cards** | Saved on the server per account (cards keep only brand, last four digits and expiry); used at checkout |
+| 🔒 **Account security** | Change password and delete account (password-confirmed) call the API |
 | 🔔 **Notifications** | Notification centre (server feed, unread dot on Home) |
 | ⚙️ **Settings & Profile** | Language, theme, account sections |
 | 🎨 **Design system** | Colour tokens, Inter / Cairo typography, spacing and radius scales |

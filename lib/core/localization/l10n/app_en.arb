@@ -493,5 +493,12 @@
   "goHome": "Go to Home",
   "invalidCredentials": "Incorrect email or password.",
   "emailTaken": "An account with this email already exists.",
-  "pleaseLogin": "Please log in to continue."
+  "pleaseLogin": "Please log in to continue.",
+  "wrongPassword": "Your current password is incorrect.",
+  "addressRequired": "Add a shipping address to place your order.",
+  "invalidCardNumber": "Enter a valid card number.",
+  "invalidExpiry": "Use the format MM/YY.",
+  "accountDeleted": "Your account was deleted.",
+  "deleteAccountPasswordHint": "Enter your password to confirm.",
+  "addAddressToContinue": "Add an address"
 }

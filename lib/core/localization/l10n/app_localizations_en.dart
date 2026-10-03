@@ -1193,4 +1193,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pleaseLogin => 'Please log in to continue.';
+
+  @override
+  String get wrongPassword => 'Your current password is incorrect.';
+
+  @override
+  String get addressRequired => 'Add a shipping address to place your order.';
+
+  @override
+  String get invalidCardNumber => 'Enter a valid card number.';
+
+  @override
+  String get invalidExpiry => 'Use the format MM/YY.';
+
+  @override
+  String get accountDeleted => 'Your account was deleted.';
+
+  @override
+  String get deleteAccountPasswordHint => 'Enter your password to confirm.';
+
+  @override
+  String get addAddressToContinue => 'Add an address';
 }

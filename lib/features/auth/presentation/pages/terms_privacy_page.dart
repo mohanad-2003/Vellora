@@ -4,7 +4,6 @@ import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/theme/app_spacing.dart';
 import 'package:vellora/core/widgets/app_bar_widget.dart';
 
-
 class TermsPrivacyPage extends StatelessWidget {
   const TermsPrivacyPage({super.key});
 
@@ -25,29 +24,29 @@ class TermsPrivacyPage extends StatelessWidget {
         child: ResponsiveCenter(
           maxWidth: 720,
           child: ListView.separated(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppSpacing.screenH,
-            vertical: AppSpacing.vXl,
-          ),
-          itemCount: sections.length,
-          separatorBuilder: (_, _) => SizedBox(height: AppSpacing.vXxl),
-          itemBuilder: (context, i) {
-            final (title, body) = sections[i];
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: context.textTheme.titleLarge),
-                SizedBox(height: AppSpacing.vSm),
-                Text(
-                  body,
-                  style: context.textTheme.bodyLarge?.copyWith(
-                    color: context.colors.onSurfaceVariant,
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.screenH,
+              vertical: AppSpacing.vXl,
+            ),
+            itemCount: sections.length,
+            separatorBuilder: (_, _) => SizedBox(height: AppSpacing.vXxl),
+            itemBuilder: (context, i) {
+              final (title, body) = sections[i];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: context.textTheme.titleLarge),
+                  SizedBox(height: AppSpacing.vSm),
+                  Text(
+                    body,
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: context.colors.onSurfaceVariant,
+                    ),
                   ),
-                ),
-              ],
-            );
-          },
-        ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

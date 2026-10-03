@@ -38,10 +38,7 @@ class ProfileAvatar extends StatelessWidget {
       height: size,
       alignment: Alignment.center,
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: colors.primary,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: colors.primary, shape: BoxShape.circle),
       child: hasImage
           ? Image.network(
               avatarUrl!,

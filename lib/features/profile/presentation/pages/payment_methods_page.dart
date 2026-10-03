@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -11,8 +12,10 @@ import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
-import '../../../checkout/presentation/models/checkout_models.dart';
+import '../../../../core/widgets/error_state_widget.dart';
+import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../../checkout/presentation/widgets/checkout_tiles.dart';
+import '../../data/wallet_remote_datasource.dart';
 import '../cubit/payment_methods_cubit.dart';
 
 class PaymentMethodsPage extends StatelessWidget {
@@ -21,7 +24,7 @@ class PaymentMethodsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => PaymentMethodsCubit(),
+      create: (_) => sl<PaymentMethodsCubit>()..load(),
       child: const _PaymentMethodsView(),
     );
   }
@@ -38,6 +41,15 @@ class _PaymentMethodsView extends StatelessWidget {
       body: SafeArea(
         child: BlocBuilder<PaymentMethodsCubit, PaymentMethodsState>(
           builder: (context, state) {
+            if (state.status == PaymentMethodsStatus.loading) {
+              return const ListSkeleton(itemCount: 3);
+            }
+            if (state.status == PaymentMethodsStatus.error) {
+              return ErrorStateWidget(
+                message: tr(context, state.failureKey ?? 'somethingWentWrong'),
+                onRetry: () => context.read<PaymentMethodsCubit>().load(),
+              );
+            }
             if (state.methods.isEmpty) {
               return EmptyStateWidget(
                 title: l10n.noPaymentTitle,
@@ -63,21 +75,30 @@ class _PaymentMethodsView extends StatelessWidget {
                           PaymentTile(
                             method: method,
                             selected: isDefault,
-                            onTap: () => context
-                                .read<PaymentMethodsCubit>()
-                                .setDefault(method.id),
+                            onTap: () => _run(
+                              context,
+                              context.read<PaymentMethodsCubit>().setDefault(
+                                method.id,
+                              ),
+                            ),
                           ),
                           PositionedDirectional(
                             top: 0,
                             end: 0,
                             child: _CardMenu(
                               isDefault: isDefault,
-                              onSetDefault: () => context
-                                  .read<PaymentMethodsCubit>()
-                                  .setDefault(method.id),
-                              onDelete: () => context
-                                  .read<PaymentMethodsCubit>()
-                                  .remove(method.id),
+                              onSetDefault: () => _run(
+                                context,
+                                context.read<PaymentMethodsCubit>().setDefault(
+                                  method.id,
+                                ),
+                              ),
+                              onDelete: () => _run(
+                                context,
+                                context.read<PaymentMethodsCubit>().remove(
+                                  method.id,
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -110,13 +131,26 @@ class _PaymentMethodsView extends StatelessWidget {
     AppBottomSheet.show(
       context,
       child: _CardForm(
-        onSubmit: (method) {
-          cubit.add(method);
+        onSubmit: (card) async {
+          final failure = await cubit.add(card);
+          if (!context.mounted) return;
           Navigator.of(context).pop();
-          AppSnackbar.success(context, context.l10n.cardAdded);
+          if (failure == null) {
+            AppSnackbar.success(context, context.l10n.cardAdded);
+          } else {
+            AppSnackbar.error(context, tr(context, failure));
+          }
         },
       ),
     );
+  }
+
+  /// Runs a change and shows a message if it failed (null means it worked).
+  Future<void> _run(BuildContext context, Future<String?> change) async {
+    final failure = await change;
+    if (failure != null && context.mounted) {
+      AppSnackbar.error(context, tr(context, failure));
+    }
   }
 }
 
@@ -145,8 +179,10 @@ class _CardMenu extends StatelessWidget {
           PopupMenuItem(value: 'default', child: Text(l10n.setAsDefault)),
         PopupMenuItem(
           value: 'delete',
-          child: Text(l10n.delete,
-              style: TextStyle(color: context.colors.error)),
+          child: Text(
+            l10n.delete,
+            style: TextStyle(color: context.colors.error),
+          ),
         ),
       ],
     );
@@ -156,7 +192,7 @@ class _CardMenu extends StatelessWidget {
 class _CardForm extends StatefulWidget {
   const _CardForm({required this.onSubmit});
 
-  final ValueChanged<PaymentMethodOption> onSubmit;
+  final ValueChanged<NewCard> onSubmit;
 
   @override
   State<_CardForm> createState() => _CardFormState();
@@ -184,14 +220,13 @@ class _CardFormState extends State<_CardForm> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
     final digits = _number.text.replaceAll(RegExp(r'\D'), '');
-    final last4 =
-        digits.length >= 4 ? digits.substring(digits.length - 4) : digits;
+    // Only the brand, the last four digits and the expiry leave the form: the
+    // card number is never stored or sent anywhere.
     widget.onSubmit(
-      PaymentMethodOption(
-        id: 'card_${DateTime.now().millisecondsSinceEpoch}',
-        kind: PaymentKind.card,
-        title: 'Card •••• $last4',
-        subtitle: '${context.l10n.expires} ${_expiry.text.trim()}',
+      NewCard(
+        brand: NewCard.brandOf(digits),
+        last4: digits.substring(digits.length - 4),
+        expiry: _expiry.text.trim(),
       ),
     );
   }
@@ -217,7 +252,13 @@ class _CardFormState extends State<_CardForm> {
             hint: '1234 5678 9012 3456',
             prefixIcon: Icons.credit_card_rounded,
             keyboardType: TextInputType.number,
-            validator: _required,
+            validator: (v) {
+              final digits = (v ?? '').replaceAll(RegExp(r'\D'), '');
+              if (digits.length < 12 || digits.length > 19) {
+                return tr(context, 'invalidCardNumber');
+              }
+              return null;
+            },
           ),
           SizedBox(height: AppSpacing.vMd),
           AppTextField(
@@ -233,7 +274,10 @@ class _CardFormState extends State<_CardForm> {
             hint: 'MM/YY',
             prefixIcon: Icons.calendar_today_outlined,
             keyboardType: TextInputType.datetime,
-            validator: _required,
+            validator: (v) =>
+                RegExp(r'^(0[1-9]|1[0-2])/\d{2}$').hasMatch((v ?? '').trim())
+                ? null
+                : tr(context, 'invalidExpiry'),
           ),
           SizedBox(height: AppSpacing.vXl),
           AppButton(

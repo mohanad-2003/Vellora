@@ -44,7 +44,9 @@ class AuthHeader extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: RadialGradient(
                   colors: [
-                    colors.primary.withValues(alpha: context.isDark ? 0.22 : 0.12),
+                    colors.primary.withValues(
+                      alpha: context.isDark ? 0.22 : 0.12,
+                    ),
                     colors.primary.withValues(alpha: 0),
                   ],
                 ),

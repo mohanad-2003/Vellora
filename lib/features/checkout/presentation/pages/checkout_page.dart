@@ -63,11 +63,11 @@ class _CheckoutView extends StatelessWidget {
           return switch (state.status) {
             CheckoutStatus.loading => const ListSkeleton(),
             CheckoutStatus.error => ErrorStateWidget(
-                message: state.failureKey != null
-                    ? tr(context, state.failureKey!)
-                    : l10n.somethingWentWrong,
-                onRetry: () => context.read<CheckoutCubit>().load(null),
-              ),
+              message: state.failureKey != null
+                  ? tr(context, state.failureKey!)
+                  : l10n.somethingWentWrong,
+              onRetry: () => context.read<CheckoutCubit>().load(null),
+            ),
             _ => _CheckoutBody(state: state),
           };
         },
@@ -146,7 +146,14 @@ class _CheckoutBody extends StatelessWidget {
                   1,
                   l10n.shippingAddress,
                   address == null
-                      ? const SizedBox.shrink()
+                      ? _AddPrompt(
+                          icon: Icons.add_location_alt_outlined,
+                          label: l10n.addAddressToContinue,
+                          onTap: () => _openAndRefresh(
+                            context,
+                            RouteNames.nSavedAddresses,
+                          ),
+                        )
                       : AddressTile(address: address, selected: false),
                   action: state.addresses.length > 1
                       ? TextButton(
@@ -162,8 +169,7 @@ class _CheckoutBody extends StatelessWidget {
                     children: [
                       for (final d in state.deliveryOptions)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: AppSpacing.sm),
+                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                           child: DeliveryTile(
                             option: d,
                             selected: d.id == state.selectedDeliveryId,
@@ -181,14 +187,21 @@ class _CheckoutBody extends StatelessWidget {
                     children: [
                       for (final m in state.paymentMethods)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: AppSpacing.sm),
+                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                           child: PaymentTile(
                             method: m,
                             selected: m.id == state.selectedPaymentId,
                             onTap: () => cubit.selectPayment(m.id),
                           ),
                         ),
+                      _AddPrompt(
+                        icon: Icons.add_card_rounded,
+                        label: l10n.addCard,
+                        onTap: () => _openAndRefresh(
+                          context,
+                          RouteNames.nPaymentMethods,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -199,8 +212,7 @@ class _CheckoutBody extends StatelessWidget {
                     children: [
                       for (final item in state.items)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: AppSpacing.md),
+                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
                           child: OrderItemRow(item: item),
                         ),
                       const Divider(),
@@ -223,6 +235,14 @@ class _CheckoutBody extends StatelessWidget {
     );
   }
 
+  /// Opens an account screen (addresses or cards) and, when the user comes
+  /// back, picks up whatever they added there.
+  Future<void> _openAndRefresh(BuildContext context, String routeName) async {
+    final cubit = context.read<CheckoutCubit>();
+    await context.pushNamed(routeName);
+    await cubit.refreshWallet();
+  }
+
   void _pickAddress(BuildContext context, CheckoutCubit cubit) {
     AppBottomSheet.show(
       context,
@@ -243,6 +263,31 @@ class _CheckoutBody extends StatelessWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// Outlined "+ add" row used where the user has nothing saved yet.
+class _AddPrompt extends StatelessWidget {
+  const _AddPrompt({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: onTap,
+        icon: Icon(icon),
+        label: Text(label),
       ),
     );
   }

@@ -22,15 +22,14 @@ class UserEntity extends Equatable {
     String? email,
     String? phone,
     String? avatarUrl,
-  }) =>
-      UserEntity(
-        id: id,
-        name: name ?? this.name,
-        email: email ?? this.email,
-        phone: phone ?? this.phone,
-        avatarUrl: avatarUrl ?? this.avatarUrl,
-        token: token,
-      );
+  }) => UserEntity(
+    id: id,
+    name: name ?? this.name,
+    email: email ?? this.email,
+    phone: phone ?? this.phone,
+    avatarUrl: avatarUrl ?? this.avatarUrl,
+    token: token,
+  );
 
   @override
   List<Object?> get props => [id, name, email, phone, avatarUrl, token];

@@ -1,53 +1,87 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+import '../../../../core/errors/exception_mapper.dart';
 import '../../../checkout/presentation/models/checkout_models.dart';
+import '../../data/wallet_remote_datasource.dart';
+
+enum AddressesStatus { loading, loaded, error }
 
 class AddressesState extends Equatable {
-  const AddressesState({this.addresses = const [], this.defaultId});
+  const AddressesState({
+    this.status = AddressesStatus.loading,
+    this.addresses = const [],
+    this.defaultId,
+    this.failureKey,
+  });
 
+  final AddressesStatus status;
   final List<ShippingAddress> addresses;
   final String? defaultId;
-
-  AddressesState copyWith({
-    List<ShippingAddress>? addresses,
-    String? defaultId,
-  }) =>
-      AddressesState(
-        addresses: addresses ?? this.addresses,
-        defaultId: defaultId ?? this.defaultId,
-      );
+  final String? failureKey;
 
   @override
-  List<Object?> get props => [addresses, defaultId];
+  List<Object?> get props => [status, addresses, defaultId, failureKey];
 }
 
-/// In-memory address book seeded with mock data. Persistence is out of scope
-/// for Phase 1, so edits live for the session.
+/// The signed-in user's address book, kept on the server. Every change is sent
+/// first and the list is then re-read, so the screen always shows what the
+/// server holds. Mutations return a failure key (null on success) so the page
+/// can show a message.
+@injectable
 class AddressesCubit extends Cubit<AddressesState> {
-  AddressesCubit()
-      : super(
-          AddressesState(
-            addresses: List.of(CheckoutMockData.addresses),
-            defaultId: CheckoutMockData.addresses.first.id,
-          ),
-        );
+  AddressesCubit(this._remote) : super(const AddressesState());
 
-  void add(ShippingAddress address) {
-    emit(state.copyWith(
-      addresses: [...state.addresses, address],
-      defaultId: state.addresses.isEmpty ? address.id : state.defaultId,
-    ));
+  final WalletRemoteDataSource _remote;
+
+  Future<void> load() async {
+    emit(const AddressesState());
+    try {
+      final book = await _remote.getAddresses();
+      emit(
+        AddressesState(
+          status: AddressesStatus.loaded,
+          addresses: book.addresses,
+          defaultId: book.defaultId,
+        ),
+      );
+    } catch (e) {
+      emit(
+        AddressesState(
+          status: AddressesStatus.error,
+          failureKey: mapExceptionToFailure(e).l10nKey,
+        ),
+      );
+    }
   }
 
-  void setDefault(String id) => emit(state.copyWith(defaultId: id));
+  Future<String?> add(ShippingAddress address) =>
+      _change(() => _remote.addAddress(address));
 
-  void remove(String id) {
-    final remaining =
-        state.addresses.where((a) => a.id != id).toList(growable: false);
-    final newDefault = state.defaultId == id
-        ? (remaining.isEmpty ? null : remaining.first.id)
-        : state.defaultId;
-    emit(AddressesState(addresses: remaining, defaultId: newDefault));
+  Future<String?> setDefault(String id) =>
+      _change(() => _remote.setDefaultAddress(id));
+
+  Future<String?> remove(String id) => _change(() => _remote.deleteAddress(id));
+
+  Future<String?> _change(Future<void> Function() action) async {
+    try {
+      await action();
+    } catch (e) {
+      return mapExceptionToFailure(e).l10nKey;
+    }
+    try {
+      final book = await _remote.getAddresses();
+      emit(
+        AddressesState(
+          status: AddressesStatus.loaded,
+          addresses: book.addresses,
+          defaultId: book.defaultId,
+        ),
+      );
+    } catch (e) {
+      return mapExceptionToFailure(e).l10nKey;
+    }
+    return null;
   }
 }

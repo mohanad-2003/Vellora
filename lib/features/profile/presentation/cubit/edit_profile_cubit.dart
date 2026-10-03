@@ -23,10 +23,12 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       UpdateProfileParams(name: name, email: email, phone: phone),
     );
     result.match(
-      (failure) => emit(state.copyWith(
-        status: EditProfileStatus.error,
-        failureKey: failure.l10nKey,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: EditProfileStatus.error,
+          failureKey: failure.l10nKey,
+        ),
+      ),
       (_) => emit(state.copyWith(status: EditProfileStatus.success)),
     );
   }

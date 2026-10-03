@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -11,6 +12,8 @@ import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
+import '../../../../core/widgets/error_state_widget.dart';
+import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../../../core/localization/l10n_lookup.dart';
 import '../../../checkout/presentation/models/checkout_models.dart';
 import '../cubit/addresses_cubit.dart';
@@ -21,7 +24,7 @@ class SavedAddressesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AddressesCubit(),
+      create: (_) => sl<AddressesCubit>()..load(),
       child: const _SavedAddressesView(),
     );
   }
@@ -38,6 +41,15 @@ class _SavedAddressesView extends StatelessWidget {
       body: SafeArea(
         child: BlocBuilder<AddressesCubit, AddressesState>(
           builder: (context, state) {
+            if (state.status == AddressesStatus.loading) {
+              return const ListSkeleton(itemCount: 3);
+            }
+            if (state.status == AddressesStatus.error) {
+              return ErrorStateWidget(
+                message: tr(context, state.failureKey ?? 'somethingWentWrong'),
+                onRetry: () => context.read<AddressesCubit>().load(),
+              );
+            }
             if (state.addresses.isEmpty) {
               return EmptyStateWidget(
                 title: l10n.noAddressesTitle,
@@ -60,12 +72,14 @@ class _SavedAddressesView extends StatelessWidget {
                       return _AddressCard(
                         address: address,
                         isDefault: address.id == state.defaultId,
-                        onSetDefault: () => context
-                            .read<AddressesCubit>()
-                            .setDefault(address.id),
-                        onDelete: () => context
-                            .read<AddressesCubit>()
-                            .remove(address.id),
+                        onSetDefault: () => _run(
+                          context,
+                          context.read<AddressesCubit>().setDefault(address.id),
+                        ),
+                        onDelete: () => _run(
+                          context,
+                          context.read<AddressesCubit>().remove(address.id),
+                        ),
                       );
                     },
                   ),
@@ -95,13 +109,26 @@ class _SavedAddressesView extends StatelessWidget {
     AppBottomSheet.show(
       context,
       child: _AddressForm(
-        onSubmit: (address) {
-          cubit.add(address);
+        onSubmit: (address) async {
+          final failure = await cubit.add(address);
+          if (!context.mounted) return;
           Navigator.of(context).pop();
-          AppSnackbar.success(context, context.l10n.addressAdded);
+          if (failure == null) {
+            AppSnackbar.success(context, context.l10n.addressAdded);
+          } else {
+            AppSnackbar.error(context, tr(context, failure));
+          }
         },
       ),
     );
+  }
+
+  /// Runs a change and shows a message if it failed (null means it worked).
+  Future<void> _run(BuildContext context, Future<String?> change) async {
+    final failure = await change;
+    if (failure != null && context.mounted) {
+      AppSnackbar.error(context, tr(context, failure));
+    }
   }
 }
 

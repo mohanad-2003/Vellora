@@ -490,5 +490,12 @@
   "goHome": "العودة إلى الرئيسية",
   "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
   "emailTaken": "يوجد حساب بهذا البريد الإلكتروني بالفعل.",
-  "pleaseLogin": "يرجى تسجيل الدخول للمتابعة."
+  "pleaseLogin": "يرجى تسجيل الدخول للمتابعة.",
+  "wrongPassword": "كلمة المرور الحالية غير صحيحة.",
+  "addressRequired": "أضف عنوان شحن لإتمام طلبك.",
+  "invalidCardNumber": "أدخل رقم بطاقة صحيحًا.",
+  "invalidExpiry": "استخدم الصيغة MM/YY.",
+  "accountDeleted": "تم حذف حسابك.",
+  "deleteAccountPasswordHint": "أدخل كلمة المرور للتأكيد.",
+  "addAddressToContinue": "إضافة عنوان"
 }
