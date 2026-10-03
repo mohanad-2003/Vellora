@@ -17,6 +17,10 @@ abstract class OrdersRemoteDataSource {
   Future<OrderEntity> getOrder(String id);
 
   Future<OrderEntity> placeOrder(PlaceOrderRequest request);
+
+  /// Only orders that are still being processed can be cancelled; otherwise
+  /// this throws a [ValidationException] with code `conflict`.
+  Future<OrderEntity> cancelOrder(String id);
 }
 
 @mockOnly
@@ -33,6 +37,15 @@ class MockOrdersRemoteDataSource implements OrdersRemoteDataSource {
   Future<OrderEntity> getOrder(String id) async {
     final order = await _store.getOrder(id);
     if (order == null) throw const NotFoundException('Order not found');
+    return order;
+  }
+
+  @override
+  Future<OrderEntity> cancelOrder(String id) async {
+    final order = _store.cancel(id);
+    if (order == null) {
+      throw const ValidationException('Cannot cancel', 'conflict');
+    }
     return order;
   }
 
@@ -63,6 +76,14 @@ class ApiOrdersRemoteDataSource implements OrdersRemoteDataSource {
   @override
   Future<OrderEntity> getOrder(String id) async {
     final res = await _dio.get<Map<String, dynamic>>(ApiEndpoints.order(id));
+    return ApiMappers.order(res.data!);
+  }
+
+  @override
+  Future<OrderEntity> cancelOrder(String id) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      ApiEndpoints.orderCancel(id),
+    );
     return ApiMappers.order(res.data!);
   }
 

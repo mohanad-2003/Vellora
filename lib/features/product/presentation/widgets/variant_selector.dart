@@ -69,8 +69,7 @@ class VariantSelector extends StatelessWidget {
                     child: Text(
                       option,
                       style: context.textTheme.labelLarge?.copyWith(
-                        color:
-                            isSelected ? colors.onPrimary : colors.onSurface,
+                        color: isSelected ? colors.onPrimary : colors.onSurface,
                       ),
                     ),
                   ),

@@ -32,6 +32,24 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
+  Future<Either<Failure, Unit>> addReview({
+    required String productId,
+    required int rating,
+    required String comment,
+  }) async {
+    try {
+      await _remote.addReview(
+        productId: productId,
+        rating: rating,
+        comment: comment,
+      );
+      return const Right(unit);
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<ProductEntity>>> getRelatedProducts(
     String id,
   ) async {

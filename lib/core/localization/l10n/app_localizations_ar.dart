@@ -1227,4 +1227,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get addAddressToContinue => 'إضافة عنوان';
+
+  @override
+  String get writeReview => 'اكتب مراجعة';
+
+  @override
+  String get yourRating => 'تقييمك';
+
+  @override
+  String get reviewHint => 'شاركنا ما أعجبك أو لم يعجبك';
+
+  @override
+  String get submitReview => 'إرسال المراجعة';
+
+  @override
+  String get reviewAdded => 'شكرًا! تمت إضافة مراجعتك.';
+
+  @override
+  String get ratingRequired => 'اختر تقييمًا بالنجوم.';
+
+  @override
+  String get reviewTooShort => 'اكتب 3 أحرف على الأقل.';
+
+  @override
+  String get cancelOrder => 'إلغاء الطلب';
+
+  @override
+  String get cancelOrderTitle => 'إلغاء هذا الطلب؟';
+
+  @override
+  String get cancelOrderBody => 'سيُلغى طلبك فورًا ولا يمكن التراجع عن ذلك.';
+
+  @override
+  String get keepOrder => 'الإبقاء على الطلب';
+
+  @override
+  String get orderCancelled => 'تم إلغاء طلبك.';
+
+  @override
+  String get orderNotCancellable => 'لم يعد بالإمكان إلغاء هذا الطلب.';
+
+  @override
+  String get yourReview => 'مراجعتك';
 }

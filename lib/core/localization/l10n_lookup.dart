@@ -37,6 +37,12 @@ String _lookup(AppLocalizations l, String key) {
       return l.invalidCardNumber;
     case 'invalidExpiry':
       return l.invalidExpiry;
+    case 'ratingRequired':
+      return l.ratingRequired;
+    case 'reviewTooShort':
+      return l.reviewTooShort;
+    case 'orderNotCancellable':
+      return l.orderNotCancellable;
     case 'mustAcceptTerms':
       return l.mustAcceptTerms;
     // Failures.

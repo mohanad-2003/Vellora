@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,8 +15,10 @@ import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_bar_widget.dart';
+import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_icon_button.dart';
 import '../../../../core/widgets/count_badge.dart';
+import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/error_state_widget.dart';
 import '../../../../core/widgets/favorite_button.dart';
@@ -31,6 +35,7 @@ import '../widgets/product_gallery.dart';
 import '../widgets/rating_summary.dart';
 import '../widgets/related_products_list.dart';
 import '../widgets/variant_selector.dart';
+import '../widgets/write_review_sheet.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   const ProductDetailsPage({super.key, required this.productId, this.heroTag});
@@ -83,25 +88,26 @@ class _ProductDetailView extends StatelessWidget {
         builder: (context, state) {
           return switch (state.status) {
             ProductDetailStatus.loading ||
-            ProductDetailStatus.initial =>
-              const _DetailSkeleton(),
+            ProductDetailStatus.initial => const _DetailSkeleton(),
             ProductDetailStatus.error => Column(
-                children: [
-                  AppBarWidget(title: l10n.productDetails),
-                  Expanded(
-                    child: ErrorStateWidget(
-                      message: state.failureKey != null
-                          ? tr(context, state.failureKey!)
-                          : l10n.somethingWentWrong,
-                      onRetry: () => context
-                          .read<ProductDetailBloc>()
-                          .add(ProductDetailRequested(productId)),
+              children: [
+                AppBarWidget(title: l10n.productDetails),
+                Expanded(
+                  child: ErrorStateWidget(
+                    message: state.failureKey != null
+                        ? tr(context, state.failureKey!)
+                        : l10n.somethingWentWrong,
+                    onRetry: () => context.read<ProductDetailBloc>().add(
+                      ProductDetailRequested(productId),
                     ),
                   ),
-                ],
-              ),
-            ProductDetailStatus.loaded =>
-              _LoadedView(state: state, heroTag: heroTag),
+                ),
+              ],
+            ),
+            ProductDetailStatus.loaded => _LoadedView(
+              state: state,
+              heroTag: heroTag,
+            ),
           };
         },
       ),
@@ -267,7 +273,10 @@ class _LoadedView extends StatelessWidget {
                   padding: const EdgeInsetsDirectional.only(start: 12),
                   child: _CircleBack(),
                 ),
-                actions: [_HeaderActions(state: state), const SizedBox(width: 8)],
+                actions: [
+                  _HeaderActions(state: state),
+                  const SizedBox(width: 8),
+                ],
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.pin,
                   background: ProductGallery(
@@ -279,7 +288,12 @@ class _LoadedView extends StatelessWidget {
               ),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(gutter, AppSpacing.xl, gutter, 0),
+                  padding: EdgeInsets.fromLTRB(
+                    gutter,
+                    AppSpacing.xl,
+                    gutter,
+                    0,
+                  ),
                   child: _InfoSection(state: state),
                 ),
               ),
@@ -384,8 +398,7 @@ class _InfoSection extends StatelessWidget {
     final detail = state.detail!;
     final product = detail.product;
     final bloc = context.read<ProductDetailBloc>();
-    final stockColor =
-        detail.inStock ? context.vellora.success : colors.error;
+    final stockColor = detail.inStock ? context.vellora.success : colors.error;
     final savings = product.hasDiscount
         ? product.originalPrice! - product.price
         : 0.0;
@@ -416,8 +429,7 @@ class _InfoSection extends StatelessWidget {
               style: text.bodySmall,
             ),
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
                 color: stockColor.withValues(alpha: 0.12),
                 borderRadius: AppRadius.rSm,
@@ -522,6 +534,13 @@ class _InfoSection extends StatelessWidget {
           rating: product.rating,
           reviewCount: product.reviewCount,
           reviews: detail.reviews,
+        ),
+        const SizedBox(height: AppSpacing.md),
+        AppButton(
+          label: l10n.writeReview,
+          icon: Icons.rate_review_outlined,
+          variant: AppButtonVariant.outline,
+          onPressed: () => _writeReview(context),
         ),
       ],
     );
@@ -635,7 +654,9 @@ class _ExpandableTextState extends State<_ExpandableText> {
                 widget.text,
                 style: style,
                 maxLines: _expanded ? null : 3,
-                overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                overflow: _expanded
+                    ? TextOverflow.visible
+                    : TextOverflow.ellipsis,
               ),
             ),
             if (overflows)
@@ -652,4 +673,31 @@ class _ExpandableTextState extends State<_ExpandableText> {
       },
     );
   }
+}
+
+/// Opens the review form. The sheet lives outside the page's providers, so the
+/// bloc is read first and handed to it.
+void _writeReview(BuildContext context) {
+  final bloc = context.read<ProductDetailBloc>();
+  final l10n = context.l10n;
+  AppBottomSheet.show(
+    context,
+    child: WriteReviewSheet(
+      onSubmit: (rating, comment) {
+        final result = Completer<String?>();
+        bloc.add(
+          ProductReviewSubmitted(
+            rating: rating,
+            comment: comment,
+            result: result,
+          ),
+        );
+        return result.future;
+      },
+      onDone: () {
+        Navigator.of(context).pop();
+        AppSnackbar.success(context, l10n.reviewAdded);
+      },
+    ),
+  );
 }

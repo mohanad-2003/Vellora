@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -6,6 +8,7 @@ import '../../../cart/domain/entities/cart_item_entity.dart';
 import '../../../cart/domain/usecases/add_to_cart_usecase.dart';
 import '../../../home/domain/entities/product_entity.dart';
 import '../../domain/entities/product_detail_entity.dart';
+import '../../domain/usecases/add_review_usecase.dart';
 import '../../domain/usecases/get_product_details_usecase.dart';
 import '../../domain/usecases/get_related_products_usecase.dart';
 import '../../domain/usecases/toggle_favorite_usecase.dart';
@@ -20,12 +23,14 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     this._getRelated,
     this._toggleFavorite,
     this._addToCart,
+    this._addReview,
   ) : super(const ProductDetailState()) {
     on<ProductDetailRequested>(_onRequested);
     on<ProductColorSelected>(_onColorSelected);
     on<ProductSizeSelected>(_onSizeSelected);
     on<ProductQuantityChanged>(_onQuantityChanged);
     on<ProductFavoriteToggled>(_onFavoriteToggled);
+    on<ProductReviewSubmitted>(_onReviewSubmitted);
     on<ProductAddToCartRequested>(_onAddToCart);
     on<ProductBuyNowRequested>(_onBuyNow);
   }
@@ -34,6 +39,7 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   final GetRelatedProductsUseCase _getRelated;
   final ToggleFavoriteUseCase _toggleFavorite;
   final AddToCartUseCase _addToCart;
+  final AddReviewUseCase _addReview;
 
   Future<void> _onRequested(
     ProductDetailRequested event,
@@ -42,24 +48,28 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     emit(state.copyWith(status: ProductDetailStatus.loading));
     final result = await _getDetails(event.id);
     await result.match(
-      (failure) async => emit(state.copyWith(
-        status: ProductDetailStatus.error,
-        failureKey: failure.l10nKey,
-      )),
+      (failure) async => emit(
+        state.copyWith(
+          status: ProductDetailStatus.error,
+          failureKey: failure.l10nKey,
+        ),
+      ),
       (detail) async {
         final related = await _getRelated(event.id);
-        emit(state.copyWith(
-          status: ProductDetailStatus.loaded,
-          detail: detail,
-          related: related.getOrElse((_) => const []),
-          selectedColor: detail.variant.colors.isNotEmpty
-              ? detail.variant.colors.first
-              : null,
-          selectedSize: detail.variant.sizes.isNotEmpty
-              ? detail.variant.sizes.first
-              : null,
-          quantity: 1,
-        ));
+        emit(
+          state.copyWith(
+            status: ProductDetailStatus.loaded,
+            detail: detail,
+            related: related.getOrElse((_) => const []),
+            selectedColor: detail.variant.colors.isNotEmpty
+                ? detail.variant.colors.first
+                : null,
+            selectedSize: detail.variant.sizes.isNotEmpty
+                ? detail.variant.sizes.first
+                : null,
+            quantity: 1,
+          ),
+        );
       },
     );
   }
@@ -67,20 +77,17 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   void _onColorSelected(
     ProductColorSelected event,
     Emitter<ProductDetailState> emit,
-  ) =>
-      emit(state.copyWith(selectedColor: event.color));
+  ) => emit(state.copyWith(selectedColor: event.color));
 
   void _onSizeSelected(
     ProductSizeSelected event,
     Emitter<ProductDetailState> emit,
-  ) =>
-      emit(state.copyWith(selectedSize: event.size));
+  ) => emit(state.copyWith(selectedSize: event.size));
 
   void _onQuantityChanged(
     ProductQuantityChanged event,
     Emitter<ProductDetailState> emit,
-  ) =>
-      emit(state.copyWith(quantity: event.quantity));
+  ) => emit(state.copyWith(quantity: event.quantity));
 
   Future<void> _onFavoriteToggled(
     ProductFavoriteToggled event,
@@ -91,12 +98,50 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     final result = await _toggleFavorite(detail.product.id);
     result.match(
       (_) {},
-      (isNowFavorite) => emit(state.copyWith(
-        detail: detail.copyWith(
-          product: detail.product.copyWith(isFavorite: isNowFavorite),
+      (isNowFavorite) => emit(
+        state.copyWith(
+          detail: detail.copyWith(
+            product: detail.product.copyWith(isFavorite: isNowFavorite),
+          ),
         ),
-      )),
+      ),
     );
+  }
+
+  Future<void> _onReviewSubmitted(
+    ProductReviewSubmitted event,
+    Emitter<ProductDetailState> emit,
+  ) async {
+    final current = state.detail;
+    if (current == null) {
+      event.result.complete('somethingWentWrong');
+      return;
+    }
+    final added = await _addReview(
+      productId: current.product.id,
+      rating: event.rating,
+      comment: event.comment,
+    );
+    final failure = added.match<String?>((f) => f.l10nKey, (_) => null);
+    if (failure != null) {
+      event.result.complete(failure);
+      return;
+    }
+    // Pull the fresh reviews and rating, keeping the shopper's selections.
+    final refreshed = await _getDetails(current.product.id);
+    refreshed.match(
+      (_) {},
+      (detail) => emit(
+        state.copyWith(
+          detail: detail.copyWith(
+            product: detail.product.copyWith(
+              isFavorite: state.detail?.product.isFavorite ?? false,
+            ),
+          ),
+        ),
+      ),
+    );
+    event.result.complete(null);
   }
 
   Future<bool> _persistToCart() async {

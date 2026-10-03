@@ -43,6 +43,23 @@ class ProductQuantityChanged extends ProductDetailEvent {
   List<Object?> get props => [quantity];
 }
 
+/// Submits the user's review, then refreshes the page's reviews and rating.
+/// [result] completes with a failure key, or null on success.
+class ProductReviewSubmitted extends ProductDetailEvent {
+  const ProductReviewSubmitted({
+    required this.rating,
+    required this.comment,
+    required this.result,
+  });
+
+  final int rating;
+  final String comment;
+  final Completer<String?> result;
+
+  @override
+  List<Object?> get props => [rating, comment];
+}
+
 class ProductFavoriteToggled extends ProductDetailEvent {
   const ProductFavoriteToggled();
 }

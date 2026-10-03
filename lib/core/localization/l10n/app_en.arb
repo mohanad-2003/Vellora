@@ -500,5 +500,19 @@
   "invalidExpiry": "Use the format MM/YY.",
   "accountDeleted": "Your account was deleted.",
   "deleteAccountPasswordHint": "Enter your password to confirm.",
-  "addAddressToContinue": "Add an address"
+  "addAddressToContinue": "Add an address",
+  "writeReview": "Write a review",
+  "yourRating": "Your rating",
+  "reviewHint": "Share what you liked or didn't",
+  "submitReview": "Submit review",
+  "reviewAdded": "Thanks! Your review was added.",
+  "ratingRequired": "Choose a star rating.",
+  "reviewTooShort": "Write at least 3 characters.",
+  "cancelOrder": "Cancel order",
+  "cancelOrderTitle": "Cancel this order?",
+  "cancelOrderBody": "It will be cancelled right away. This can't be undone.",
+  "keepOrder": "Keep order",
+  "orderCancelled": "Your order was cancelled.",
+  "orderNotCancellable": "This order can no longer be cancelled.",
+  "yourReview": "Your review"
 }

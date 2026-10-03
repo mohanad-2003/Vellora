@@ -497,5 +497,19 @@
   "invalidExpiry": "استخدم الصيغة MM/YY.",
   "accountDeleted": "تم حذف حسابك.",
   "deleteAccountPasswordHint": "أدخل كلمة المرور للتأكيد.",
-  "addAddressToContinue": "إضافة عنوان"
+  "addAddressToContinue": "إضافة عنوان",
+  "writeReview": "اكتب مراجعة",
+  "yourRating": "تقييمك",
+  "reviewHint": "شاركنا ما أعجبك أو لم يعجبك",
+  "submitReview": "إرسال المراجعة",
+  "reviewAdded": "شكرًا! تمت إضافة مراجعتك.",
+  "ratingRequired": "اختر تقييمًا بالنجوم.",
+  "reviewTooShort": "اكتب 3 أحرف على الأقل.",
+  "cancelOrder": "إلغاء الطلب",
+  "cancelOrderTitle": "إلغاء هذا الطلب؟",
+  "cancelOrderBody": "سيُلغى طلبك فورًا ولا يمكن التراجع عن ذلك.",
+  "keepOrder": "الإبقاء على الطلب",
+  "orderCancelled": "تم إلغاء طلبك.",
+  "orderNotCancellable": "لم يعد بالإمكان إلغاء هذا الطلب.",
+  "yourReview": "مراجعتك"
 }

@@ -23,6 +23,14 @@ class MockOrdersStore {
     return null;
   }
 
+  /// Marks the order cancelled and returns it, or null when it is unknown or
+  /// already past processing.
+  OrderEntity? cancel(String id) {
+    final i = _orders.indexWhere((o) => o.id == id);
+    if (i < 0 || _orders[i].status != OrderStatus.processing) return null;
+    return _orders[i] = _orders[i].copyWith(status: OrderStatus.cancelled);
+  }
+
   /// Newest first.
   void add(OrderEntity order) => _orders.insert(0, order);
 

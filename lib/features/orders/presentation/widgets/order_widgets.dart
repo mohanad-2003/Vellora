@@ -98,9 +98,7 @@ class OrderCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Expanded(
-                      child: Text(order.number, style: text.titleSmall),
-                    ),
+                    Expanded(child: Text(order.number, style: text.titleSmall)),
                     OrderStatusChip(status: order.status),
                   ],
                 ),
@@ -160,9 +158,7 @@ class OrderCard extends StatelessWidget {
                     children: [
                       Text(
                         l10n.viewDetails,
-                        style: text.labelLarge?.copyWith(
-                          color: colors.primary,
-                        ),
+                        style: text.labelLarge?.copyWith(color: colors.primary),
                       ),
                       Icon(
                         Icons.chevron_right_rounded,

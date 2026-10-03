@@ -2275,6 +2275,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add an address'**
   String get addAddressToContinue;
+
+  /// No description provided for @writeReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a review'**
+  String get writeReview;
+
+  /// No description provided for @yourRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Your rating'**
+  String get yourRating;
+
+  /// No description provided for @reviewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Share what you liked or didn\'t'**
+  String get reviewHint;
+
+  /// No description provided for @submitReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit review'**
+  String get submitReview;
+
+  /// No description provided for @reviewAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks! Your review was added.'**
+  String get reviewAdded;
+
+  /// No description provided for @ratingRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a star rating.'**
+  String get ratingRequired;
+
+  /// No description provided for @reviewTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Write at least 3 characters.'**
+  String get reviewTooShort;
+
+  /// No description provided for @cancelOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel order'**
+  String get cancelOrder;
+
+  /// No description provided for @cancelOrderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this order?'**
+  String get cancelOrderTitle;
+
+  /// No description provided for @cancelOrderBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be cancelled right away. This can\'t be undone.'**
+  String get cancelOrderBody;
+
+  /// No description provided for @keepOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep order'**
+  String get keepOrder;
+
+  /// No description provided for @orderCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Your order was cancelled.'**
+  String get orderCancelled;
+
+  /// No description provided for @orderNotCancellable.
+  ///
+  /// In en, this message translates to:
+  /// **'This order can no longer be cancelled.'**
+  String get orderNotCancellable;
+
+  /// No description provided for @yourReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Your review'**
+  String get yourReview;
 }
 
 class _AppLocalizationsDelegate

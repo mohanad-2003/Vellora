@@ -51,15 +51,15 @@ class PlaceOrderRequest extends Equatable {
 
   @override
   List<Object?> get props => [
-        items,
-        express,
-        promoCode,
-        recipient,
-        phone,
-        addressLine,
-        city,
-        paymentKind,
-        paymentDetail,
-        preview,
-      ];
+    items,
+    express,
+    promoCode,
+    recipient,
+    phone,
+    addressLine,
+    city,
+    paymentKind,
+    paymentDetail,
+    preview,
+  ];
 }

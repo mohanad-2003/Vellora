@@ -9,6 +9,9 @@ import '../../../../core/responsive/responsive.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_bar_widget.dart';
+import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/custom_bottom_sheet.dart';
+import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/product_image.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
@@ -45,11 +48,14 @@ class _OrderDetailsView extends StatelessWidget {
           builder: (context, state) => switch (state.status) {
             OrderDetailStatus.loading => const ListSkeleton(),
             OrderDetailStatus.notFound => EmptyStateWidget(
-                icon: Icons.receipt_long_outlined,
-                title: l10n.orderNotFoundTitle,
-                message: l10n.orderNotFoundBody,
-              ),
-            OrderDetailStatus.loaded => _Details(order: state.order!),
+              icon: Icons.receipt_long_outlined,
+              title: l10n.orderNotFoundTitle,
+              message: l10n.orderNotFoundBody,
+            ),
+            OrderDetailStatus.loaded => _Details(
+              order: state.order!,
+              onCancel: () => _confirmCancel(context),
+            ),
           },
         ),
       ),
@@ -57,10 +63,119 @@ class _OrderDetailsView extends StatelessWidget {
   }
 }
 
+/// Asks for confirmation, then cancels the order through the cubit.
+void _confirmCancel(BuildContext context) {
+  final cubit = context.read<OrderDetailCubit>();
+  final l10n = context.l10n;
+  AppBottomSheet.show(
+    context,
+    child: _CancelSheet(
+      title: l10n.cancelOrderTitle,
+      body: l10n.cancelOrderBody,
+      onConfirm: cubit.cancel,
+      onDone: () {
+        Navigator.of(context).pop();
+        AppSnackbar.success(context, l10n.orderCancelled);
+      },
+    ),
+  );
+}
+
+class _CancelSheet extends StatefulWidget {
+  const _CancelSheet({
+    required this.title,
+    required this.body,
+    required this.onConfirm,
+    required this.onDone,
+  });
+
+  final String title;
+  final String body;
+
+  /// Returns a failure key, or null once the order is cancelled.
+  final Future<String?> Function() onConfirm;
+  final VoidCallback onDone;
+
+  @override
+  State<_CancelSheet> createState() => _CancelSheetState();
+}
+
+class _CancelSheetState extends State<_CancelSheet> {
+  bool _busy = false;
+  String? _error;
+
+  Future<void> _confirm() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    final failure = await widget.onConfirm();
+    if (!mounted) return;
+    if (failure == null) {
+      widget.onDone();
+    } else {
+      setState(() {
+        _busy = false;
+        _error = failure;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.cancel_outlined, color: context.colors.error, size: 48),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          widget.title,
+          style: context.textTheme.titleLarge,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Text(
+          widget.body,
+          style: context.textTheme.bodyMedium?.copyWith(
+            color: context.colors.onSurfaceVariant,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        if (_error != null) ...[
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            tr(context, _error!),
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colors.error,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+        const SizedBox(height: AppSpacing.xl),
+        AppButton(
+          label: l10n.cancelOrder,
+          icon: Icons.cancel_outlined,
+          isLoading: _busy,
+          onPressed: _confirm,
+        ),
+        const SizedBox(height: AppSpacing.md),
+        AppButton(
+          label: l10n.keepOrder,
+          variant: AppButtonVariant.outline,
+          onPressed: _busy ? null : () => Navigator.of(context).pop(),
+        ),
+      ],
+    );
+  }
+}
+
 class _Details extends StatelessWidget {
-  const _Details({required this.order});
+  const _Details({required this.order, required this.onCancel});
 
   final OrderEntity order;
+  final VoidCallback onCancel;
 
   String _paymentLabel(BuildContext context) {
     final l10n = context.l10n;
@@ -77,16 +192,16 @@ class _Details extends StatelessWidget {
     final colors = context.colors;
 
     Widget section(String title, Widget child) => Padding(
-          padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Semantics(header: true, child: Text(title, style: text.titleLarge)),
-              const SizedBox(height: AppSpacing.md),
-              child,
-            ],
-          ),
-        );
+      padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Semantics(header: true, child: Text(title, style: text.titleLarge)),
+          const SizedBox(height: AppSpacing.md),
+          child,
+        ],
+      ),
+    );
 
     return ResponsiveCenter(
       maxWidth: 720,
@@ -176,8 +291,9 @@ class _Details extends StatelessWidget {
                       Expanded(child: Text(l10n.total, style: text.titleLarge)),
                       Text(
                         order.total.toPrice(),
-                        style: text.headlineMedium
-                            ?.copyWith(color: colors.primary),
+                        style: text.headlineMedium?.copyWith(
+                          color: colors.primary,
+                        ),
                       ),
                     ],
                   ),
@@ -185,19 +301,33 @@ class _Details extends StatelessWidget {
               ),
             ),
           ),
+          if (order.status == OrderStatus.processing)
+            AppButton(
+              label: l10n.cancelOrder,
+              icon: Icons.cancel_outlined,
+              variant: AppButtonVariant.outline,
+              onPressed: onCancel,
+            ),
         ],
       ),
     );
   }
 
-  Widget _line(BuildContext context, String label, String value,
-      {Color? color}) {
+  Widget _line(
+    BuildContext context,
+    String label,
+    String value, {
+    Color? color,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
         children: [
           Expanded(child: Text(label, style: context.textTheme.bodyMedium)),
-          Text(value, style: context.textTheme.titleSmall?.copyWith(color: color)),
+          Text(
+            value,
+            style: context.textTheme.titleSmall?.copyWith(color: color),
+          ),
         ],
       ),
     );
@@ -252,7 +382,11 @@ class _ItemRow extends StatelessWidget {
 }
 
 class _InfoBlock extends StatelessWidget {
-  const _InfoBlock({required this.icon, required this.title, this.lines = const []});
+  const _InfoBlock({
+    required this.icon,
+    required this.title,
+    this.lines = const [],
+  });
 
   final IconData icon;
   final String title;

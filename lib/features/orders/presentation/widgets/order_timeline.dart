@@ -66,8 +66,8 @@ class OrderTimeline extends StatelessWidget {
           i < current || (i == current && order.status == OrderStatus.delivered)
               ? _State.done
               : i == current
-                  ? _State.current
-                  : _State.upcoming,
+              ? _State.current
+              : _State.upcoming,
         ),
     ];
   }
@@ -102,8 +102,9 @@ class _StepRow extends StatelessWidget {
       _State.upcoming => colors.outlineVariant,
     };
     final filled = step.state == _State.done || step.state == _State.failed;
-    final lineColor =
-        step.state == _State.done ? vellora.success : colors.outlineVariant;
+    final lineColor = step.state == _State.done
+        ? vellora.success
+        : colors.outlineVariant;
 
     return IntrinsicHeight(
       child: Row(
@@ -130,22 +131,20 @@ class _StepRow extends StatelessWidget {
                           color: Colors.white,
                         )
                       : step.state == _State.current
-                          ? Center(
-                              child: Container(
-                                width: 8,
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  color: dot,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            )
-                          : null,
+                      ? Center(
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: dot,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        )
+                      : null,
                 ),
                 if (!isLast)
-                  Expanded(
-                    child: Container(width: 2, color: lineColor),
-                  ),
+                  Expanded(child: Container(width: 2, color: lineColor)),
               ],
             ),
           ),

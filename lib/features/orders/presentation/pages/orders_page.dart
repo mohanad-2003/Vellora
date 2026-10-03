@@ -72,7 +72,8 @@ class _OrdersView extends StatelessWidget {
                 case OrdersStatus.loaded:
                   return TabBarView(
                     children: [
-                      for (final t in _tabs) _OrdersList(orders: state.withStatus(t)),
+                      for (final t in _tabs)
+                        _OrdersList(orders: state.withStatus(t)),
                     ],
                   );
               }
@@ -109,10 +110,15 @@ class _OrdersList extends StatelessWidget {
         separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
         itemBuilder: (context, i) => OrderCard(
           order: orders[i],
-          onTap: () => context.pushNamed(
-            RouteNames.nOrderDetails,
-            pathParameters: {'id': orders[i].id},
-          ),
+          onTap: () async {
+            final cubit = context.read<OrdersCubit>();
+            await context.pushNamed(
+              RouteNames.nOrderDetails,
+              pathParameters: {'id': orders[i].id},
+            );
+            // The order may have been cancelled over there.
+            await cubit.refresh();
+          },
         ),
       ),
     );

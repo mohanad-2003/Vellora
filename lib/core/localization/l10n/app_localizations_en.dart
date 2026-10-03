@@ -1214,4 +1214,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addAddressToContinue => 'Add an address';
+
+  @override
+  String get writeReview => 'Write a review';
+
+  @override
+  String get yourRating => 'Your rating';
+
+  @override
+  String get reviewHint => 'Share what you liked or didn\'t';
+
+  @override
+  String get submitReview => 'Submit review';
+
+  @override
+  String get reviewAdded => 'Thanks! Your review was added.';
+
+  @override
+  String get ratingRequired => 'Choose a star rating.';
+
+  @override
+  String get reviewTooShort => 'Write at least 3 characters.';
+
+  @override
+  String get cancelOrder => 'Cancel order';
+
+  @override
+  String get cancelOrderTitle => 'Cancel this order?';
+
+  @override
+  String get cancelOrderBody =>
+      'It will be cancelled right away. This can\'t be undone.';
+
+  @override
+  String get keepOrder => 'Keep order';
+
+  @override
+  String get orderCancelled => 'Your order was cancelled.';
+
+  @override
+  String get orderNotCancellable => 'This order can no longer be cancelled.';
+
+  @override
+  String get yourReview => 'Your review';
 }

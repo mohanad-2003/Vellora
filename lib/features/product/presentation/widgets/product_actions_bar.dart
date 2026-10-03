@@ -23,9 +23,7 @@ class ProductActionsBar extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: context.colors.surface,
-        border: Border(
-          top: BorderSide(color: context.colors.outlineVariant),
-        ),
+        border: Border(top: BorderSide(color: context.colors.outlineVariant)),
       ),
       child: SafeArea(
         top: false,

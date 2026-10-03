@@ -7,8 +7,7 @@ import '../entities/product_detail_entity.dart';
 import '../repositories/product_repository.dart';
 
 @injectable
-class GetProductDetailsUseCase
-    implements UseCase<ProductDetailEntity, String> {
+class GetProductDetailsUseCase implements UseCase<ProductDetailEntity, String> {
   GetProductDetailsUseCase(this._repository);
 
   final ProductRepository _repository;

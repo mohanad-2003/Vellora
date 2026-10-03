@@ -218,7 +218,8 @@ void main() {
     await cubit.loadUser();
     expect(cubit.state.status, ProfileStatus.loaded);
 
-    await cubit.logout();
+    // Signing out clears Hive boxes, which is real disk IO.
+    await tester.runAsync(cubit.logout);
     expect(cubit.state.status, ProfileStatus.loggedOut);
     await cubit.close();
   });

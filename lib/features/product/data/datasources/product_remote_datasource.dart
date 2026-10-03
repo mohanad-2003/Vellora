@@ -18,6 +18,13 @@ import '../../domain/entities/review_entity.dart';
 abstract class ProductRemoteDataSource {
   Future<ProductDetailEntity> getProductDetails(String id);
   Future<List<ProductEntity>> getRelatedProducts(String id);
+
+  /// Adds the signed-in user's review. Needs an account against the API.
+  Future<void> addReview({
+    required String productId,
+    required int rating,
+    required String comment,
+  });
 }
 
 @mockOnly
@@ -56,6 +63,13 @@ class MockProductRemoteDataSource implements ProductRemoteDataSource {
         .take(6)
         .toList();
   }
+
+  @override
+  Future<void> addReview({
+    required String productId,
+    required int rating,
+    required String comment,
+  }) async {}
 
   List<String> _galleryFor(ProductEntity p) {
     // Base shot + a few complementary shots from the same category. The mock
@@ -141,8 +155,8 @@ class ApiProductRemoteDataSource implements ProductRemoteDataSource {
         for (final r in j['reviews'] as List)
           ApiMappers.review(r as Map<String, dynamic>),
       ],
-      inStock: (j['product'] as Map<String, dynamic>)['inStock'] as bool? ??
-          true,
+      inStock:
+          (j['product'] as Map<String, dynamic>)['inStock'] as bool? ?? true,
     );
   }
 
@@ -150,5 +164,17 @@ class ApiProductRemoteDataSource implements ProductRemoteDataSource {
   Future<List<ProductEntity>> getRelatedProducts(String id) async {
     final res = await _dio.get<List<dynamic>>(ApiEndpoints.relatedProducts(id));
     return ApiMappers.products(res.data);
+  }
+
+  @override
+  Future<void> addReview({
+    required String productId,
+    required int rating,
+    required String comment,
+  }) async {
+    await _dio.post<void>(
+      ApiEndpoints.productReviews(productId),
+      data: {'rating': rating, 'comment': comment},
+    );
   }
 }

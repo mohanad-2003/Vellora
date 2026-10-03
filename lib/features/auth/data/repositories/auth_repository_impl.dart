@@ -7,13 +7,15 @@ import 'package:vellora/features/auth/data/datasources/auth_remote_datasource.da
 import 'package:vellora/features/auth/data/models/user_model.dart';
 import 'package:vellora/features/auth/domain/entities/user_entity.dart';
 import 'package:vellora/features/auth/domain/repositories/auth_repository.dart';
+import 'package:vellora/features/product/domain/repositories/favorites_repository.dart';
 
 @LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
-  AuthRepositoryImpl(this._remote, this._local);
+  AuthRepositoryImpl(this._remote, this._local, this._favorites);
 
   final AuthRemoteDataSource _remote;
   final AuthLocalDataSource _local;
+  final FavoritesRepository _favorites;
 
   @override
   Future<Either<Failure, UserEntity>> login({
@@ -23,6 +25,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final user = await _remote.login(email: email, password: password);
       await _local.cacheUser(user);
+      await _favorites.sync();
       return Right(user.toEntity());
     } catch (e) {
       return Left(mapExceptionToFailure(e));
@@ -42,6 +45,7 @@ class AuthRepositoryImpl implements AuthRepository {
         password: password,
       );
       await _local.cacheUser(user);
+      await _favorites.sync();
       return Right(user.toEntity());
     } catch (e) {
       return Left(mapExceptionToFailure(e));
@@ -145,6 +149,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _remote.deleteAccount(password: password);
       await _local.clear();
+      await _favorites.clear();
       return const Right(unit);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
@@ -155,6 +160,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, Unit>> logout() async {
     try {
       await _local.clear();
+      await _favorites.clear();
       return const Right(unit);
     } catch (e) {
       return Left(mapExceptionToFailure(e));

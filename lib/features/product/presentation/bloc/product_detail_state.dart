@@ -56,14 +56,14 @@ class ProductDetailState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        detail,
-        related,
-        selectedColor,
-        selectedSize,
-        quantity,
-        failureKey,
-        addedToCartTick,
-        buyNowTick,
-      ];
+    status,
+    detail,
+    related,
+    selectedColor,
+    selectedSize,
+    quantity,
+    failureKey,
+    addedToCartTick,
+    buyNowTick,
+  ];
 }

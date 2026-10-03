@@ -20,6 +20,7 @@ class AppTextField extends StatefulWidget {
     this.textCapitalization = TextCapitalization.none,
     this.autocorrect = true,
     this.focusNode,
+    this.maxLines = 1,
   });
 
   final TextEditingController? controller;
@@ -28,6 +29,9 @@ class AppTextField extends StatefulWidget {
   final IconData? prefixIcon;
   final Widget? suffixIcon;
   final bool obscureText;
+
+  /// Lines shown before scrolling. Password fields are always one line.
+  final int maxLines;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final String? Function(String?)? validator;
@@ -59,6 +63,7 @@ class _AppTextFieldState extends State<AppTextField> {
         TextFormField(
           controller: widget.controller,
           obscureText: _obscured,
+          maxLines: widget.obscureText ? 1 : widget.maxLines,
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction,
           validator: widget.validator,

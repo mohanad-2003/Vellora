@@ -44,10 +44,10 @@ states throughout.
 | 🔐 **Authentication** | Welcome, Login, Sign Up (with password-strength meter), Forgot Password, 4-digit OTP, new password, success |
 | 🏠 **Home** | Promo banners, categories, curated product rows, countdown deals |
 | 🧭 **Explore & Search** | Category browsing, search with sort and filter sheet |
-| 📦 **Product details** | Gallery, size / colour variants, reviews, related products |
-| ❤️ **Wishlist** | Favourite products synced across every screen |
+| 📦 **Product details** | Gallery, size / colour variants, reviews (and writing one), related products |
+| ❤️ **Wishlist** | Favourites work for guests and sync to the account on sign-in (merged, nothing lost) |
 | 🛒 **Cart & Checkout** | Quantity control, live totals, delivery methods, order success |
-| 🧾 **Orders** | Place orders, order history and details (server-side totals) |
+| 🧾 **Orders** | Place orders, order history and details (server-side totals), cancel while processing |
 | 📍 **Addresses & cards** | Saved on the server per account (cards keep only brand, last four digits and expiry); used at checkout |
 | 🔒 **Account security** | Change password and delete account (password-confirmed) call the API |
 | 🔔 **Notifications** | Notification centre (server feed, unread dot on Home) |
