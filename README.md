@@ -25,8 +25,9 @@ It ships with full **English & Arabic** support (true RTL mirroring), **light an
 themes**, responsive layouts, accessibility semantics, and skeleton / empty / error
 states throughout.
 
-> **Backend:** a Node.js API lives in [`backend/`](backend/) (Express + PostgreSQL, JWT auth,
-> orders, wishlist, notifications) — see [`backend/README.md`](backend/README.md).
+> **Backend:** the Node.js API (Express + PostgreSQL, JWT auth, orders, wishlist,
+> notifications) lives in its own repository,
+> [`mohanad-2003/vellora-api`](https://github.com/mohanad-2003/vellora-api).
 > The app talks to it by default; start it first (see *Getting Started*). For an offline
 > demo without the server, run with `--dart-define=USE_MOCKS=true` to use the built-in
 > in-memory data instead.
@@ -149,8 +150,9 @@ Application id / bundle id is still `com.example.vellora`; change it before publ
 git clone <your-repo-url>
 cd ui_kit
 
-# 1. Backend (needs Node 22.5+)
-cd backend && npm install && npm start      # http://localhost:3000
+# 1. Backend: clone and start the API (needs Node 22+), see its README
+git clone https://github.com/mohanad-2003/vellora-api.git
+cd vellora-api && npm install && npm start  # http://localhost:3000
 cd ..
 
 # 2. App
@@ -168,7 +170,7 @@ flutter run --dart-define=API_BASE_URL=http://192.168.1.20:3000
 flutter run --dart-define=USE_MOCKS=true       # no server: built-in sample data
 ```
 
-Deploying the API to Render: see [`backend/README.md`](backend/README.md#deploy-on-render).
+Deploying the API to Render: see the [API repository](https://github.com/mohanad-2003/vellora-api#deploy-on-render).
 
 Debug and profile Android builds allow plain HTTP for local development; release builds
 need an HTTPS `API_BASE_URL`. Without an email provider, the password-reset code is
@@ -210,7 +212,7 @@ flutter test
 - [x] Design system, branding, light / dark and RTL
 - [x] Onboarding, authentication, storefront, search & filters
 - [x] Cart, checkout, orders, notifications, settings
-- [x] Node.js backend (`backend/`)
+- [x] Node.js backend ([`vellora-api`](https://github.com/mohanad-2003/vellora-api), separate repository)
 - [x] Flutter app connected to the backend (home, catalogue, product, auth, promo, orders, notifications)
 - [ ] Payment gateway
 - [ ] Localized product and notification text (the API returns English only)
