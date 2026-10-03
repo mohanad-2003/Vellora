@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../theme/app_radius.dart';
 
@@ -27,7 +26,7 @@ class LoadingOverlay extends StatelessWidget {
                 color: Colors.black.withValues(alpha: 0.35),
                 child: Center(
                   child: Container(
-                    padding: EdgeInsets.all(20.r),
+                    padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: AppRadius.rLg,

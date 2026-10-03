@@ -1,8 +1,9 @@
 {
   "@@locale": "en",
-  "appName": "Shoply",
-  "@appName": {"description": "Application name"},
-
+  "appName": "Vellora",
+  "@appName": {
+    "description": "Application name"
+  },
   "onboardingTitle1": "Discover Premium Products",
   "onboardingBody1": "Browse a curated collection of the finest products, handpicked just for you.",
   "onboardingTitle2": "Effortless Shopping",
@@ -12,7 +13,6 @@
   "skip": "Skip",
   "next": "Next",
   "getStarted": "Get Started",
-
   "login": "Log In",
   "register": "Sign Up",
   "welcomeBack": "Welcome Back",
@@ -25,32 +25,34 @@
   "confirmPassword": "Confirm Password",
   "forgotPassword": "Forgot Password?",
   "forgotPasswordTitle": "Reset Password",
-  "forgotPasswordSubtitle": "Enter your email and we will send you a link to reset your password.",
-  "sendResetLink": "Send Reset Link",
+  "forgotPasswordSubtitle": "Enter your email and we'll send you a 4-digit code to reset your password.",
+  "sendResetLink": "Send Code",
   "resetLinkSent": "A reset link has been sent to your email.",
   "orContinueWith": "Or continue with",
   "dontHaveAccount": "Don't have an account?",
   "alreadyHaveAccount": "Already have an account?",
   "rememberMe": "Remember me",
   "backToLogin": "Back to Log In",
-
   "selectLanguage": "Choose Your Language",
   "selectLanguageSubtitle": "Select your preferred language to continue. You can change it later in settings.",
   "continueLabel": "Continue",
-
-  "welcomeTitle": "Welcome to Shoply",
+  "welcomeTitle": "Welcome to Vellora",
   "welcomeTagline": "Shop smarter. Discover premium products and enjoy a seamless, delightful shopping experience.",
   "continueAsGuest": "Continue as Guest",
-
   "otpTitle": "Verification Code",
   "otpSubtitle": "Enter the 4-digit code we sent to",
   "verify": "Verify",
   "didntReceiveCode": "Didn't receive the code?",
   "resendCode": "Resend Code",
   "resendIn": "Resend in {seconds}",
-  "@resendIn": {"placeholders": {"seconds": {"type": "String"}}},
+  "@resendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
   "invalidOtp": "The code you entered is incorrect. Please try again.",
-
   "resetPasswordTitle": "Create New Password",
   "resetPasswordSubtitle": "Your new password must be different from previously used passwords.",
   "newPassword": "New Password",
@@ -62,26 +64,23 @@
   "strong": "Strong",
   "passwordResetSuccessTitle": "Password Reset",
   "passwordResetSuccessBody": "Your password has been reset successfully. You can now log in with your new password.",
-
   "agreeToTerms": "I agree to the ",
   "termsAndPrivacy": "Terms & Privacy Policy",
   "mustAcceptTerms": "Please accept the Terms & Privacy Policy to continue.",
   "termsPrivacyTitle": "Terms & Privacy",
   "termsSectionUseTitle": "1. Use of Service",
-  "termsSectionUseBody": "By accessing or using Shoply, you agree to be bound by these terms. You are responsible for maintaining the confidentiality of your account and for all activity that occurs under it.",
+  "termsSectionUseBody": "By accessing or using Vellora, you agree to be bound by these terms. You are responsible for maintaining the confidentiality of your account and for all activity that occurs under it.",
   "termsSectionPurchasesTitle": "2. Orders & Payments",
   "termsSectionPurchasesBody": "All purchases are subject to product availability and price confirmation. We reserve the right to cancel any order in cases of suspected fraud or pricing errors.",
   "termsSectionPrivacyTitle": "3. Privacy & Data",
   "termsSectionPrivacyBody": "We collect only the information needed to provide and improve our services. Your personal data is never sold to third parties and is protected using industry-standard security measures.",
   "termsSectionContactTitle": "4. Contact Us",
-  "termsSectionContactBody": "If you have any questions about these terms or how we handle your data, reach out to our support team at support@shoply.com.",
-
+  "termsSectionContactBody": "If you have any questions about these terms or how we handle your data, reach out to our support team at support@vellora.com.",
   "fieldRequired": "This field is required",
   "invalidEmail": "Please enter a valid email address",
   "passwordTooShort": "Password must be at least 6 characters",
   "passwordsDoNotMatch": "Passwords do not match",
   "nameTooShort": "Name must be at least 2 characters",
-
   "home": "Home",
   "goodMorning": "Good Morning",
   "searchHint": "Search for products",
@@ -97,10 +96,21 @@
   "noProductsBody": "There are no products in this category right now.",
   "noResultsTitle": "No results found",
   "noResultsBody": "We couldn't find anything for \"{query}\". Try a different keyword.",
-  "@noResultsBody": {"placeholders": {"query": {"type": "String"}}},
+  "@noResultsBody": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
   "resultsCount": "{count, plural, =1{1 result} other{{count} results}}",
-  "@resultsCount": {"placeholders": {"count": {"type": "int"}}},
-
+  "@resultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "productDetails": "Product Details",
   "selectColor": "Color",
   "selectSize": "Size",
@@ -113,7 +123,6 @@
   "quantity": "Quantity",
   "inStock": "In Stock",
   "outOfStock": "Out of Stock",
-
   "cart": "Cart",
   "myCart": "My Cart",
   "emptyCartTitle": "Your cart is empty",
@@ -135,10 +144,21 @@
   "secureCheckout": "Secure checkout",
   "freeShippingUnlocked": "You've unlocked free shipping!",
   "addForFreeShipping": "Add {amount} more for free shipping",
-  "@addForFreeShipping": {"placeholders": {"amount": {"type": "String"}}},
+  "@addForFreeShipping": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "cartItemsCount": "{count, plural, =0{No items} =1{1 item} other{{count} items}}",
-  "@cartItemsCount": {"placeholders": {"count": {"type": "int"}}},
-
+  "@cartItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "retry": "Retry",
   "somethingWentWrong": "Something went wrong",
   "noConnection": "No internet connection",
@@ -146,7 +166,6 @@
   "cacheError": "Failed to load local data",
   "unexpectedError": "An unexpected error occurred",
   "loading": "Loading...",
-
   "settings": "Settings",
   "language": "Language",
   "theme": "Theme",
@@ -156,13 +175,11 @@
   "english": "English",
   "arabic": "العربية",
   "logout": "Log Out",
-
   "wishlist": "Wishlist",
   "emptyWishlistTitle": "Your wishlist is empty",
   "emptyWishlistBody": "Save your favorite items here to buy them later.",
   "browseProducts": "Browse Products",
   "removedFromWishlist": "Removed from wishlist",
-
   "profile": "Profile",
   "account": "Account",
   "preferences": "Preferences",
@@ -176,7 +193,6 @@
   "cancel": "Cancel",
   "logoutConfirmTitle": "Log Out?",
   "logoutConfirmBody": "Are you sure you want to log out of your account?",
-
   "phoneNumber": "Phone Number",
   "saveChanges": "Save Changes",
   "profileUpdated": "Profile updated successfully",
@@ -217,7 +233,6 @@
   "deleteAccount": "Delete Account",
   "deleteAccountConfirmTitle": "Delete Account?",
   "deleteAccountConfirmBody": "This will permanently remove your account and all data. This action cannot be undone.",
-
   "checkoutTitle": "Checkout",
   "shippingAddress": "Shipping Address",
   "change": "Change",
@@ -230,7 +245,250 @@
   "orderPlacedBody": "Thank you for your purchase. Your order is confirmed and will be on its way to you shortly.",
   "orderNumber": "Order Number",
   "continueShopping": "Continue Shopping",
-
   "comingSoon": "Coming Soon",
-  "comingSoonBody": "This feature is on its way. Stay tuned!"
+  "comingSoonBody": "This feature is on its way. Stay tuned!",
+  "decreaseQuantity": "Decrease quantity",
+  "increaseQuantity": "Increase quantity",
+  "wasPrice": "was {price}",
+  "@wasPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "percentOff": "{percent}% off",
+  "@percentOff": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "addToWishlist": "Add to wishlist",
+  "removeFromWishlist": "Remove from wishlist",
+  "pageOf": "Page {current} of {total}",
+  "@pageOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "explore": "Explore",
+  "notifications": "Notifications",
+  "splashTagline": "Premium shopping, simplified",
+  "languageEnglishHint": "English",
+  "languageArabicHint": "Arabic",
+  "onboardingChipSecure": "Secure payment",
+  "onboardingChipFast": "Fast delivery",
+  "continueWithGoogle": "Continue with Google",
+  "continueWithApple": "Continue with Apple",
+  "continueWithFacebook": "Continue with Facebook",
+  "greetingMorning": "Good morning",
+  "greetingAfternoon": "Good afternoon",
+  "greetingEvening": "Good evening",
+  "shopNow": "Shop now",
+  "viewCart": "View cart",
+  "featuredSubtitle": "Handpicked for you",
+  "newArrivalsSubtitle": "Fresh drops this week",
+  "recommendedForYou": "Recommended for you",
+  "recommendedSubtitle": "Based on what is popular",
+  "bannerSummerTitle": "Summer Collection",
+  "bannerSummerSubtitle": "Up to 50% off selected styles",
+  "bannerFlashTitle": "Flash Sale",
+  "bannerFlashSubtitle": "Ends soon — grab it fast",
+  "bannerNewTitle": "New Arrivals",
+  "bannerNewSubtitle": "Fresh drops every week",
+  "endsInSemantics": "Ends in {hours} hours {minutes} minutes",
+  "@endsInSemantics": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "categoryMen": "Men",
+  "categoryWomen": "Women",
+  "categoryShoes": "Shoes",
+  "categoryAccessories": "Accessories",
+  "categoryBeauty": "Beauty",
+  "categoryElectronics": "Electronics",
+  "categoryGrocery": "Grocery",
+  "colorBlack": "Black",
+  "colorWhite": "White",
+  "colorRed": "Red",
+  "colorNavy": "Navy",
+  "colorSand": "Sand",
+  "colorOlive": "Olive",
+  "filters": "Filters",
+  "sortBy": "Sort",
+  "sortRelevance": "Relevance",
+  "sortPriceLowHigh": "Price: low to high",
+  "sortPriceHighLow": "Price: high to low",
+  "sortTopRated": "Top rated",
+  "category": "Category",
+  "priceRange": "Price range",
+  "brand": "Brand",
+  "rating": "Rating",
+  "anyRating": "Any",
+  "onSaleOnly": "On sale only",
+  "clearAll": "Clear all",
+  "applyFilters": "{count, plural, =0{No results} =1{Show 1 result} other{Show {count} results}}",
+  "@applyFilters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "listView": "List view",
+  "gridView": "Grid view",
+  "notifOrderShippedTitle": "Your order is on its way",
+  "notifOrderShippedBody": "Order #SH-20418 has shipped and arrives in 2–3 days.",
+  "notifFlashSaleTitle": "Flash sale is live",
+  "notifFlashSaleBody": "Up to 50% off on selected items, today only.",
+  "notifOrderDeliveredTitle": "Order delivered",
+  "notifOrderDeliveredBody": "Order #SH-20377 was delivered. Enjoy! Tell us what you think.",
+  "notifWelcomeTitle": "Welcome to Vellora",
+  "notifWelcomeBody": "Discover premium products picked just for you.",
+  "notifNewArrivalsTitle": "New arrivals are here",
+  "notifNewArrivalsBody": "Fresh styles just landed. Be the first to shop them.",
+  "exploreSubtitle": "Browse every category",
+  "exploreProducts": "Explore products",
+  "products": "Products",
+  "productsCount": "{count, plural, =0{No products} =1{1 product} other{{count} products}}",
+  "@productsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noFilterResultsTitle": "No products match",
+  "noFilterResultsBody": "Try removing a filter or two to see more products.",
+  "clearSearch": "Clear search",
+  "recentSearches": "Recent searches",
+  "browseCategories": "Browse categories",
+  "reviewsCount": "{count, plural, =1{1 review} other{{count} reviews}}",
+  "@reviewsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "copyLink": "Copy link",
+  "linkCopied": "Link copied to clipboard",
+  "youSave": "You save {amount}",
+  "@youSave": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "perkDeliveryTitle": "Free delivery over $100",
+  "perkDeliveryBody": "Arrives in 3–5 business days",
+  "perkReturnsTitle": "Easy returns",
+  "perkReturnsBody": "30-day hassle-free returns",
+  "perkSecureTitle": "Secure payment",
+  "perkSecureBody": "Your payment details are protected",
+  "showLess": "Show less",
+  "readMore": "Read more",
+  "undo": "Undo",
+  "deliveryMethod": "Delivery method",
+  "deliveryStandard": "Standard delivery",
+  "deliveryExpress": "Express delivery",
+  "deliveryEta": "{min}–{max} business days",
+  "@deliveryEta": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "cashOnDelivery": "Cash on Delivery",
+  "payOnArrival": "Pay when your order arrives",
+  "addressHome": "Home",
+  "addressWork": "Work",
+  "trackOrder": "Track order",
+  "myOrders": "My Orders",
+  "ordersAll": "All",
+  "orderStatusProcessing": "Processing",
+  "orderStatusShipped": "Shipped",
+  "orderStatusDelivered": "Delivered",
+  "orderStatusCancelled": "Cancelled",
+  "viewDetails": "View details",
+  "noOrdersTitle": "No orders yet",
+  "noOrdersBody": "When you place an order, it will show up here.",
+  "orderDetails": "Order details",
+  "orderNotFoundTitle": "Order not found",
+  "orderNotFoundBody": "We could not find this order. It may have been removed.",
+  "orderTracking": "Order tracking",
+  "orderItems": "Items",
+  "trackPlaced": "Order placed",
+  "markAllRead": "Mark all read",
+  "noNotificationsTitle": "You are all caught up",
+  "noNotificationsBody": "New updates about your orders and offers will appear here.",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "earlier": "Earlier",
+  "unread": "Unread",
+  "justNow": "Just now",
+  "minutesAgo": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
+  "@minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
+  "@hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appearance": "Appearance",
+  "privacy": "Privacy",
+  "about": "About",
+  "versionLabel": "Version {version}",
+  "@versionLabel": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "notifPrefOrders": "Order updates",
+  "notifPrefOrdersSub": "Shipping and delivery status",
+  "notifPrefPromos": "Offers & promotions",
+  "notifPrefPromosSub": "Sales, new arrivals and deals",
+  "myShopping": "My shopping",
+  "support": "Support",
+  "helpSupport": "Help & support",
+  "helpBody": "Questions about an order or your account? Our team is happy to help.",
+  "pageNotFoundTitle": "Page not found",
+  "pageNotFoundBody": "The page you are looking for does not exist or has moved.",
+  "goHome": "Go to Home"
 }

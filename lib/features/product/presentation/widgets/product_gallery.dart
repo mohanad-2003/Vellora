@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ui_kit/core/extensions/context_extensions.dart';
-import 'package:ui_kit/core/theme/app_radius.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/widgets/app_icon_button.dart';
+import 'package:vellora/core/widgets/product_image.dart';
 
-
+/// Swipeable product photo gallery with a page indicator and tap-to-zoom.
+/// The first photo carries the [heroTag] shared with the card it came from.
 class ProductGallery extends StatefulWidget {
-  const ProductGallery({super.key, required this.images});
+  const ProductGallery({
+    super.key,
+    required this.images,
+    this.heroTag,
+    this.semanticLabel,
+  });
 
   final List<String> images;
+  final Object? heroTag;
+  final String? semanticLabel;
 
   @override
   State<ProductGallery> createState() => _ProductGalleryState();
@@ -23,53 +32,129 @@ class _ProductGalleryState extends State<ProductGallery> {
     super.dispose();
   }
 
+  void _openZoom(int start) {
+    Navigator.of(context, rootNavigator: true).push(
+      PageRouteBuilder<void>(
+        opaque: false,
+        barrierColor: Colors.black,
+        pageBuilder: (_, _, _) =>
+            _ZoomViewer(images: widget.images, initialIndex: start),
+        transitionsBuilder: (_, a, _, child) =>
+            FadeTransition(opacity: a, child: child),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
+      fit: StackFit.expand,
       children: [
-        Expanded(
-          child: PageView.builder(
-            controller: _controller,
-            itemCount: widget.images.length,
-            onPageChanged: (i) => setState(() => _index = i),
-            itemBuilder: (_, i) => Container(
-              color: context.colors.surfaceContainerHighest,
-              alignment: Alignment.center,
-              child: Padding(
-                padding: EdgeInsets.all(24.r),
-                child: Image.asset(
-                  widget.images[i],
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, _, _) => Icon(
-                    Icons.image_outlined,
-                    size: 64.r,
-                    color: context.colors.outline,
+        PageView.builder(
+          controller: _controller,
+          itemCount: widget.images.length,
+          onPageChanged: (i) => setState(() => _index = i),
+          itemBuilder: (context, i) {
+            Widget photo = ProductImage(
+              path: widget.images[i],
+              semanticLabel: widget.semanticLabel,
+            );
+            if (i == 0 && widget.heroTag != null) {
+              photo = Hero(tag: widget.heroTag!, child: photo);
+            }
+            return GestureDetector(onTap: () => _openZoom(i), child: photo);
+          },
+        ),
+        if (widget.images.length > 1)
+          PositionedDirectional(
+            bottom: 14,
+            start: 0,
+            end: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                widget.images.length,
+                (i) => AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: i == _index ? 20 : 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: i == _index
+                        ? context.colors.primary
+                        : context.colors.onSurface.withValues(alpha: 0.25),
+                    borderRadius: AppRadius.rPill,
                   ),
                 ),
               ),
             ),
           ),
-        ),
-        SizedBox(height: 12.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            widget.images.length,
-            (i) => AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              margin: EdgeInsets.symmetric(horizontal: 3.w),
-              width: i == _index ? 18.w : 6.w,
-              height: 6.h,
-              decoration: BoxDecoration(
-                color: i == _index
-                    ? context.colors.primary
-                    : context.colors.outlineVariant,
-                borderRadius: AppRadius.rPill,
+      ],
+    );
+  }
+}
+
+/// Full-screen pinch-to-zoom viewer.
+class _ZoomViewer extends StatefulWidget {
+  const _ZoomViewer({required this.images, required this.initialIndex});
+
+  final List<String> images;
+  final int initialIndex;
+
+  @override
+  State<_ZoomViewer> createState() => _ZoomViewerState();
+}
+
+class _ZoomViewerState extends State<_ZoomViewer> {
+  late final PageController _controller = PageController(
+    initialPage: widget.initialIndex,
+  );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          PageView.builder(
+            controller: _controller,
+            itemCount: widget.images.length,
+            itemBuilder: (_, i) => InteractiveViewer(
+              minScale: 1,
+              maxScale: 4,
+              child: Center(
+                child: Image.asset(
+                  widget.images[i],
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, _, _) => const Icon(
+                    Icons.image_not_supported_outlined,
+                    color: Colors.white54,
+                    size: 48,
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ],
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: AppIconButton(
+                icon: Icons.close_rounded,
+                semanticLabel: MaterialLocalizations.of(
+                  context,
+                ).closeButtonLabel,
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

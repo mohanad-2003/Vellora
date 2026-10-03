@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../extensions/context_extensions.dart';
-import '../theme/app_spacing.dart';
 import 'app_button.dart';
+import 'empty_state_widget.dart';
 
-/// Error placeholder with a retry action. Used by every feature's error state.
+/// Error placeholder with a retry action. Shows a friendly [message] — never a
+/// raw exception string.
 class ErrorStateWidget extends StatelessWidget {
   const ErrorStateWidget({
     super.key,
     required this.message,
     this.onRetry,
-    this.icon = Icons.error_outline_rounded,
+    this.icon = Icons.cloud_off_rounded,
   });
 
   final String message;
@@ -20,37 +20,15 @@ class ErrorStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(AppSpacing.xxl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 56.r, color: context.colors.error),
-            SizedBox(height: AppSpacing.vLg),
-            Text(
-              context.l10n.somethingWentWrong,
-              style: context.textTheme.titleMedium,
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: AppSpacing.vSm),
-            Text(
-              message,
-              style: context.textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
-            if (onRetry != null) ...[
-              SizedBox(height: AppSpacing.vXl),
-              AppButton(
-                label: context.l10n.retry,
-                onPressed: onRetry,
-                icon: Icons.refresh_rounded,
-                expand: false,
-              ),
-            ],
-          ],
-        ),
-      ),
+    return EmptyStateWidget(
+      icon: icon,
+      title: context.l10n.somethingWentWrong,
+      message: message,
+      actionLabel: onRetry != null ? context.l10n.retry : null,
+      onAction: onRetry,
     );
   }
 }
+
+/// Re-exported so call sites needing an inline retry button stay consistent.
+typedef RetryButton = AppButton;

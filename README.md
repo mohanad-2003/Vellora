@@ -1,11 +1,11 @@
 <div align="center">
 
-# 🛍️ Shoply
+<img src="assets/branding/vellora_logo.png" alt="Vellora" height="72"/>
 
-**A premium e-commerce mobile app built with Flutter, Clean Architecture & Bloc.**
+**A premium fashion e-commerce app built with Flutter, Clean Architecture & Bloc.**
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.44-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.8-0175C2?logo=dart&logoColor=white)](https://dart.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-3.47-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.13-0175C2?logo=dart&logoColor=white)](https://dart.dev)
 [![State Management](https://img.shields.io/badge/State-Bloc-13B9FD)](https://bloclibrary.dev)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean-4CAF50)](#-architecture)
 [![License](https://img.shields.io/badge/License-Private-lightgrey)](#-license)
@@ -16,31 +16,19 @@
 
 ## 📖 Overview
 
-**Shoply** is a modern, production-grade e-commerce application showcasing a scalable
-**Clean Architecture** approach with the **Bloc** pattern. It ships with a complete
-pre-purchase flow — onboarding, authentication, product browsing, cart and wishlist —
-alongside full **RTL / LTR internationalization** (English & Arabic), **light/dark theming**,
-and responsive layouts.
+**Vellora** is a complete shopping experience, from the first launch to order
+confirmation: language choice, onboarding, authentication, a tabbed storefront
+(Home, Explore, Wishlist, Cart, Profile), search with filters, checkout, orders,
+notifications and settings.
 
-> Built as a reference-quality UI kit and app foundation for premium shopping experiences.
+It ships with full **English & Arabic** support (true RTL mirroring), **light and dark
+themes**, responsive layouts, accessibility semantics, and skeleton / empty / error
+states throughout.
 
----
-
-## 📸 Screenshots
-
-> Drop your captured screens into the [`screenshots/`](screenshots/) folder using the file
-> names below and they will render automatically.
-
-| Onboarding | Login | Home |
-|:---:|:---:|:---:|
-| <img src="screenshots/onboarding.png" width="220"/> | <img src="screenshots/login.png" width="220"/> | <img src="screenshots/home.png" width="220"/> |
-
-| Product Details | Cart | Wishlist |
-|:---:|:---:|:---:|
-| <img src="screenshots/product.png" width="220"/> | <img src="screenshots/cart.png" width="220"/> | <img src="screenshots/wishlist.png" width="220"/> |
-
-<sub>To capture a screen while the app runs on an emulator:
-`flutter screenshot --out=screenshots/home.png`</sub>
+> **There is no backend yet.** Data comes from in-memory mocks
+> ([`lib/core/mock/mock_catalog.dart`](lib/core/mock/mock_catalog.dart)) and local
+> storage (Hive, SharedPreferences, secure storage). The data layer is built so a real
+> API can replace the mocks without touching the UI.
 
 ---
 
@@ -48,60 +36,59 @@ and responsive layouts.
 
 | Area | Highlights |
 |------|-----------|
-| 🚀 **Onboarding** | Animated multi-page onboarding with skip / next flow |
-| 🌐 **Localization** | Full English & Arabic support with RTL layout mirroring |
-| 🔐 **Authentication** | Login, Sign Up, Forgot Password, OTP verification, password reset |
-| 🏠 **Home & Catalog** | Curated product feed with categories and search-ready routing |
-| 📦 **Product Details** | Rich product pages with images, variants and add-to-cart |
-| 🛒 **Cart** | Add / remove items, quantity control and live totals |
-| ❤️ **Wishlist** | Save favourite products for later |
-| 👤 **Profile** | User profile section |
-| 🎨 **Theming** | Adaptive light & dark themes with a centralized design system |
-| 📱 **Responsive UI** | Pixel-perfect scaling via `flutter_screenutil` & `responsive_framework` |
-| ✅ **Tested** | Bloc, flow and widget tests included |
+| 🌐 **Language gate** | First-launch English / Arabic choice, applied live (the screen flips to RTL instantly) |
+| 🚀 **Onboarding** | Immersive full-bleed pages with parallax, skip / next flow |
+| 🔐 **Authentication** | Welcome, Login, Sign Up (with password-strength meter), Forgot Password, 4-digit OTP, new password, success |
+| 🏠 **Home** | Promo banners, categories, curated product rows, countdown deals |
+| 🧭 **Explore & Search** | Category browsing, search with sort and filter sheet |
+| 📦 **Product details** | Gallery, size / colour variants, reviews, related products |
+| ❤️ **Wishlist** | Favourite products synced across every screen |
+| 🛒 **Cart & Checkout** | Quantity control, live totals, delivery methods, order success |
+| 🧾 **Orders** | Order history and details (mock store) |
+| 🔔 **Notifications** | Notification centre (mock) |
+| ⚙️ **Settings & Profile** | Language, theme, account sections |
+| 🎨 **Design system** | Colour tokens, Inter / Cairo typography, spacing and radius scales |
+| ♿ **Accessibility** | Semantics labels, 48dp touch targets, text scale up to 1.6×, reduced-motion support |
+| ✅ **Tested** | Bloc, flow, widget and overflow tests |
+
+The bottom navigation uses `StatefulShellRoute` so each tab keeps its own stack and
+scroll position, and the cart tab shows a live item-count badge.
 
 ---
 
 ## 🏗️ Architecture
 
-Shoply follows **Clean Architecture** with a clear separation into three layers per feature:
+Each feature follows **Clean Architecture** in three layers:
 
 ```
 Presentation  ──▶  Domain  ──▶  Data
-   (Bloc/UI)      (Entities,     (Models,
-                   UseCases,      DataSources,
-                   Repo contracts) Repo impls)
+ (Bloc / UI)     (Entities,     (Models,
+                  UseCases,      DataSources,
+                  Repo contracts) Repo impls)
 ```
 
-- **Presentation** — Widgets, Pages, and `Bloc`/`Cubit` state management.
-- **Domain** — Pure business logic: entities, use cases, and repository interfaces (framework-agnostic).
-- **Data** — Repository implementations, remote/local data sources, and DTO models.
-
-Cross-cutting concerns (networking, DI, theming, routing, localization, error handling)
-live under [`lib/core/`](lib/core/), keeping features self-contained and swappable.
-
-### Project Structure
+Cross-cutting code (DI, theme, routing, localization, shared widgets) lives in
+[`lib/core/`](lib/core/).
 
 ```
 lib/
 ├── app.dart                  # Root MaterialApp (theme, locale, router)
 ├── main.dart                 # Bootstrap: Hive, DI, runApp
 ├── core/
-│   ├── constants/            # App-wide constants
-│   ├── di/                   # Dependency injection (get_it + injectable)
-│   ├── errors/               # Failures & exceptions
-│   ├── extensions/           # Dart/Flutter extensions
+│   ├── constants/            # App constants, asset paths
+│   ├── di/                   # get_it + injectable
 │   ├── localization/l10n/    # ARB files & generated localizations
-│   ├── network/              # Dio client, interceptors, connectivity
-│   ├── routing/              # go_router config & route names
-│   ├── theme/                # Colors, spacing, radius, text styles, themes
-│   ├── usecases/             # Base UseCase contracts
-│   ├── utils/                # Helpers
-│   └── widgets/              # Shared reusable widgets
+│   ├── mock/                 # Mock catalogue data
+│   ├── responsive/           # Breakpoints, grid columns, page gutters
+│   ├── routing/              # go_router config, shell, route names
+│   ├── theme/                # Colours, typography, spacing, radius, themes
+│   ├── utils/                # Haptics, validators, helpers
+│   └── widgets/              # Shared components (buttons, cards, logo, states…)
 └── features/
-    ├── splash/  onboarding/  language_select/
-    ├── auth/    home/         product/
-    ├── cart/    wishlist/      profile/
+    ├── splash/   language_select/   onboarding/   auth/
+    ├── home/     explore/           catalog/      product/
+    ├── wishlist/ cart/              checkout/     orders/
+    └── notifications/   settings/   profile/
 ```
 
 ---
@@ -110,16 +97,41 @@ lib/
 
 | Category | Packages |
 |----------|----------|
-| **State Management** | `flutter_bloc`, `equatable` |
+| **State management** | `flutter_bloc`, `equatable` |
 | **Routing** | `go_router` |
-| **Networking** | `dio`, `retrofit`, `pretty_dio_logger` |
-| **Dependency Injection** | `get_it`, `injectable` |
-| **Code Generation** | `freezed`, `json_serializable`, `build_runner` |
-| **Local Storage** | `hive`, `shared_preferences`, `flutter_secure_storage` |
-| **Functional / Errors** | `fpdart` (`Either`-based error handling) |
-| **UI & Responsiveness** | `flutter_screenutil`, `responsive_framework`, `cached_network_image`, `flutter_svg`, `lottie`, `shimmer` |
-| **Connectivity** | `internet_connection_checker_plus` |
+| **Dependency injection** | `get_it`, `injectable` |
+| **Code generation** | `freezed`, `json_serializable`, `build_runner` |
+| **Local storage** | `hive`, `shared_preferences`, `flutter_secure_storage` |
+| **Networking (ready, unused by mocks)** | `dio`, `retrofit`, `pretty_dio_logger` |
+| **Functional errors** | `fpdart` |
+| **UI** | `cached_network_image`, `flutter_svg`, `lottie`, `shimmer`, `responsive_framework` |
 | **Testing** | `bloc_test`, `mocktail`, `flutter_test` |
+| **Tooling** | `flutter_launcher_icons` |
+
+---
+
+## 🎨 Design System & Branding
+
+- **Colours** — [`app_colors.dart`](lib/core/theme/app_colors.dart): brand palette, a
+  `VelloraColors` theme extension (`context.vellora`), and the signature gold / navy
+  (`kBrandGold`, `kBrandNavy`) used on the dark brand screens (language, onboarding,
+  welcome).
+- **Typography** — Inter (Latin) and Cairo (Arabic), bundled as variable fonts.
+- **Tokens** — [`app_spacing.dart`](lib/core/theme/app_spacing.dart) (4pt scale),
+  [`app_radius.dart`](lib/core/theme/app_radius.dart),
+  [`app_theme.dart`](lib/core/theme/app_theme.dart) (light & dark, per locale).
+- **Brand assets** — [`assets/branding/`](assets/branding/). The logo widgets
+  (`VelloraLogo`, `VelloraMark`, `VelloraWordmark`) pick the right variant for light /
+  dark and are never mirrored in RTL.
+- **Regenerating brand images and icons** — sources are in
+  [`design/branding_source/`](design/branding_source/):
+
+  ```bash
+  python design/branding_source/generate_branding.py   # rebuilds assets/branding/
+  dart run flutter_launcher_icons                       # app icons for all platforms
+  ```
+
+Application id / bundle id is still `com.example.vellora`; change it before publishing.
 
 ---
 
@@ -127,75 +139,61 @@ lib/
 
 ### Prerequisites
 
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) **≥ 3.44** (Dart **≥ 3.8**)
-- A configured device / emulator (Android, iOS, Web, or desktop)
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) **≥ 3.47** (Dart **≥ 3.13**)
+- A device or emulator (Android, iOS, web or desktop)
 
-### Installation
+### Run
 
 ```bash
-# 1. Clone the repository
 git clone <your-repo-url>
 cd ui_kit
 
-# 2. Install dependencies
 flutter pub get
-
-# 3. Generate code (DI, freezed, retrofit, json)
-dart run build_runner build --delete-conflicting-outputs
-
-# 4. Run the app
+dart run build_runner build --delete-conflicting-outputs   # DI, freezed, json
+flutter gen-l10n                                           # localizations
 flutter run
 ```
 
 ### Localization
 
-Localized strings are defined in [`lib/core/localization/l10n/`](lib/core/localization/l10n/)
-(`app_en.arb`, `app_ar.arb`). Regenerate after editing:
+Strings live in [`lib/core/localization/l10n/`](lib/core/localization/l10n/)
+(`app_en.arb` is the template, plus `app_ar.arb`). Regenerate after editing:
 
 ```bash
 flutter gen-l10n
 ```
+
+The brand name **Vellora** stays in Latin script in Arabic text.
 
 ---
 
 ## 🧪 Testing
 
 ```bash
-# Run all tests
+flutter analyze
 flutter test
-
-# Run a specific test
-flutter test test/features/auth/auth_bloc_test.dart
 ```
 
-Included test suites:
-
-- `test/app_flow_test.dart` — end-to-end navigation flow
-- `test/pre_home_flow_test.dart` / `pre_home_overflow_test.dart` — pre-home flow & layout
-- `test/features/auth/auth_bloc_test.dart` — auth Bloc logic
-- `test/features/cart/cart_bloc_test.dart` — cart Bloc logic
-- `test/wishlist_profile_test.dart` — wishlist & profile
-
----
-
-## 🎨 Design System
-
-A centralized theme keeps the UI consistent and easy to evolve:
-
-- **`app_colors.dart`** — Brand & semantic color palette
-- **`app_text_styles.dart`** — Typography scale
-- **`app_spacing.dart`** / **`app_radius.dart`** — Spacing & corner-radius tokens
-- **`app_theme.dart`** — Light & dark `ThemeData`
-- **`theme_cubit.dart`** — Runtime theme switching
+| Suite | Covers |
+|-------|--------|
+| `test/app_flow_test.dart` | Splash, language, onboarding and navigation flow |
+| `test/pre_home_flow_test.dart` | Welcome → Login / Register / Forgot password |
+| `test/pre_home_overflow_test.dart` | Pre-home layouts at different sizes and text scales |
+| `test/wishlist_profile_test.dart` | Wishlist and profile |
+| `test/features/auth/auth_bloc_test.dart` | Auth Bloc |
+| `test/features/cart/cart_bloc_test.dart` | Cart Bloc |
 
 ---
 
 ## 🗺️ Roadmap
 
-- [x] **Phase 1** — Onboarding, auth flow, home, product, cart, wishlist, profile
-- [ ] **Phase 2** — Checkout, orders, notifications, settings, search *(routes reserved)*
-- [ ] Payment gateway integration
+- [x] Design system, branding, light / dark and RTL
+- [x] Onboarding, authentication, storefront, search & filters
+- [x] Cart, checkout, orders, notifications, settings
 - [ ] Backend API integration (currently mock-driven)
+- [ ] Payment gateway
+- [ ] Localized mock content (orders, notifications and product copy are English-only)
+- [ ] iOS and tablet / landscape verification on real devices
 
 ---
 
@@ -203,9 +201,3 @@ A centralized theme keeps the UI consistent and easy to evolve:
 
 This project is **private** and not published to pub.dev (`publish_to: none`).
 All rights reserved © 2026.
-
----
-
-<div align="center">
-Made with ❤️ &nbsp;using Flutter
-</div>

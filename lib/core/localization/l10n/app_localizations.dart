@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// Application name
   ///
   /// In en, this message translates to:
-  /// **'Shoply'**
+  /// **'Vellora'**
   String get appName;
 
   /// No description provided for @onboardingTitle1.
@@ -233,13 +233,13 @@ abstract class AppLocalizations {
   /// No description provided for @forgotPasswordSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Enter your email and we will send you a link to reset your password.'**
+  /// **'Enter your email and we\'ll send you a 4-digit code to reset your password.'**
   String get forgotPasswordSubtitle;
 
   /// No description provided for @sendResetLink.
   ///
   /// In en, this message translates to:
-  /// **'Send Reset Link'**
+  /// **'Send Code'**
   String get sendResetLink;
 
   /// No description provided for @resetLinkSent.
@@ -299,7 +299,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Shoply'**
+  /// **'Welcome to Vellora'**
   String get welcomeTitle;
 
   /// No description provided for @welcomeTagline.
@@ -455,7 +455,7 @@ abstract class AppLocalizations {
   /// No description provided for @termsSectionUseBody.
   ///
   /// In en, this message translates to:
-  /// **'By accessing or using Shoply, you agree to be bound by these terms. You are responsible for maintaining the confidentiality of your account and for all activity that occurs under it.'**
+  /// **'By accessing or using Vellora, you agree to be bound by these terms. You are responsible for maintaining the confidentiality of your account and for all activity that occurs under it.'**
   String get termsSectionUseBody;
 
   /// No description provided for @termsSectionPurchasesTitle.
@@ -491,7 +491,7 @@ abstract class AppLocalizations {
   /// No description provided for @termsSectionContactBody.
   ///
   /// In en, this message translates to:
-  /// **'If you have any questions about these terms or how we handle your data, reach out to our support team at support@shoply.com.'**
+  /// **'If you have any questions about these terms or how we handle your data, reach out to our support team at support@vellora.com.'**
   String get termsSectionContactBody;
 
   /// No description provided for @fieldRequired.
@@ -1351,6 +1351,870 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This feature is on its way. Stay tuned!'**
   String get comingSoonBody;
+
+  /// No description provided for @decreaseQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrease quantity'**
+  String get decreaseQuantity;
+
+  /// No description provided for @increaseQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase quantity'**
+  String get increaseQuantity;
+
+  /// No description provided for @wasPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'was {price}'**
+  String wasPrice(String price);
+
+  /// No description provided for @percentOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% off'**
+  String percentOff(int percent);
+
+  /// No description provided for @addToWishlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to wishlist'**
+  String get addToWishlist;
+
+  /// No description provided for @removeFromWishlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from wishlist'**
+  String get removeFromWishlist;
+
+  /// No description provided for @pageOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {current} of {total}'**
+  String pageOf(int current, int total);
+
+  /// No description provided for @explore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get explore;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @splashTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium shopping, simplified'**
+  String get splashTagline;
+
+  /// No description provided for @languageEnglishHint.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglishHint;
+
+  /// No description provided for @languageArabicHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get languageArabicHint;
+
+  /// No description provided for @onboardingChipSecure.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure payment'**
+  String get onboardingChipSecure;
+
+  /// No description provided for @onboardingChipFast.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast delivery'**
+  String get onboardingChipFast;
+
+  /// No description provided for @continueWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get continueWithGoogle;
+
+  /// No description provided for @continueWithApple.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get continueWithApple;
+
+  /// No description provided for @continueWithFacebook.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Facebook'**
+  String get continueWithFacebook;
+
+  /// No description provided for @greetingMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get greetingMorning;
+
+  /// No description provided for @greetingAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get greetingAfternoon;
+
+  /// No description provided for @greetingEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get greetingEvening;
+
+  /// No description provided for @shopNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop now'**
+  String get shopNow;
+
+  /// No description provided for @viewCart.
+  ///
+  /// In en, this message translates to:
+  /// **'View cart'**
+  String get viewCart;
+
+  /// No description provided for @featuredSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Handpicked for you'**
+  String get featuredSubtitle;
+
+  /// No description provided for @newArrivalsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh drops this week'**
+  String get newArrivalsSubtitle;
+
+  /// No description provided for @recommendedForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended for you'**
+  String get recommendedForYou;
+
+  /// No description provided for @recommendedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Based on what is popular'**
+  String get recommendedSubtitle;
+
+  /// No description provided for @bannerSummerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Summer Collection'**
+  String get bannerSummerTitle;
+
+  /// No description provided for @bannerSummerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 50% off selected styles'**
+  String get bannerSummerSubtitle;
+
+  /// No description provided for @bannerFlashTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Flash Sale'**
+  String get bannerFlashTitle;
+
+  /// No description provided for @bannerFlashSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends soon — grab it fast'**
+  String get bannerFlashSubtitle;
+
+  /// No description provided for @bannerNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Arrivals'**
+  String get bannerNewTitle;
+
+  /// No description provided for @bannerNewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh drops every week'**
+  String get bannerNewSubtitle;
+
+  /// No description provided for @endsInSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends in {hours} hours {minutes} minutes'**
+  String endsInSemantics(int hours, int minutes);
+
+  /// No description provided for @categoryMen.
+  ///
+  /// In en, this message translates to:
+  /// **'Men'**
+  String get categoryMen;
+
+  /// No description provided for @categoryWomen.
+  ///
+  /// In en, this message translates to:
+  /// **'Women'**
+  String get categoryWomen;
+
+  /// No description provided for @categoryShoes.
+  ///
+  /// In en, this message translates to:
+  /// **'Shoes'**
+  String get categoryShoes;
+
+  /// No description provided for @categoryAccessories.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessories'**
+  String get categoryAccessories;
+
+  /// No description provided for @categoryBeauty.
+  ///
+  /// In en, this message translates to:
+  /// **'Beauty'**
+  String get categoryBeauty;
+
+  /// No description provided for @categoryElectronics.
+  ///
+  /// In en, this message translates to:
+  /// **'Electronics'**
+  String get categoryElectronics;
+
+  /// No description provided for @categoryGrocery.
+  ///
+  /// In en, this message translates to:
+  /// **'Grocery'**
+  String get categoryGrocery;
+
+  /// No description provided for @colorBlack.
+  ///
+  /// In en, this message translates to:
+  /// **'Black'**
+  String get colorBlack;
+
+  /// No description provided for @colorWhite.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get colorWhite;
+
+  /// No description provided for @colorRed.
+  ///
+  /// In en, this message translates to:
+  /// **'Red'**
+  String get colorRed;
+
+  /// No description provided for @colorNavy.
+  ///
+  /// In en, this message translates to:
+  /// **'Navy'**
+  String get colorNavy;
+
+  /// No description provided for @colorSand.
+  ///
+  /// In en, this message translates to:
+  /// **'Sand'**
+  String get colorSand;
+
+  /// No description provided for @colorOlive.
+  ///
+  /// In en, this message translates to:
+  /// **'Olive'**
+  String get colorOlive;
+
+  /// No description provided for @filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get filters;
+
+  /// No description provided for @sortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get sortBy;
+
+  /// No description provided for @sortRelevance.
+  ///
+  /// In en, this message translates to:
+  /// **'Relevance'**
+  String get sortRelevance;
+
+  /// No description provided for @sortPriceLowHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Price: low to high'**
+  String get sortPriceLowHigh;
+
+  /// No description provided for @sortPriceHighLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Price: high to low'**
+  String get sortPriceHighLow;
+
+  /// No description provided for @sortTopRated.
+  ///
+  /// In en, this message translates to:
+  /// **'Top rated'**
+  String get sortTopRated;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @priceRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Price range'**
+  String get priceRange;
+
+  /// No description provided for @brand.
+  ///
+  /// In en, this message translates to:
+  /// **'Brand'**
+  String get brand;
+
+  /// No description provided for @rating.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating'**
+  String get rating;
+
+  /// No description provided for @anyRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get anyRating;
+
+  /// No description provided for @onSaleOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'On sale only'**
+  String get onSaleOnly;
+
+  /// No description provided for @clearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get clearAll;
+
+  /// No description provided for @applyFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No results} =1{Show 1 result} other{Show {count} results}}'**
+  String applyFilters(int count);
+
+  /// No description provided for @listView.
+  ///
+  /// In en, this message translates to:
+  /// **'List view'**
+  String get listView;
+
+  /// No description provided for @gridView.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid view'**
+  String get gridView;
+
+  /// No description provided for @notifOrderShippedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your order is on its way'**
+  String get notifOrderShippedTitle;
+
+  /// No description provided for @notifOrderShippedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Order #SH-20418 has shipped and arrives in 2–3 days.'**
+  String get notifOrderShippedBody;
+
+  /// No description provided for @notifFlashSaleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Flash sale is live'**
+  String get notifFlashSaleTitle;
+
+  /// No description provided for @notifFlashSaleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 50% off on selected items, today only.'**
+  String get notifFlashSaleBody;
+
+  /// No description provided for @notifOrderDeliveredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order delivered'**
+  String get notifOrderDeliveredTitle;
+
+  /// No description provided for @notifOrderDeliveredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Order #SH-20377 was delivered. Enjoy! Tell us what you think.'**
+  String get notifOrderDeliveredBody;
+
+  /// No description provided for @notifWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Vellora'**
+  String get notifWelcomeTitle;
+
+  /// No description provided for @notifWelcomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover premium products picked just for you.'**
+  String get notifWelcomeBody;
+
+  /// No description provided for @notifNewArrivalsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New arrivals are here'**
+  String get notifNewArrivalsTitle;
+
+  /// No description provided for @notifNewArrivalsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh styles just landed. Be the first to shop them.'**
+  String get notifNewArrivalsBody;
+
+  /// No description provided for @exploreSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse every category'**
+  String get exploreSubtitle;
+
+  /// No description provided for @exploreProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore products'**
+  String get exploreProducts;
+
+  /// No description provided for @products.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get products;
+
+  /// No description provided for @productsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No products} =1{1 product} other{{count} products}}'**
+  String productsCount(int count);
+
+  /// No description provided for @noFilterResultsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No products match'**
+  String get noFilterResultsTitle;
+
+  /// No description provided for @noFilterResultsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Try removing a filter or two to see more products.'**
+  String get noFilterResultsBody;
+
+  /// No description provided for @clearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get clearSearch;
+
+  /// No description provided for @recentSearches.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent searches'**
+  String get recentSearches;
+
+  /// No description provided for @browseCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse categories'**
+  String get browseCategories;
+
+  /// No description provided for @reviewsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 review} other{{count} reviews}}'**
+  String reviewsCount(int count);
+
+  /// No description provided for @copyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get copyLink;
+
+  /// No description provided for @linkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied to clipboard'**
+  String get linkCopied;
+
+  /// No description provided for @youSave.
+  ///
+  /// In en, this message translates to:
+  /// **'You save {amount}'**
+  String youSave(String amount);
+
+  /// No description provided for @perkDeliveryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Free delivery over \$100'**
+  String get perkDeliveryTitle;
+
+  /// No description provided for @perkDeliveryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrives in 3–5 business days'**
+  String get perkDeliveryBody;
+
+  /// No description provided for @perkReturnsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy returns'**
+  String get perkReturnsTitle;
+
+  /// No description provided for @perkReturnsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'30-day hassle-free returns'**
+  String get perkReturnsBody;
+
+  /// No description provided for @perkSecureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure payment'**
+  String get perkSecureTitle;
+
+  /// No description provided for @perkSecureBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment details are protected'**
+  String get perkSecureBody;
+
+  /// No description provided for @showLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Show less'**
+  String get showLess;
+
+  /// No description provided for @readMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Read more'**
+  String get readMore;
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @deliveryMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery method'**
+  String get deliveryMethod;
+
+  /// No description provided for @deliveryStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard delivery'**
+  String get deliveryStandard;
+
+  /// No description provided for @deliveryExpress.
+  ///
+  /// In en, this message translates to:
+  /// **'Express delivery'**
+  String get deliveryExpress;
+
+  /// No description provided for @deliveryEta.
+  ///
+  /// In en, this message translates to:
+  /// **'{min}–{max} business days'**
+  String deliveryEta(int min, int max);
+
+  /// No description provided for @cashOnDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash on Delivery'**
+  String get cashOnDelivery;
+
+  /// No description provided for @payOnArrival.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay when your order arrives'**
+  String get payOnArrival;
+
+  /// No description provided for @addressHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get addressHome;
+
+  /// No description provided for @addressWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get addressWork;
+
+  /// No description provided for @trackOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Track order'**
+  String get trackOrder;
+
+  /// No description provided for @myOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'My Orders'**
+  String get myOrders;
+
+  /// No description provided for @ordersAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get ordersAll;
+
+  /// No description provided for @orderStatusProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing'**
+  String get orderStatusProcessing;
+
+  /// No description provided for @orderStatusShipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipped'**
+  String get orderStatusShipped;
+
+  /// No description provided for @orderStatusDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get orderStatusDelivered;
+
+  /// No description provided for @orderStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get orderStatusCancelled;
+
+  /// No description provided for @viewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View details'**
+  String get viewDetails;
+
+  /// No description provided for @noOrdersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders yet'**
+  String get noOrdersTitle;
+
+  /// No description provided for @noOrdersBody.
+  ///
+  /// In en, this message translates to:
+  /// **'When you place an order, it will show up here.'**
+  String get noOrdersBody;
+
+  /// No description provided for @orderDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Order details'**
+  String get orderDetails;
+
+  /// No description provided for @orderNotFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order not found'**
+  String get orderNotFoundTitle;
+
+  /// No description provided for @orderNotFoundBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not find this order. It may have been removed.'**
+  String get orderNotFoundBody;
+
+  /// No description provided for @orderTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Order tracking'**
+  String get orderTracking;
+
+  /// No description provided for @orderItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get orderItems;
+
+  /// No description provided for @trackPlaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Order placed'**
+  String get trackPlaced;
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all read'**
+  String get markAllRead;
+
+  /// No description provided for @noNotificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You are all caught up'**
+  String get noNotificationsTitle;
+
+  /// No description provided for @noNotificationsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'New updates about your orders and offers will appear here.'**
+  String get noNotificationsBody;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @earlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier'**
+  String get earlier;
+
+  /// No description provided for @unread.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get unread;
+
+  /// No description provided for @justNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
+
+  /// No description provided for @minutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 minute ago} other{{count} minutes ago}}'**
+  String minutesAgo(int count);
+
+  /// No description provided for @hoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 hour ago} other{{count} hours ago}}'**
+  String hoursAgo(int count);
+
+  /// No description provided for @daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day ago} other{{count} days ago}}'**
+  String daysAgo(int count);
+
+  /// No description provided for @appearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance;
+
+  /// No description provided for @privacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get privacy;
+
+  /// No description provided for @about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get about;
+
+  /// No description provided for @versionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String versionLabel(String version);
+
+  /// No description provided for @notifPrefOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Order updates'**
+  String get notifPrefOrders;
+
+  /// No description provided for @notifPrefOrdersSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping and delivery status'**
+  String get notifPrefOrdersSub;
+
+  /// No description provided for @notifPrefPromos.
+  ///
+  /// In en, this message translates to:
+  /// **'Offers & promotions'**
+  String get notifPrefPromos;
+
+  /// No description provided for @notifPrefPromosSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales, new arrivals and deals'**
+  String get notifPrefPromosSub;
+
+  /// No description provided for @myShopping.
+  ///
+  /// In en, this message translates to:
+  /// **'My shopping'**
+  String get myShopping;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @helpSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & support'**
+  String get helpSupport;
+
+  /// No description provided for @helpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions about an order or your account? Our team is happy to help.'**
+  String get helpBody;
+
+  /// No description provided for @pageNotFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Page not found'**
+  String get pageNotFoundTitle;
+
+  /// No description provided for @pageNotFoundBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The page you are looking for does not exist or has moved.'**
+  String get pageNotFoundBody;
+
+  /// No description provided for @goHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Home'**
+  String get goHome;
 }
 
 class _AppLocalizationsDelegate

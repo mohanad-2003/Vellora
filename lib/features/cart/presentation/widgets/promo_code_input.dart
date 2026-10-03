@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ui_kit/core/extensions/context_extensions.dart';
-import 'package:ui_kit/core/theme/app_colors.dart';
-import 'package:ui_kit/core/theme/app_radius.dart';
-import 'package:ui_kit/core/theme/app_spacing.dart';
-import 'package:ui_kit/features/cart/domain/entities/promo_code_entity.dart';
 
+import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/theme/app_radius.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/utils/haptics.dart';
+import '../../domain/entities/promo_code_entity.dart';
 
+/// Promo-code field with Apply button, applied state and inline error.
 class PromoCodeInput extends StatefulWidget {
   const PromoCodeInput({
     super.key,
@@ -36,26 +36,36 @@ class _PromoCodeInputState extends State<PromoCodeInput> {
     super.dispose();
   }
 
+  void _submit() {
+    final code = _controller.text.trim();
+    if (code.isEmpty || widget.isApplying) return;
+    Haptics.light();
+    widget.onApply(code);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final success = context.vellora.success;
+
     if (widget.applied != null) {
       return Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.xs,
+        ),
         decoration: BoxDecoration(
-          color: AppColors.success.withValues(alpha: 0.12),
+          color: success.withValues(alpha: 0.12),
           borderRadius: AppRadius.rMd,
         ),
         child: Row(
           children: [
-            Icon(Icons.check_circle_rounded,
-                color: AppColors.success, size: 20.r),
-            SizedBox(width: AppSpacing.md),
+            Icon(Icons.check_circle_rounded, color: success, size: 20),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Text(
                 '${widget.applied!.code} (-${widget.applied!.discountPercent.toInt()}%)',
-                style: context.textTheme.titleMedium,
+                style: context.textTheme.titleSmall,
               ),
             ),
             TextButton(
@@ -68,11 +78,14 @@ class _PromoCodeInputState extends State<PromoCodeInput> {
     }
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: TextField(
             controller: _controller,
             textCapitalization: TextCapitalization.characters,
+            textInputAction: TextInputAction.done,
+            onSubmitted: (_) => _submit(),
             decoration: InputDecoration(
               hintText: l10n.promoCode,
               prefixIcon: const Icon(Icons.local_offer_outlined),
@@ -80,18 +93,15 @@ class _PromoCodeInputState extends State<PromoCodeInput> {
             ),
           ),
         ),
-        SizedBox(width: AppSpacing.md),
+        const SizedBox(width: AppSpacing.md),
         SizedBox(
-          height: 54.h,
+          height: 52,
           child: ElevatedButton(
-            onPressed: widget.isApplying
-                ? null
-                : () => widget.onApply(_controller.text),
+            onPressed: widget.isApplying ? null : _submit,
             child: widget.isApplying
-                ? SizedBox(
-                    width: 18.r,
-                    height: 18.r,
-                    child: const CircularProgressIndicator(strokeWidth: 2),
+                ? const SizedBox.square(
+                    dimension: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : Text(l10n.apply),
           ),

@@ -1,12 +1,12 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
-import 'package:ui_kit/core/errors/exception_mapper.dart';
-import 'package:ui_kit/core/errors/failures.dart';
-import 'package:ui_kit/features/auth/data/datasources/auth_local_datasource.dart';
-import 'package:ui_kit/features/auth/data/datasources/auth_remote_datasource.dart';
-import 'package:ui_kit/features/auth/data/models/user_model.dart';
-import 'package:ui_kit/features/auth/domain/entities/user_entity.dart';
-import 'package:ui_kit/features/auth/domain/repositories/auth_repository.dart';
+import 'package:vellora/core/errors/exception_mapper.dart';
+import 'package:vellora/core/errors/failures.dart';
+import 'package:vellora/features/auth/data/datasources/auth_local_datasource.dart';
+import 'package:vellora/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:vellora/features/auth/data/models/user_model.dart';
+import 'package:vellora/features/auth/domain/entities/user_entity.dart';
+import 'package:vellora/features/auth/domain/repositories/auth_repository.dart';
 
 @LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {

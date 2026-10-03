@@ -27,6 +27,7 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     on<ProductQuantityChanged>(_onQuantityChanged);
     on<ProductFavoriteToggled>(_onFavoriteToggled);
     on<ProductAddToCartRequested>(_onAddToCart);
+    on<ProductBuyNowRequested>(_onBuyNow);
   }
 
   final GetProductDetailsUseCase _getDetails;
@@ -98,12 +99,9 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     );
   }
 
-  Future<void> _onAddToCart(
-    ProductAddToCartRequested event,
-    Emitter<ProductDetailState> emit,
-  ) async {
+  Future<bool> _persistToCart() async {
     final detail = state.detail;
-    if (detail == null) return;
+    if (detail == null) return false;
     final p = detail.product;
     final item = CartItemEntity(
       id: '${p.id}_${state.selectedColor ?? ''}_${state.selectedSize ?? ''}',
@@ -116,9 +114,24 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
       size: state.selectedSize,
     );
     final result = await _addToCart(item);
-    result.match(
-      (_) {},
-      (_) => emit(state.copyWith(addedToCartTick: state.addedToCartTick + 1)),
-    );
+    return result.isRight();
+  }
+
+  Future<void> _onAddToCart(
+    ProductAddToCartRequested event,
+    Emitter<ProductDetailState> emit,
+  ) async {
+    if (await _persistToCart()) {
+      emit(state.copyWith(addedToCartTick: state.addedToCartTick + 1));
+    }
+  }
+
+  Future<void> _onBuyNow(
+    ProductBuyNowRequested event,
+    Emitter<ProductDetailState> emit,
+  ) async {
+    if (await _persistToCart()) {
+      emit(state.copyWith(buyNowTick: state.buyNowTick + 1));
+    }
   }
 }

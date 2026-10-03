@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appName => 'شوبلي';
+  String get appName => 'Vellora';
 
   @override
   String get onboardingTitle1 => 'اكتشف منتجات مميزة';
@@ -79,10 +79,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get forgotPasswordSubtitle =>
-      'أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.';
+      'أدخل بريدك الإلكتروني وسنرسل لك رمزًا من 4 أرقام لإعادة تعيين كلمة المرور.';
 
   @override
-  String get sendResetLink => 'إرسال رابط الاستعادة';
+  String get sendResetLink => 'إرسال الرمز';
 
   @override
   String get resetLinkSent => 'تم إرسال رابط الاستعادة إلى بريدك الإلكتروني.';
@@ -113,7 +113,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get continueLabel => 'متابعة';
 
   @override
-  String get welcomeTitle => 'أهلًا بك في شوبلي';
+  String get welcomeTitle => 'أهلًا بك في Vellora';
 
   @override
   String get welcomeTagline =>
@@ -199,7 +199,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get termsSectionUseBody =>
-      'بوصولك إلى شوبلي أو استخدامك له، فإنك توافق على الالتزام بهذه الشروط. أنت مسؤول عن الحفاظ على سرّية حسابك وعن جميع الأنشطة التي تجري من خلاله.';
+      'بوصولك إلى Vellora أو استخدامك له، فإنك توافق على الالتزام بهذه الشروط. أنت مسؤول عن الحفاظ على سرّية حسابك وعن جميع الأنشطة التي تجري من خلاله.';
 
   @override
   String get termsSectionPurchasesTitle => '2. الطلبات والمدفوعات';
@@ -220,7 +220,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get termsSectionContactBody =>
-      'إذا كان لديك أي استفسار حول هذه الشروط أو كيفية تعاملنا مع بياناتك، تواصل مع فريق الدعم عبر support@shoply.com.';
+      'إذا كان لديك أي استفسار حول هذه الشروط أو كيفية تعاملنا مع بياناتك، تواصل مع فريق الدعم عبر support@vellora.com.';
 
   @override
   String get fieldRequired => 'هذا الحقل مطلوب';
@@ -680,4 +680,520 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get comingSoonBody => 'هذه الميزة في طريقها إليك. ترقّبها قريبًا!';
+
+  @override
+  String get decreaseQuantity => 'تقليل الكمية';
+
+  @override
+  String get increaseQuantity => 'زيادة الكمية';
+
+  @override
+  String wasPrice(String price) {
+    return 'كان $price';
+  }
+
+  @override
+  String percentOff(int percent) {
+    return 'خصم $percent٪';
+  }
+
+  @override
+  String get addToWishlist => 'أضف إلى المفضلة';
+
+  @override
+  String get removeFromWishlist => 'إزالة من المفضلة';
+
+  @override
+  String pageOf(int current, int total) {
+    return 'الصفحة $current من $total';
+  }
+
+  @override
+  String get explore => 'استكشف';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get splashTagline => 'تسوّق راقٍ، بكل بساطة';
+
+  @override
+  String get languageEnglishHint => 'الإنجليزية';
+
+  @override
+  String get languageArabicHint => 'العربية';
+
+  @override
+  String get onboardingChipSecure => 'دفع آمن';
+
+  @override
+  String get onboardingChipFast => 'توصيل سريع';
+
+  @override
+  String get continueWithGoogle => 'المتابعة باستخدام Google';
+
+  @override
+  String get continueWithApple => 'المتابعة باستخدام Apple';
+
+  @override
+  String get continueWithFacebook => 'المتابعة باستخدام Facebook';
+
+  @override
+  String get greetingMorning => 'صباح الخير';
+
+  @override
+  String get greetingAfternoon => 'طاب يومك';
+
+  @override
+  String get greetingEvening => 'مساء الخير';
+
+  @override
+  String get shopNow => 'تسوّق الآن';
+
+  @override
+  String get viewCart => 'عرض السلة';
+
+  @override
+  String get featuredSubtitle => 'مختارات لك بعناية';
+
+  @override
+  String get newArrivalsSubtitle => 'وصل حديثًا هذا الأسبوع';
+
+  @override
+  String get recommendedForYou => 'مقترح لك';
+
+  @override
+  String get recommendedSubtitle => 'بناءً على الأكثر رواجًا';
+
+  @override
+  String get bannerSummerTitle => 'مجموعة الصيف';
+
+  @override
+  String get bannerSummerSubtitle => 'خصومات تصل إلى 50٪ على تشكيلة مختارة';
+
+  @override
+  String get bannerFlashTitle => 'تخفيضات خاطفة';
+
+  @override
+  String get bannerFlashSubtitle => 'تنتهي قريبًا — لا تفوّتها';
+
+  @override
+  String get bannerNewTitle => 'وصل حديثًا';
+
+  @override
+  String get bannerNewSubtitle => 'إصدارات جديدة كل أسبوع';
+
+  @override
+  String endsInSemantics(int hours, int minutes) {
+    return 'ينتهي خلال $hours ساعة و$minutes دقيقة';
+  }
+
+  @override
+  String get categoryMen => 'رجال';
+
+  @override
+  String get categoryWomen => 'نساء';
+
+  @override
+  String get categoryShoes => 'أحذية';
+
+  @override
+  String get categoryAccessories => 'إكسسوارات';
+
+  @override
+  String get categoryBeauty => 'جمال';
+
+  @override
+  String get categoryElectronics => 'إلكترونيات';
+
+  @override
+  String get categoryGrocery => 'بقالة';
+
+  @override
+  String get colorBlack => 'أسود';
+
+  @override
+  String get colorWhite => 'أبيض';
+
+  @override
+  String get colorRed => 'أحمر';
+
+  @override
+  String get colorNavy => 'كحلي';
+
+  @override
+  String get colorSand => 'رملي';
+
+  @override
+  String get colorOlive => 'زيتي';
+
+  @override
+  String get filters => 'التصفية';
+
+  @override
+  String get sortBy => 'الترتيب';
+
+  @override
+  String get sortRelevance => 'الأكثر صلة';
+
+  @override
+  String get sortPriceLowHigh => 'السعر: من الأقل إلى الأعلى';
+
+  @override
+  String get sortPriceHighLow => 'السعر: من الأعلى إلى الأقل';
+
+  @override
+  String get sortTopRated => 'الأعلى تقييمًا';
+
+  @override
+  String get category => 'الفئة';
+
+  @override
+  String get priceRange => 'نطاق السعر';
+
+  @override
+  String get brand => 'العلامة التجارية';
+
+  @override
+  String get rating => 'التقييم';
+
+  @override
+  String get anyRating => 'أي تقييم';
+
+  @override
+  String get onSaleOnly => 'العروض فقط';
+
+  @override
+  String get clearAll => 'مسح الكل';
+
+  @override
+  String applyFilters(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'عرض $count نتيجة',
+      few: 'عرض $count نتائج',
+      two: 'عرض نتيجتين',
+      one: 'عرض نتيجة واحدة',
+      zero: 'لا توجد نتائج',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get listView => 'عرض قائمة';
+
+  @override
+  String get gridView => 'عرض شبكة';
+
+  @override
+  String get notifOrderShippedTitle => 'طلبك في الطريق إليك';
+
+  @override
+  String get notifOrderShippedBody =>
+      'تم شحن الطلب رقم SH-20418 وسيصل خلال 2–3 أيام.';
+
+  @override
+  String get notifFlashSaleTitle => 'بدأت التخفيضات الخاطفة';
+
+  @override
+  String get notifFlashSaleBody =>
+      'خصومات تصل إلى 50٪ على منتجات مختارة، اليوم فقط.';
+
+  @override
+  String get notifOrderDeliveredTitle => 'تم تسليم الطلب';
+
+  @override
+  String get notifOrderDeliveredBody =>
+      'تم تسليم الطلب رقم SH-20377. نتمنى أن ينال إعجابك! شاركنا رأيك.';
+
+  @override
+  String get notifWelcomeTitle => 'أهلًا بك في Vellora';
+
+  @override
+  String get notifWelcomeBody => 'اكتشف منتجات راقية مختارة خصيصًا لك.';
+
+  @override
+  String get notifNewArrivalsTitle => 'وصلت منتجات جديدة';
+
+  @override
+  String get notifNewArrivalsBody =>
+      'تشكيلات جديدة وصلت للتو. كن أول من يتسوّقها.';
+
+  @override
+  String get exploreSubtitle => 'تصفّح جميع الفئات';
+
+  @override
+  String get exploreProducts => 'استكشف المنتجات';
+
+  @override
+  String get products => 'المنتجات';
+
+  @override
+  String productsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count منتجًا',
+      few: '$count منتجات',
+      two: 'منتجان',
+      one: 'منتج واحد',
+      zero: 'لا منتجات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noFilterResultsTitle => 'لا توجد منتجات مطابقة';
+
+  @override
+  String get noFilterResultsBody =>
+      'جرّب إزالة بعض عوامل التصفية لعرض المزيد من المنتجات.';
+
+  @override
+  String get clearSearch => 'مسح البحث';
+
+  @override
+  String get recentSearches => 'عمليات البحث الأخيرة';
+
+  @override
+  String get browseCategories => 'تصفّح الفئات';
+
+  @override
+  String reviewsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count تقييمًا',
+      few: '$count تقييمات',
+      two: 'تقييمان',
+      one: 'تقييم واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get copyLink => 'نسخ الرابط';
+
+  @override
+  String get linkCopied => 'تم نسخ الرابط';
+
+  @override
+  String youSave(String amount) {
+    return 'وفّرت $amount';
+  }
+
+  @override
+  String get perkDeliveryTitle => 'توصيل مجاني للطلبات فوق 100\$';
+
+  @override
+  String get perkDeliveryBody => 'يصل خلال 3–5 أيام عمل';
+
+  @override
+  String get perkReturnsTitle => 'إرجاع سهل';
+
+  @override
+  String get perkReturnsBody => 'إرجاع بدون تعقيد خلال 30 يومًا';
+
+  @override
+  String get perkSecureTitle => 'دفع آمن';
+
+  @override
+  String get perkSecureBody => 'بيانات الدفع الخاصة بك محمية';
+
+  @override
+  String get showLess => 'عرض أقل';
+
+  @override
+  String get readMore => 'اقرأ المزيد';
+
+  @override
+  String get undo => 'تراجع';
+
+  @override
+  String get deliveryMethod => 'طريقة التوصيل';
+
+  @override
+  String get deliveryStandard => 'توصيل عادي';
+
+  @override
+  String get deliveryExpress => 'توصيل سريع';
+
+  @override
+  String deliveryEta(int min, int max) {
+    return '$min–$max أيام عمل';
+  }
+
+  @override
+  String get cashOnDelivery => 'الدفع عند الاستلام';
+
+  @override
+  String get payOnArrival => 'ادفع عند وصول طلبك';
+
+  @override
+  String get addressHome => 'المنزل';
+
+  @override
+  String get addressWork => 'العمل';
+
+  @override
+  String get trackOrder => 'تتبّع الطلب';
+
+  @override
+  String get myOrders => 'طلباتي';
+
+  @override
+  String get ordersAll => 'الكل';
+
+  @override
+  String get orderStatusProcessing => 'قيد التجهيز';
+
+  @override
+  String get orderStatusShipped => 'تم الشحن';
+
+  @override
+  String get orderStatusDelivered => 'تم التسليم';
+
+  @override
+  String get orderStatusCancelled => 'ملغي';
+
+  @override
+  String get viewDetails => 'عرض التفاصيل';
+
+  @override
+  String get noOrdersTitle => 'لا توجد طلبات بعد';
+
+  @override
+  String get noOrdersBody => 'عند إتمام أي طلب سيظهر هنا.';
+
+  @override
+  String get orderDetails => 'تفاصيل الطلب';
+
+  @override
+  String get orderNotFoundTitle => 'لم يتم العثور على الطلب';
+
+  @override
+  String get orderNotFoundBody =>
+      'تعذّر العثور على هذا الطلب. ربما تمت إزالته.';
+
+  @override
+  String get orderTracking => 'تتبّع الطلب';
+
+  @override
+  String get orderItems => 'المنتجات';
+
+  @override
+  String get trackPlaced => 'تم تقديم الطلب';
+
+  @override
+  String get markAllRead => 'تحديد الكل كمقروء';
+
+  @override
+  String get noNotificationsTitle => 'لا إشعارات جديدة';
+
+  @override
+  String get noNotificationsBody =>
+      'ستظهر هنا التحديثات الجديدة حول طلباتك والعروض.';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get yesterday => 'أمس';
+
+  @override
+  String get earlier => 'سابقًا';
+
+  @override
+  String get unread => 'غير مقروء';
+
+  @override
+  String get justNow => 'الآن';
+
+  @override
+  String minutesAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count دقيقة',
+      few: 'منذ $count دقائق',
+      two: 'منذ دقيقتين',
+      one: 'منذ دقيقة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hoursAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count ساعة',
+      few: 'منذ $count ساعات',
+      two: 'منذ ساعتين',
+      one: 'منذ ساعة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String daysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count يومًا',
+      few: 'منذ $count أيام',
+      two: 'منذ يومين',
+      one: 'منذ يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get appearance => 'المظهر';
+
+  @override
+  String get privacy => 'الخصوصية';
+
+  @override
+  String get about => 'حول التطبيق';
+
+  @override
+  String versionLabel(String version) {
+    return 'الإصدار $version';
+  }
+
+  @override
+  String get notifPrefOrders => 'تحديثات الطلبات';
+
+  @override
+  String get notifPrefOrdersSub => 'حالة الشحن والتوصيل';
+
+  @override
+  String get notifPrefPromos => 'العروض والتخفيضات';
+
+  @override
+  String get notifPrefPromosSub => 'التخفيضات والمنتجات الجديدة والصفقات';
+
+  @override
+  String get myShopping => 'تسوّقي';
+
+  @override
+  String get support => 'الدعم';
+
+  @override
+  String get helpSupport => 'المساعدة والدعم';
+
+  @override
+  String get helpBody => 'لديك سؤال عن طلب أو عن حسابك؟ فريقنا جاهز لمساعدتك.';
+
+  @override
+  String get pageNotFoundTitle => 'الصفحة غير موجودة';
+
+  @override
+  String get pageNotFoundBody =>
+      'الصفحة التي تبحث عنها غير موجودة أو تم نقلها.';
+
+  @override
+  String get goHome => 'العودة إلى الرئيسية';
 }

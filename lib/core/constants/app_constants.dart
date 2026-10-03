@@ -2,11 +2,22 @@
 class AppConstants {
   AppConstants._();
 
-  static const String appName = 'Shoply';
+  static const String appName = 'Vellora';
+
+  /// Keep in sync with `version:` in pubspec.yaml.
+  static const String appVersion = '1.0.0';
+
+  static const String supportEmail = 'support@vellora.com';
 
   /// Placeholder base url — unused by the Phase 1 mocks but wired so a real
   /// API is a drop-in swap later.
-  static const String baseUrl = 'https://api.shoply.example.com/v1';
+  static const String baseUrl = 'https://api.vellora.example.com/v1';
+
+  /// Placeholder public site used for shareable links. Replace with the real
+  /// domain when the web presence exists.
+  static const String webBaseUrl = 'https://vellora.example.com';
+
+  static String productUrl(String id) => '$webBaseUrl/product/$id';
 
   static const Duration connectTimeout = Duration(seconds: 20);
   static const Duration receiveTimeout = Duration(seconds: 20);
@@ -31,8 +42,8 @@ class AppConstants {
 
   /// Reserved input that deterministically triggers a failure in mock
   /// datasources so error/retry states are reachable without a backend.
-  static const String reservedExistingEmail = 'existing@shoply.com';
-  static const String reservedFailEmail = 'fail@shoply.com';
+  static const String reservedExistingEmail = 'existing@vellora.com';
+  static const String reservedFailEmail = 'fail@vellora.com';
   static const String unknownProductId = 'unknown';
 
   /// OTP code that deterministically verifies in the mock reset flow. Any other

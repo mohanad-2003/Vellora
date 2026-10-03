@@ -12,6 +12,7 @@ class ProductDetailState extends Equatable {
     this.quantity = 1,
     this.failureKey,
     this.addedToCartTick = 0,
+    this.buyNowTick = 0,
   });
 
   final ProductDetailStatus status;
@@ -26,6 +27,9 @@ class ProductDetailState extends Equatable {
   /// one-off snackbar without a separate stream.
   final int addedToCartTick;
 
+  /// Increments when a Buy Now add succeeds; the page then opens checkout.
+  final int buyNowTick;
+
   ProductDetailState copyWith({
     ProductDetailStatus? status,
     ProductDetailEntity? detail,
@@ -35,6 +39,7 @@ class ProductDetailState extends Equatable {
     int? quantity,
     String? failureKey,
     int? addedToCartTick,
+    int? buyNowTick,
   }) {
     return ProductDetailState(
       status: status ?? this.status,
@@ -45,6 +50,7 @@ class ProductDetailState extends Equatable {
       quantity: quantity ?? this.quantity,
       failureKey: failureKey,
       addedToCartTick: addedToCartTick ?? this.addedToCartTick,
+      buyNowTick: buyNowTick ?? this.buyNowTick,
     );
   }
 
@@ -58,5 +64,6 @@ class ProductDetailState extends Equatable {
         quantity,
         failureKey,
         addedToCartTick,
+        buyNowTick,
       ];
 }

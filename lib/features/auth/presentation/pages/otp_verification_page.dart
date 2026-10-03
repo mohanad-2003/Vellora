@@ -3,16 +3,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ui_kit/core/extensions/context_extensions.dart';
-import 'package:ui_kit/core/routing/route_names.dart';
-import 'package:ui_kit/core/theme/app_spacing.dart';
-import 'package:ui_kit/core/widgets/app_bar_widget.dart';
-import 'package:ui_kit/core/widgets/app_button.dart';
-import 'package:ui_kit/core/widgets/auth_error_banner.dart';
-import 'package:ui_kit/core/widgets/custom_snackbar.dart';
-import 'package:ui_kit/core/widgets/otp_input_field.dart';
-import 'package:ui_kit/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:ui_kit/features/auth/presentation/widgets/auth_header.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/app_bar_widget.dart';
+import 'package:vellora/core/widgets/app_button.dart';
+import 'package:vellora/core/widgets/auth_error_banner.dart';
+import 'package:vellora/core/widgets/custom_snackbar.dart';
+import 'package:vellora/core/widgets/otp_input_field.dart';
+import 'package:vellora/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:vellora/features/auth/presentation/widgets/auth_header.dart';
 
 class OtpVerificationPage extends StatefulWidget {
   const OtpVerificationPage({super.key});
@@ -98,7 +99,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
           },
           builder: (context, state) {
             final email = state.pendingEmail ?? '';
-            return SingleChildScrollView(
+            return ResponsiveCenter(child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(
                 horizontal: AppSpacing.screenH,
                 vertical: AppSpacing.vSm,
@@ -107,6 +108,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   AuthHeader(
+                    icon: Icons.mark_email_read_outlined,
                     title: l10n.otpTitle,
                     subtitle: '${l10n.otpSubtitle} $email',
                   ),
@@ -131,27 +133,22 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                     onPressed: () => _verify(context),
                   ),
                   SizedBox(height: AppSpacing.vXl),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Flexible(
-                        child: Text(
-                          l10n.didntReceiveCode,
-                          style: context.textTheme.bodyMedium,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                      Text(
+                        l10n.didntReceiveCode,
+                        style: context.textTheme.bodyMedium,
                       ),
                       _remaining > 0
                           ? Padding(
-                              padding: EdgeInsets.only(left: AppSpacing.sm),
+                              padding: EdgeInsetsDirectional.only(start: AppSpacing.sm),
                               child: Text(
                                 l10n.resendIn(_timerLabel),
                                 style: context.textTheme.labelMedium?.copyWith(
                                   color: context.colors.onSurfaceVariant,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
                               ),
                             )
                           : TextButton(
@@ -162,7 +159,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                   ),
                 ],
               ),
-            );
+            ));
           },
         ),
       ),

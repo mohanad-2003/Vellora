@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/responsive/responsive.dart';
+import '../../../../core/utils/haptics.dart';
 import '../../../../core/routing/route_names.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/vellora_logo.dart';
 import '../cubit/onboarding_cubit.dart';
 import '../widgets/onboarding_slide.dart';
 
@@ -63,8 +66,8 @@ class _OnboardingViewState extends State<_OnboardingView> {
       _finish();
     } else {
       _controller.nextPage(
-        duration: const Duration(milliseconds: 350),
-        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 380),
+        curve: Curves.easeOutCubic,
       );
     }
   }
@@ -74,71 +77,153 @@ class _OnboardingViewState extends State<_OnboardingView> {
     final cubit = context.watch<OnboardingCubit>();
     final pages = OnboardingCubit.pages;
     final index = cubit.state;
+    final l10n = context.l10n;
+    final gutter = context.pageGutter;
 
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Align(
-              alignment: AlignmentDirectional.centerEnd,
-              child: Padding(
-                padding: EdgeInsets.only(right: AppSpacing.screenH, top: 8.h),
-                child: TextButton(
-                  onPressed: _finish,
-                  style: TextButton.styleFrom(
-                    backgroundColor: context.colors.surfaceContainerHighest,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: AppRadius.rPill,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.vSm,
-                    ),
+    final bottomSafe = MediaQuery.paddingOf(context).bottom;
+    final controlsHeight = 56 + AppSpacing.xxl + AppSpacing.xl + bottomSafe;
+    final landscape = context.screenWidth > context.screenHeight * 1.15;
+
+    final controls = Padding(
+      padding: EdgeInsets.fromLTRB(
+        gutter,
+        0,
+        gutter,
+        AppSpacing.xl + bottomSafe,
+      ),
+      child: Row(
+        children: [
+          Semantics(
+            label: l10n.pageOf(index + 1, pages.length),
+            child: Row(
+              children: List.generate(
+                pages.length,
+                (i) => AnimatedContainer(
+                  duration: const Duration(milliseconds: 280),
+                  curve: Curves.easeOutCubic,
+                  margin: const EdgeInsetsDirectional.only(end: 6),
+                  width: i == index ? 26 : 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: i == index ? kBrandGold : Colors.white24,
+                    borderRadius: AppRadius.rPill,
                   ),
-                  child: Text(context.l10n.skip),
                 ),
               ),
             ),
-            Expanded(
+          ),
+          const Spacer(),
+          _GoldButton(
+            label: cubit.isLastPage ? l10n.getStarted : l10n.next,
+            onPressed: () => _next(cubit),
+          ),
+        ],
+      ),
+    );
+
+    // Onboarding is a brand moment: always dark navy with light status-bar
+    // icons, whichever theme the app is in.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        backgroundColor: kOnboardingNavy,
+        body: Stack(
+          children: [
+            Positioned.fill(
               child: PageView.builder(
                 controller: _controller,
                 itemCount: pages.length,
                 onPageChanged: cubit.onPageChanged,
                 itemBuilder: (_, i) => OnboardingSlide(
                   page: pages[i],
+                  bottomInset: controlsHeight + AppSpacing.xl,
                   pageOffset: _page - i,
                 ),
               ),
             ),
-            SizedBox(height: AppSpacing.vXl),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                pages.length,
-                (i) => AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  margin: EdgeInsets.symmetric(horizontal: 4.w),
-                  width: i == index ? 22.w : 8.w,
-                  height: 8.h,
-                  decoration: BoxDecoration(
-                    color: i == index
-                        ? context.colors.primary
-                        : context.colors.outlineVariant,
-                    borderRadius: AppRadius.rPill,
-                  ),
-                ),
-              ),
+            // Controls float over the bottom of the artwork's navy fade.
+            Positioned(
+              left: landscape ? context.screenWidth / 2 : 0,
+              right: 0,
+              bottom: 0,
+              child: controls,
             ),
-            Padding(
-              padding: EdgeInsets.all(AppSpacing.screenH),
-              child: AppButton(
-                label: cubit.isLastPage
-                    ? context.l10n.getStarted
-                    : context.l10n.next,
-                onPressed: () => _next(cubit),
+            // Brand mark and Skip float over the artwork's clear top area.
+            PositionedDirectional(
+              top: MediaQuery.paddingOf(context).top + 12,
+              start: gutter,
+              child: const VelloraLogo(height: 38, onDark: true),
+            ),
+            PositionedDirectional(
+              top: MediaQuery.paddingOf(context).top + 8,
+              end: gutter - 6,
+              child: Visibility(
+                visible: !cubit.isLastPage,
+                child: _SkipPill(label: l10n.skip, onTap: _finish),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Brand-gold call to action. Gold on navy is the Vellora signature pairing.
+class _GoldButton extends StatelessWidget {
+  const _GoldButton({required this.label, required this.onPressed});
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () {
+        Haptics.selection();
+        onPressed();
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: kBrandGold,
+        foregroundColor: const Color(0xFF14102E),
+        minimumSize: const Size(0, 56),
+        padding: const EdgeInsets.symmetric(horizontal: 28),
+      ),
+      iconAlignment: IconAlignment.end,
+      // Directional arrows mirror automatically in RTL.
+      icon: const Icon(Icons.arrow_forward_rounded, size: 20),
+      label: Text(label),
+    );
+  }
+}
+
+class _SkipPill extends StatelessWidget {
+  const _SkipPill({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white.withValues(alpha: 0.16),
+      borderRadius: AppRadius.rPill,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: AppRadius.rPill,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 44, minWidth: 64),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: Center(
+              child: Text(
+                label,
+                style: context.textTheme.labelLarge?.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );

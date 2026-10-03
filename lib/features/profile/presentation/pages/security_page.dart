@@ -260,7 +260,7 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: AppSpacing.sm),
+      padding: EdgeInsetsDirectional.only(start: AppSpacing.sm),
       child: Text(
         label,
         style: context.textTheme.labelLarge?.copyWith(

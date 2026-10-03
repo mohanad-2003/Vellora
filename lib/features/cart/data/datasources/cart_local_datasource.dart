@@ -24,7 +24,8 @@ class CartLocalDataSourceImpl implements CartLocalDataSource {
 
   @override
   Future<List<CartItemModel>> getItems() async {
-    await Future<void>.delayed(AppConstants.mockShortDelay);
+    // Local storage is instant; the brief delay only lets the skeleton show.
+    await Future<void>.delayed(const Duration(milliseconds: 250));
     try {
       return _box.values
           .map((raw) =>

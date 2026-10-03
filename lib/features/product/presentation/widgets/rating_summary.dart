@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ui_kit/core/extensions/context_extensions.dart';
-import 'package:ui_kit/core/theme/app_radius.dart';
-import 'package:ui_kit/core/theme/app_spacing.dart';
-import 'package:ui_kit/core/widgets/rating_stars.dart';
-import 'package:ui_kit/features/product/domain/entities/review_entity.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/rating_stars.dart';
+import 'package:vellora/features/product/domain/entities/review_entity.dart';
 
-
+/// Overall rating headline followed by individual reviews.
 class RatingSummary extends StatelessWidget {
   const RatingSummary({
     super.key,
@@ -21,30 +20,37 @@ class RatingSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(rating.toStringAsFixed(1),
-                style: context.textTheme.headlineMedium),
-            SizedBox(width: AppSpacing.md),
+            Text(
+              rating.toStringAsFixed(1),
+              style: context.textTheme.displaySmall,
+            ),
+            const SizedBox(width: AppSpacing.md),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                RatingStars(rating: rating, size: 16.r),
-                SizedBox(height: 2.h),
-                Text('$reviewCount ${context.l10n.reviews}',
-                    style: context.textTheme.bodySmall),
+                RatingStars(rating: rating, size: 18),
+                const SizedBox(height: 2),
+                Text(
+                  l10n.reviewsCount(reviewCount),
+                  style: context.textTheme.bodySmall,
+                ),
               ],
             ),
           ],
         ),
-        SizedBox(height: AppSpacing.vLg),
-        ...reviews.map((r) => Padding(
-              padding: EdgeInsets.only(bottom: AppSpacing.vMd),
-              child: _ReviewTile(review: r),
-            )),
+        SizedBox(height: AppSpacing.lg),
+        for (final r in reviews)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+            child: _ReviewTile(review: r),
+          ),
       ],
     );
   }
@@ -57,8 +63,9 @@ class _ReviewTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final text = context.textTheme;
     return Container(
-      padding: EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: context.colors.surfaceContainerHighest,
         borderRadius: AppRadius.rMd,
@@ -69,25 +76,31 @@ class _ReviewTile extends StatelessWidget {
           Row(
             children: [
               CircleAvatar(
-                radius: 16.r,
+                radius: 18,
                 backgroundColor: context.colors.primaryContainer,
                 child: Text(
                   review.author.characters.first,
-                  style: context.textTheme.labelLarge,
+                  style: text.labelLarge?.copyWith(
+                    color: context.colors.onPrimaryContainer,
+                  ),
                 ),
               ),
-              SizedBox(width: AppSpacing.md),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
-                child: Text(review.author,
-                    style: context.textTheme.titleMedium),
+                child: Text(
+                  review.author,
+                  style: text.titleSmall,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              Text(review.timeAgo, style: context.textTheme.labelSmall),
+              Text(review.timeAgo, style: text.labelSmall),
             ],
           ),
-          SizedBox(height: AppSpacing.vSm),
-          RatingStars(rating: review.rating, size: 13.r),
-          SizedBox(height: AppSpacing.vSm),
-          Text(review.comment, style: context.textTheme.bodyMedium),
+          const SizedBox(height: AppSpacing.sm),
+          RatingStars(rating: review.rating, size: 14),
+          const SizedBox(height: AppSpacing.sm),
+          Text(review.comment, style: text.bodyMedium),
         ],
       ),
     );

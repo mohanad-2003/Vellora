@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/localization/locale_cubit.dart';
+import '../../../../core/responsive/responsive.dart';
 import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/theme_cubit.dart';
-import '../../../../core/widgets/app_bar_widget.dart';
-import '../../../../core/widgets/app_bottom_nav.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/settings_tile.dart';
+import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../../auth/domain/entities/user_entity.dart';
+import '../../../settings/presentation/pages/settings_page.dart';
 import '../cubit/profile_cubit.dart';
+import '../widgets/profile_avatar.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -35,10 +37,9 @@ class _ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBarWidget(title: l10n.profile, showBack: false),
       body: SafeArea(
+        bottom: false,
         child: BlocListener<ProfileCubit, ProfileState>(
           listenWhen: (prev, curr) =>
               prev.status != curr.status &&
@@ -48,14 +49,16 @@ class _ProfileView extends StatelessWidget {
             builder: (context, state) {
               if (state.status == ProfileStatus.initial ||
                   state.status == ProfileStatus.loading) {
-                return const Center(child: CircularProgressIndicator());
+                return const ListSkeleton(itemCount: 4, thumb: 64);
               }
-              return _ProfileContent(user: state.user);
+              return ResponsiveCenter(
+                maxWidth: 720,
+                child: _ProfileContent(user: state.user),
+              );
             },
           ),
         ),
       ),
-      bottomNavigationBar: const AppBottomNav(currentIndex: 3),
     );
   }
 }
@@ -77,93 +80,164 @@ class _ProfileContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final signedIn = user != null;
+
+    Widget group(List<Widget> children) => _TileGroup(children: children);
+    Widget label(String text) => Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xs,
+            AppSpacing.xl,
+            AppSpacing.xs,
+            AppSpacing.sm,
+          ),
+          child: Semantics(
+            header: true,
+            child: Text(text, style: context.textTheme.titleSmall),
+          ),
+        );
+
     return ListView(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.screenH,
-        vertical: AppSpacing.vLg,
+      padding: EdgeInsets.fromLTRB(
+        context.pageGutter,
+        AppSpacing.lg,
+        context.pageGutter,
+        AppSpacing.xxl,
       ),
       children: [
-        _ProfileHeader(user: user),
-        SizedBox(height: AppSpacing.vXl),
-        _SectionLabel(label: l10n.account),
-        SizedBox(height: AppSpacing.vSm),
-        _TileGroup(
-          children: [
-            SettingsTile(
-              icon: Icons.person_outline_rounded,
-              title: l10n.editProfile,
-              onTap: () => _openEditProfile(context),
-            ),
-            SettingsTile(
-              icon: Icons.location_on_outlined,
-              title: l10n.savedAddresses,
-              onTap: () => context.pushNamed(RouteNames.nSavedAddresses),
-            ),
-            SettingsTile(
-              icon: Icons.credit_card_rounded,
-              title: l10n.paymentMethods,
-              onTap: () => context.pushNamed(RouteNames.nPaymentMethods),
-            ),
-            SettingsTile(
-              icon: Icons.shield_outlined,
-              title: l10n.security,
-              onTap: () => context.pushNamed(RouteNames.nSecurity),
-            ),
-          ],
+        _ProfileHeader(
+          user: user,
+          onEdit: signedIn ? () => _openEditProfile(context) : null,
         ),
-        SizedBox(height: AppSpacing.vXl),
-        _SectionLabel(label: l10n.preferences),
-        SizedBox(height: AppSpacing.vSm),
-        _TileGroup(
-          children: [
-            BlocBuilder<ThemeCubit, ThemeMode>(
-              builder: (context, mode) {
-                final isDark = mode == ThemeMode.dark ||
-                    (mode == ThemeMode.system && context.isDark);
-                return SettingsTile(
-                  icon: Icons.dark_mode_outlined,
-                  title: l10n.darkMode,
-                  trailing: Switch(
-                    value: isDark,
-                    onChanged: (v) => context.read<ThemeCubit>().setThemeMode(
-                          v ? ThemeMode.dark : ThemeMode.light,
-                        ),
-                  ),
-                );
-              },
+        label(l10n.myShopping),
+        group([
+          SettingsTile(
+            icon: Icons.receipt_long_outlined,
+            title: l10n.myOrders,
+            onTap: () => context.pushNamed(RouteNames.nOrders),
+          ),
+          SettingsTile(
+            icon: Icons.favorite_border_rounded,
+            title: l10n.wishlist,
+            onTap: () => context.goNamed(RouteNames.nWishlist),
+          ),
+          SettingsTile(
+            icon: Icons.location_on_outlined,
+            title: l10n.savedAddresses,
+            onTap: () => context.pushNamed(RouteNames.nSavedAddresses),
+          ),
+          SettingsTile(
+            icon: Icons.credit_card_rounded,
+            title: l10n.paymentMethods,
+            onTap: () => context.pushNamed(RouteNames.nPaymentMethods),
+          ),
+        ]),
+        label(l10n.account),
+        group([
+          SettingsTile(
+            icon: Icons.notifications_none_rounded,
+            title: l10n.notifications,
+            onTap: () => context.pushNamed(RouteNames.nNotifications),
+          ),
+          SettingsTile(
+            icon: Icons.shield_outlined,
+            title: l10n.security,
+            onTap: () => context.pushNamed(RouteNames.nSecurity),
+          ),
+          SettingsTile(
+            icon: Icons.settings_outlined,
+            title: l10n.settings,
+            onTap: () => context.pushNamed(RouteNames.nSettings),
+          ),
+        ]),
+        label(l10n.preferences),
+        group([
+          BlocBuilder<LocaleCubit, Locale>(
+            builder: (context, locale) => SettingsTile(
+              icon: Icons.translate_rounded,
+              title: l10n.language,
+              trailing: Text(
+                locale.languageCode == 'ar' ? 'العربية' : 'English',
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: context.colors.primary,
+                ),
+              ),
+              onTap: () => AppBottomSheet.show(
+                context,
+                title: l10n.language,
+                child: const LanguagePicker(),
+              ),
             ),
-            BlocBuilder<LocaleCubit, Locale>(
-              builder: (context, locale) {
-                final isArabic = locale.languageCode == 'ar';
-                return SettingsTile(
-                  icon: Icons.translate_rounded,
-                  title: l10n.language,
-                  subtitle: isArabic ? l10n.arabic : l10n.english,
-                  trailing: Text(
-                    isArabic ? l10n.arabic : l10n.english,
-                    style: context.textTheme.bodyMedium?.copyWith(
-                      color: context.colors.primary,
-                    ),
-                  ),
-                  onTap: () => context.read<LocaleCubit>().toggle(),
-                );
-              },
+          ),
+          BlocBuilder<ThemeCubit, ThemeMode>(
+            builder: (context, mode) => SettingsTile(
+              icon: Icons.dark_mode_outlined,
+              title: l10n.theme,
+              trailing: Text(
+                switch (mode) {
+                  ThemeMode.light => l10n.lightTheme,
+                  ThemeMode.dark => l10n.darkTheme,
+                  ThemeMode.system => l10n.systemTheme,
+                },
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: context.colors.primary,
+                ),
+              ),
+              onTap: () => AppBottomSheet.show(
+                context,
+                title: l10n.theme,
+                child: const ThemePicker(),
+              ),
             ),
-          ],
-        ),
-        SizedBox(height: AppSpacing.vXl),
-        _TileGroup(
-          children: [
+          ),
+        ]),
+        label(l10n.support),
+        group([
+          SettingsTile(
+            icon: Icons.help_outline_rounded,
+            title: l10n.helpSupport,
+            onTap: () => _showHelp(context),
+          ),
+        ]),
+        const SizedBox(height: AppSpacing.xl),
+        if (signedIn)
+          group([
             SettingsTile(
               icon: Icons.logout_rounded,
               title: l10n.logout,
               destructive: true,
               onTap: () => _confirmLogout(context),
             ),
-          ],
-        ),
-        SizedBox(height: AppSpacing.vXl),
+          ]),
       ],
+    );
+  }
+
+  void _showHelp(BuildContext context) {
+    final l10n = context.l10n;
+    AppBottomSheet.show(
+      context,
+      title: l10n.helpSupport,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.helpBody, style: context.textTheme.bodyMedium),
+          const SizedBox(height: AppSpacing.lg),
+          Row(
+            children: [
+              Icon(Icons.mail_outline_rounded, color: context.colors.primary),
+              const SizedBox(width: AppSpacing.md),
+              // Email addresses read left-to-right in every locale.
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: SelectableText(
+                  AppConstants.supportEmail,
+                  style: context.textTheme.titleSmall,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -174,22 +248,19 @@ class _ProfileContent extends StatelessWidget {
       context,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             l10n.logoutConfirmTitle,
             style: context.textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: AppSpacing.vMd),
+          const SizedBox(height: AppSpacing.md),
           Text(
             l10n.logoutConfirmBody,
-            style: context.textTheme.bodyMedium?.copyWith(
-              color: context.colors.onSurfaceVariant,
-            ),
+            style: context.textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: AppSpacing.vXl),
+          const SizedBox(height: AppSpacing.xl),
           AppButton(
             label: l10n.logout,
             icon: Icons.logout_rounded,
@@ -198,7 +269,7 @@ class _ProfileContent extends StatelessWidget {
               cubit.logout();
             },
           ),
-          SizedBox(height: AppSpacing.vMd),
+          const SizedBox(height: AppSpacing.md),
           AppButton(
             label: l10n.cancel,
             variant: AppButtonVariant.outline,
@@ -211,123 +282,61 @@ class _ProfileContent extends StatelessWidget {
 }
 
 class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader({required this.user});
+  const _ProfileHeader({required this.user, required this.onEdit});
 
   final UserEntity? user;
-
-  String _initials(String name) {
-    final parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.isEmpty || parts.first.isEmpty) return '?';
-    if (parts.length == 1) return parts.first.characters.first.toUpperCase();
-    return (parts.first.characters.first + parts.last.characters.first)
-        .toUpperCase();
-  }
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final name = (user?.name.trim().isNotEmpty ?? false)
-        ? user!.name
-        : l10n.guest;
-    final email = (user?.email.trim().isNotEmpty ?? false)
-        ? user!.email
-        : l10n.guestPrompt;
-    final avatarUrl = user?.avatarUrl;
+    final text = context.textTheme;
+    final name = (user?.name.trim().isNotEmpty ?? false) ? user!.name : l10n.guest;
+    final email =
+        (user?.email.trim().isNotEmpty ?? false) ? user!.email : l10n.guestPrompt;
 
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: AppSpacing.vXl,
-      ),
-      decoration: BoxDecoration(
-        color: context.colors.surfaceContainerHighest,
-        borderRadius: AppRadius.rXl,
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 64.w,
-            height: 64.w,
-            alignment: Alignment.center,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              color: context.colors.primary,
-              shape: BoxShape.circle,
-            ),
-            child: (avatarUrl != null && avatarUrl.isNotEmpty)
-                ? Image.network(
-                    avatarUrl,
-                    width: 64.w,
-                    height: 64.w,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => _InitialsLabel(
-                      initials: _initials(name),
-                    ),
-                  )
-                : _InitialsLabel(initials: _initials(name)),
-          ),
-          SizedBox(width: AppSpacing.lg),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
+    return Row(
+      children: [
+        ProfileAvatar(name: name, avatarUrl: user?.avatarUrl, size: 72),
+        const SizedBox(width: AppSpacing.lg),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Semantics(
+                header: true,
+                child: Text(
                   name,
-                  style: context.textTheme.titleLarge,
+                  style: text.headlineSmall,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: AppSpacing.vXs),
-                Text(
-                  email,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: context.colors.onSurfaceVariant,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                email,
+                style: text.bodyMedium,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              if (onEdit != null)
+                AppButton(
+                  label: l10n.editProfile,
+                  icon: Icons.edit_outlined,
+                  variant: AppButtonVariant.outline,
+                  expand: false,
+                  onPressed: onEdit,
+                )
+              else
+                AppButton(
+                  label: l10n.login,
+                  expand: false,
+                  onPressed: () => context.goNamed(RouteNames.nLogin),
                 ),
-              ],
-            ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _InitialsLabel extends StatelessWidget {
-  const _InitialsLabel({required this.initials});
-
-  final String initials;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      initials,
-      style: context.textTheme.titleLarge?.copyWith(
-        color: context.colors.onPrimary,
-        fontWeight: FontWeight.w700,
-      ),
-    );
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: AppSpacing.sm),
-      child: Text(
-        label,
-        style: context.textTheme.labelLarge?.copyWith(
-          color: context.colors.onSurfaceVariant,
         ),
-      ),
+      ],
     );
   }
 }
@@ -352,7 +361,6 @@ class _TileGroup extends StatelessWidget {
             if (i > 0)
               Divider(
                 height: 1,
-                thickness: 1,
                 indent: AppSpacing.lg,
                 endIndent: AppSpacing.lg,
                 color: context.colors.outlineVariant,

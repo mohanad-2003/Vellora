@@ -15,17 +15,17 @@ class OnboardingCubit extends Cubit<int> {
 
   static const List<OnboardingPageEntity> pages = [
     OnboardingPageEntity(
-      imagePath: AssetPaths.hero,
+      imagePath: AssetPaths.onboardingDiscover,
       titleKey: 'onboardingTitle1',
       bodyKey: 'onboardingBody1',
     ),
     OnboardingPageEntity(
-      imagePath: AssetPaths.sale,
+      imagePath: AssetPaths.onboardingShopping,
       titleKey: 'onboardingTitle2',
       bodyKey: 'onboardingBody2',
     ),
     OnboardingPageEntity(
-      imagePath: AssetPaths.order,
+      imagePath: AssetPaths.onboardingDelivery,
       titleKey: 'onboardingTitle3',
       bodyKey: 'onboardingBody3',
     ),

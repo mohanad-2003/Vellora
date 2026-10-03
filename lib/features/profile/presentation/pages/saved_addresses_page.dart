@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/app_radius.dart';
@@ -138,14 +137,14 @@ class _AddressCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.location_on_rounded, color: colors.primary, size: 20.r),
+              Icon(Icons.location_on_rounded, color: colors.primary, size: 20),
               SizedBox(width: AppSpacing.sm),
               Text(address.label, style: context.textTheme.titleSmall),
               SizedBox(width: AppSpacing.sm),
               if (isDefault) _DefaultBadge(label: l10n.defaultLabel),
               const Spacer(),
               PopupMenuButton<String>(
-                icon: Icon(Icons.more_vert_rounded, size: 20.r),
+                icon: Icon(Icons.more_vert_rounded, size: 20),
                 onSelected: (value) {
                   if (value == 'default') onSetDefault();
                   if (value == 'delete') onDelete();
@@ -169,7 +168,7 @@ class _AddressCard extends StatelessWidget {
           ),
           SizedBox(height: AppSpacing.vSm),
           Text(address.recipient, style: context.textTheme.bodyMedium),
-          SizedBox(height: 2.h),
+          SizedBox(height: 2),
           Text(
             '${address.line}\n${address.city}',
             style: context.textTheme.bodySmall?.copyWith(
@@ -177,7 +176,7 @@ class _AddressCard extends StatelessWidget {
               height: 1.4,
             ),
           ),
-          SizedBox(height: 2.h),
+          SizedBox(height: 2),
           Text(
             address.phone,
             style: context.textTheme.bodySmall?.copyWith(
@@ -199,7 +198,7 @@ class _DefaultBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2.h),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
       decoration: BoxDecoration(
         color: colors.primary.withValues(alpha: 0.12),
         borderRadius: AppRadius.rSm,

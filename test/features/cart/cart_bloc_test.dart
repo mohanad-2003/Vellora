@@ -2,16 +2,17 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:ui_kit/core/errors/failures.dart';
-import 'package:ui_kit/core/usecases/usecase.dart';
-import 'package:ui_kit/features/cart/domain/entities/cart_item_entity.dart';
-import 'package:ui_kit/features/cart/domain/entities/cart_summary_entity.dart';
-import 'package:ui_kit/features/cart/domain/entities/promo_code_entity.dart';
-import 'package:ui_kit/features/cart/domain/usecases/apply_promo_usecase.dart';
-import 'package:ui_kit/features/cart/domain/usecases/get_cart_usecase.dart';
-import 'package:ui_kit/features/cart/domain/usecases/remove_from_cart_usecase.dart';
-import 'package:ui_kit/features/cart/domain/usecases/update_quantity_usecase.dart';
-import 'package:ui_kit/features/cart/presentation/bloc/cart_bloc.dart';
+import 'package:vellora/core/errors/failures.dart';
+import 'package:vellora/core/usecases/usecase.dart';
+import 'package:vellora/features/cart/domain/entities/cart_item_entity.dart';
+import 'package:vellora/features/cart/domain/entities/cart_summary_entity.dart';
+import 'package:vellora/features/cart/domain/entities/promo_code_entity.dart';
+import 'package:vellora/features/cart/domain/usecases/add_to_cart_usecase.dart';
+import 'package:vellora/features/cart/domain/usecases/apply_promo_usecase.dart';
+import 'package:vellora/features/cart/domain/usecases/get_cart_usecase.dart';
+import 'package:vellora/features/cart/domain/usecases/remove_from_cart_usecase.dart';
+import 'package:vellora/features/cart/domain/usecases/update_quantity_usecase.dart';
+import 'package:vellora/features/cart/presentation/bloc/cart_bloc.dart';
 
 class _MockGetCart extends Mock implements GetCartUseCase {}
 
@@ -21,17 +22,20 @@ class _MockRemove extends Mock implements RemoveFromCartUseCase {}
 
 class _MockApplyPromo extends Mock implements ApplyPromoUseCase {}
 
+class _MockAddToCart extends Mock implements AddToCartUseCase {}
+
 void main() {
   late _MockGetCart getCart;
   late _MockUpdateQty updateQty;
   late _MockRemove remove;
   late _MockApplyPromo applyPromo;
+  late _MockAddToCart addToCart;
 
   const item = CartItemEntity(
     id: 'p1__M',
     productId: 'p1',
     name: 'Tee',
-    imagePath: 'assets/p1.png',
+    imagePath: 'assets/images/products/product_hoodie_black.png',
     price: 20,
     quantity: 2,
   );
@@ -47,9 +51,10 @@ void main() {
     updateQty = _MockUpdateQty();
     remove = _MockRemove();
     applyPromo = _MockApplyPromo();
+    addToCart = _MockAddToCart();
   });
 
-  CartBloc build() => CartBloc(getCart, updateQty, remove, applyPromo);
+  CartBloc build() => CartBloc(getCart, updateQty, remove, applyPromo, addToCart);
 
   blocTest<CartBloc, CartState>(
     'emits [loading, loaded] with items',

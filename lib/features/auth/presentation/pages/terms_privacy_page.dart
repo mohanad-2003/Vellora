@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ui_kit/core/extensions/context_extensions.dart';
-import 'package:ui_kit/core/theme/app_spacing.dart';
-import 'package:ui_kit/core/widgets/app_bar_widget.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/app_bar_widget.dart';
 
 
 class TermsPrivacyPage extends StatelessWidget {
@@ -21,7 +22,9 @@ class TermsPrivacyPage extends StatelessWidget {
       appBar: AppBarWidget(title: l10n.termsPrivacyTitle),
       body: SafeArea(
         top: false,
-        child: ListView.separated(
+        child: ResponsiveCenter(
+          maxWidth: 720,
+          child: ListView.separated(
           padding: EdgeInsets.symmetric(
             horizontal: AppSpacing.screenH,
             vertical: AppSpacing.vXl,
@@ -44,6 +47,7 @@ class TermsPrivacyPage extends StatelessWidget {
               ],
             );
           },
+        ),
         ),
       ),
     );

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 /// Fades and slides its [child] into place after [delay]. Give a list of
@@ -35,13 +37,15 @@ class _StaggeredRevealState extends State<StaggeredReveal>
   late final Animation<double> _curved =
       CurvedAnimation(parent: _controller, curve: widget.curve);
 
+  Timer? _delayTimer;
+
   @override
   void initState() {
     super.initState();
     if (widget.delay == Duration.zero) {
       _controller.forward();
     } else {
-      Future<void>.delayed(widget.delay, () {
+      _delayTimer = Timer(widget.delay, () {
         if (mounted) _controller.forward();
       });
     }
@@ -49,6 +53,7 @@ class _StaggeredRevealState extends State<StaggeredReveal>
 
   @override
   void dispose() {
+    _delayTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }

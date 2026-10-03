@@ -1,11 +1,11 @@
 {
-    "name": "ui_kit",
-    "short_name": "ui_kit",
+    "name": "Vellora",
+    "short_name": "Vellora",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0B0E4A",
+    "theme_color": "#0B0E4A",
+    "description": "Vellora — premium shopping, simplified.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

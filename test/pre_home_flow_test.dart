@@ -5,16 +5,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ui_kit/app.dart';
-import 'package:ui_kit/core/di/injection.dart';
-import 'package:ui_kit/features/auth/presentation/pages/create_new_password_page.dart';
-import 'package:ui_kit/features/auth/presentation/pages/login_page.dart';
-import 'package:ui_kit/features/auth/presentation/pages/otp_verification_page.dart';
-import 'package:ui_kit/features/auth/presentation/pages/password_reset_success_page.dart';
-import 'package:ui_kit/features/auth/presentation/pages/register_page.dart';
-import 'package:ui_kit/features/auth/presentation/pages/welcome_page.dart';
-import 'package:ui_kit/features/language_select/presentation/pages/language_select_page.dart';
-import 'package:ui_kit/features/onboarding/presentation/pages/onboarding_page.dart';
+import 'package:vellora/app.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/features/auth/presentation/pages/create_new_password_page.dart';
+import 'package:vellora/features/auth/presentation/pages/login_page.dart';
+import 'package:vellora/features/auth/presentation/pages/otp_verification_page.dart';
+import 'package:vellora/features/auth/presentation/pages/password_reset_success_page.dart';
+import 'package:vellora/features/auth/presentation/pages/register_page.dart';
+import 'package:vellora/features/auth/presentation/pages/welcome_page.dart';
+import 'package:vellora/features/language_select/presentation/pages/language_select_page.dart';
+import 'package:vellora/features/onboarding/presentation/pages/onboarding_page.dart';
 
 /// Boots the real app (real DI, router, mock datasources) and drives the full
 /// pre-Home chain headlessly, asserting each screen is reached and no exception
@@ -74,7 +74,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const ShoplyApp());
+    await tester.pumpWidget(const VelloraApp());
     await tester.pump();
 
     // Splash decides (1.6s) → Language Select.
@@ -104,18 +104,18 @@ void main() {
     // Fill the register form and accept terms (gating check).
     final regFields = find.byType(TextFormField);
     await tester.enterText(regFields.at(0), 'Jane Doe');
-    await tester.enterText(regFields.at(1), 'jane@shoply.com');
+    await tester.enterText(regFields.at(1), 'jane@vellora.com');
     await tester.enterText(regFields.at(2), 'secret123');
     await tester.enterText(regFields.at(3), 'secret123');
     await tester.tap(find.byType(Checkbox));
     await tester.pump();
 
-    // Back to Welcome, then Log In → Login.
-    await tester.tap(find.widgetWithText(TextButton, 'Log In'));
+    // "Log In" swaps Register for Login (no stacking).
+    // The link sits below the (now taller) form, so scroll it into view.
+    final logInLink = find.widgetWithText(TextButton, 'Log In');
+    await tester.ensureVisible(logInLink);
     await tester.pumpAndSettle();
-    expect(find.byType(WelcomePage), findsOneWidget);
-
-    await tester.tap(find.widgetWithText(OutlinedButton, 'Log In'));
+    await tester.tap(logInLink);
     await tester.pumpAndSettle();
     expect(find.byType(LoginPage), findsOneWidget);
 
@@ -123,8 +123,8 @@ void main() {
     await tester.tap(find.widgetWithText(TextButton, 'Forgot Password?'));
     await tester.pumpAndSettle();
     final emailField = find.byType(TextFormField).first;
-    await tester.enterText(emailField, 'jane@shoply.com');
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Send Reset Link'));
+    await tester.enterText(emailField, 'jane@vellora.com');
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Send Code'));
     await tester.pump();
     await tester.pump(const Duration(seconds: 2)); // mock delay
     await tester.pump(const Duration(milliseconds: 500));

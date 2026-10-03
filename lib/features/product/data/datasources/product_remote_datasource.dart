@@ -1,7 +1,6 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/asset_paths.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/mock/mock_catalog.dart';
 import '../../../home/domain/entities/product_entity.dart';
@@ -54,19 +53,37 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   }
 
   List<String> _galleryFor(ProductEntity p) {
-    // Base image + a couple of complementary shots for the gallery.
-    final extras = AssetPaths.shoes.take(2).toList();
+    // Base shot + a few complementary shots from the same category. The mock
+    // catalog has a single photo per product; a real API returns the gallery.
+    final extras = MockCatalog.products
+        .where((o) => o.category == p.category && o.id != p.id)
+        .map((o) => o.imagePath)
+        .take(3);
     return [p.imagePath, ...extras];
   }
 
   ProductVariantEntity _variantFor(ProductEntity p) {
-    final isFootwear = p.id.startsWith('sh') || p.id.startsWith('nike');
-    return ProductVariantEntity(
-      colors: const ['Black', 'Sand', 'Navy', 'Olive'],
-      sizes: isFootwear
-          ? const ['39', '40', '41', '42', '43', '44']
-          : const ['XS', 'S', 'M', 'L', 'XL'],
-    );
+    switch (p.category) {
+      case 'shoes':
+        return const ProductVariantEntity(
+          colors: ['Black', 'White', 'Red', 'Navy'],
+          sizes: ['39', '40', '41', '42', '43', '44', '45'],
+        );
+      case 'men':
+      case 'women':
+        return const ProductVariantEntity(
+          colors: ['Black', 'Sand', 'Navy', 'Olive'],
+          sizes: ['XS', 'S', 'M', 'L', 'XL'],
+        );
+      case 'accessories':
+        return const ProductVariantEntity(
+          colors: ['Black', 'Sand', 'Navy'],
+          sizes: [],
+        );
+      default:
+        // Electronics, beauty, grocery: no apparel variants.
+        return const ProductVariantEntity(colors: [], sizes: []);
+    }
   }
 
   List<ReviewEntity> _reviewsFor(ProductEntity p) {

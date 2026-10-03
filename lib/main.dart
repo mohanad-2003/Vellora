@@ -8,5 +8,5 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await configureDependencies();
-  runApp(const ShoplyApp());
+  runApp(const VelloraApp());
 }

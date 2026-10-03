@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ui_kit/core/extensions/context_extensions.dart';
-import 'package:ui_kit/core/extensions/num_extensions.dart';
-import 'package:ui_kit/core/theme/app_colors.dart';
-import 'package:ui_kit/core/theme/app_radius.dart';
-import 'package:ui_kit/core/theme/app_spacing.dart';
 
+import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/extensions/num_extensions.dart';
+import '../../../../core/theme/app_radius.dart';
+import '../../../../core/theme/app_spacing.dart';
 
-/// "You're $X away from free shipping" banner with an animated progress bar.
-/// Mirrors the [CartSummaryEntity] rule: shipping is free once the subtotal
-/// passes [threshold].
+/// "Add $X more for free shipping" banner with an animated progress bar.
+/// Mirrors the cart summary rule: shipping is free once the subtotal passes
+/// [threshold].
 class FreeShippingProgress extends StatelessWidget {
   const FreeShippingProgress({
     super.key,
@@ -25,14 +23,13 @@ class FreeShippingProgress extends StatelessWidget {
     final unlocked = subtotal >= threshold;
     final remaining = (threshold - subtotal).clamp(0, threshold).toDouble();
     final progress = (subtotal / threshold).clamp(0.0, 1.0);
-    final accent = unlocked ? AppColors.success : context.colors.primary;
+    final accent = unlocked ? context.vellora.success : context.colors.primary;
 
     return Container(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: accent.withValues(alpha: 0.08),
+        color: accent.withValues(alpha: 0.09),
         borderRadius: AppRadius.rMd,
-        border: Border.all(color: accent.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,9 +41,9 @@ class FreeShippingProgress extends StatelessWidget {
                     ? Icons.local_shipping_rounded
                     : Icons.local_shipping_outlined,
                 color: accent,
-                size: 20.r,
+                size: 20,
               ),
-              SizedBox(width: AppSpacing.sm),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   unlocked
@@ -54,12 +51,13 @@ class FreeShippingProgress extends StatelessWidget {
                       : context.l10n.addForFreeShipping(remaining.toPrice()),
                   style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.colors.onSurface,
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: AppSpacing.vSm),
+          const SizedBox(height: AppSpacing.sm),
           ClipRRect(
             borderRadius: AppRadius.rPill,
             child: TweenAnimationBuilder<double>(
@@ -68,8 +66,8 @@ class FreeShippingProgress extends StatelessWidget {
               curve: Curves.easeOutCubic,
               builder: (_, value, _) => LinearProgressIndicator(
                 value: value,
-                minHeight: 6.h,
-                backgroundColor: accent.withValues(alpha: 0.15),
+                minHeight: 6,
+                backgroundColor: accent.withValues(alpha: 0.16),
                 valueColor: AlwaysStoppedAnimation(accent),
               ),
             ),

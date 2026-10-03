@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Corner-radius scale for a soft, modern Material 3 look.
+/// Corner-radius scale. Rounded, but restrained — only chips and badges use
+/// the full [pill].
 class AppRadius {
   AppRadius._();
 
-  static double get sm => 8.r;
-  static double get md => 12.r;
-  static double get lg => 16.r;
-  static double get xl => 20.r;
-  static double get xxl => 28.r;
-  static double get pill => 100.r;
+  static const double sm = 8;
+  static const double md = 12;
+  static const double lg = 16;
+  static const double xl = 20;
+  static const double xxl = 28;
+  static const double pill = 100;
 
-  static BorderRadius get rSm => BorderRadius.circular(sm);
-  static BorderRadius get rMd => BorderRadius.circular(md);
-  static BorderRadius get rLg => BorderRadius.circular(lg);
-  static BorderRadius get rXl => BorderRadius.circular(xl);
-  static BorderRadius get rXxl => BorderRadius.circular(xxl);
-  static BorderRadius get rPill => BorderRadius.circular(pill);
+  static const BorderRadius rSm = BorderRadius.all(Radius.circular(sm));
+  static const BorderRadius rMd = BorderRadius.all(Radius.circular(md));
+  static const BorderRadius rLg = BorderRadius.all(Radius.circular(lg));
+  static const BorderRadius rXl = BorderRadius.all(Radius.circular(xl));
+  static const BorderRadius rXxl = BorderRadius.all(Radius.circular(xxl));
+  static const BorderRadius rPill = BorderRadius.all(Radius.circular(pill));
 }

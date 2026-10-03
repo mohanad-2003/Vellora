@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../extensions/context_extensions.dart';
 import '../theme/app_radius.dart';
@@ -51,14 +50,14 @@ class SettingsTile extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 40.w,
-                height: 40.w,
+                width: 40,
+                height: 40,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: accent.withValues(alpha: 0.12),
                   borderRadius: AppRadius.rMd,
                 ),
-                child: Icon(icon, size: 20.r, color: accent),
+                child: Icon(icon, size: 20, color: accent),
               ),
               SizedBox(width: AppSpacing.lg),
               Expanded(
@@ -75,7 +74,7 @@ class SettingsTile extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     if (subtitle != null) ...[
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 2),
                       Text(
                         subtitle!,
                         style: context.textTheme.bodySmall?.copyWith(
@@ -93,7 +92,7 @@ class SettingsTile extends StatelessWidget {
                   (onTap != null
                       ? Icon(
                           Icons.chevron_right_rounded,
-                          size: 22.r,
+                          size: 22,
                           color: context.colors.outline,
                         )
                       : const SizedBox.shrink()),

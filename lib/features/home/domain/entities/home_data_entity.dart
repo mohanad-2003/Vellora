@@ -13,6 +13,7 @@ class HomeDataEntity extends Equatable {
     required this.flashSale,
     required this.newArrivals,
     required this.bestSellers,
+    this.recommended = const [],
   });
 
   final List<BannerEntity> banners;
@@ -21,6 +22,7 @@ class HomeDataEntity extends Equatable {
   final List<ProductEntity> flashSale;
   final List<ProductEntity> newArrivals;
   final List<ProductEntity> bestSellers;
+  final List<ProductEntity> recommended;
 
   HomeDataEntity withFavorites(Set<String> favoriteIds) {
     List<ProductEntity> mark(List<ProductEntity> list) => list
@@ -33,10 +35,19 @@ class HomeDataEntity extends Equatable {
       flashSale: mark(flashSale),
       newArrivals: mark(newArrivals),
       bestSellers: mark(bestSellers),
+      recommended: mark(recommended),
     );
   }
 
   @override
   List<Object?> get props =>
-      [banners, categories, featured, flashSale, newArrivals, bestSellers];
+      [
+        banners,
+        categories,
+        featured,
+        flashSale,
+        newArrivals,
+        bestSellers,
+        recommended,
+      ];
 }

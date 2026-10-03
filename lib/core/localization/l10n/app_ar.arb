@@ -1,7 +1,6 @@
 {
   "@@locale": "ar",
-  "appName": "شوبلي",
-
+  "appName": "Vellora",
   "onboardingTitle1": "اكتشف منتجات مميزة",
   "onboardingBody1": "تصفّح مجموعة منتقاة من أفضل المنتجات المختارة خصيصًا لك.",
   "onboardingTitle2": "تسوّق بلا عناء",
@@ -11,7 +10,6 @@
   "skip": "تخطّي",
   "next": "التالي",
   "getStarted": "لنبدأ",
-
   "login": "تسجيل الدخول",
   "register": "إنشاء حساب",
   "welcomeBack": "مرحبًا بعودتك",
@@ -24,32 +22,34 @@
   "confirmPassword": "تأكيد كلمة المرور",
   "forgotPassword": "هل نسيت كلمة المرور؟",
   "forgotPasswordTitle": "إعادة تعيين كلمة المرور",
-  "forgotPasswordSubtitle": "أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.",
-  "sendResetLink": "إرسال رابط الاستعادة",
+  "forgotPasswordSubtitle": "أدخل بريدك الإلكتروني وسنرسل لك رمزًا من 4 أرقام لإعادة تعيين كلمة المرور.",
+  "sendResetLink": "إرسال الرمز",
   "resetLinkSent": "تم إرسال رابط الاستعادة إلى بريدك الإلكتروني.",
   "orContinueWith": "أو تابع باستخدام",
   "dontHaveAccount": "ليس لديك حساب؟",
   "alreadyHaveAccount": "لديك حساب بالفعل؟",
   "rememberMe": "تذكّرني",
   "backToLogin": "العودة لتسجيل الدخول",
-
   "selectLanguage": "اختر لغتك",
   "selectLanguageSubtitle": "اختر لغتك المفضّلة للمتابعة. يمكنك تغييرها لاحقًا من الإعدادات.",
   "continueLabel": "متابعة",
-
-  "welcomeTitle": "أهلًا بك في شوبلي",
+  "welcomeTitle": "أهلًا بك في Vellora",
   "welcomeTagline": "تسوّق بذكاء. اكتشف منتجات مميّزة واستمتع بتجربة تسوّق سلسة وممتعة.",
   "continueAsGuest": "المتابعة كضيف",
-
   "otpTitle": "رمز التحقّق",
   "otpSubtitle": "أدخل الرمز المكوّن من 4 أرقام الذي أرسلناه إلى",
   "verify": "تحقّق",
   "didntReceiveCode": "لم تستلم الرمز؟",
   "resendCode": "إعادة إرسال الرمز",
   "resendIn": "إعادة الإرسال خلال {seconds}",
-  "@resendIn": {"placeholders": {"seconds": {"type": "String"}}},
+  "@resendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
   "invalidOtp": "الرمز الذي أدخلته غير صحيح. يُرجى المحاولة مرة أخرى.",
-
   "resetPasswordTitle": "إنشاء كلمة مرور جديدة",
   "resetPasswordSubtitle": "يجب أن تختلف كلمة المرور الجديدة عن كلمات المرور المستخدمة سابقًا.",
   "newPassword": "كلمة المرور الجديدة",
@@ -61,26 +61,23 @@
   "strong": "قوية",
   "passwordResetSuccessTitle": "تمت إعادة التعيين",
   "passwordResetSuccessBody": "تمت إعادة تعيين كلمة مرورك بنجاح. يمكنك الآن تسجيل الدخول باستخدام كلمة المرور الجديدة.",
-
   "agreeToTerms": "أوافق على ",
   "termsAndPrivacy": "الشروط وسياسة الخصوصية",
   "mustAcceptTerms": "يُرجى الموافقة على الشروط وسياسة الخصوصية للمتابعة.",
   "termsPrivacyTitle": "الشروط والخصوصية",
   "termsSectionUseTitle": "1. استخدام الخدمة",
-  "termsSectionUseBody": "بوصولك إلى شوبلي أو استخدامك له، فإنك توافق على الالتزام بهذه الشروط. أنت مسؤول عن الحفاظ على سرّية حسابك وعن جميع الأنشطة التي تجري من خلاله.",
+  "termsSectionUseBody": "بوصولك إلى Vellora أو استخدامك له، فإنك توافق على الالتزام بهذه الشروط. أنت مسؤول عن الحفاظ على سرّية حسابك وعن جميع الأنشطة التي تجري من خلاله.",
   "termsSectionPurchasesTitle": "2. الطلبات والمدفوعات",
   "termsSectionPurchasesBody": "تخضع جميع عمليات الشراء لتوفّر المنتج وتأكيد السعر. ونحتفظ بالحق في إلغاء أي طلب في حالات الاشتباه بالاحتيال أو أخطاء التسعير.",
   "termsSectionPrivacyTitle": "3. الخصوصية والبيانات",
   "termsSectionPrivacyBody": "نجمع فقط المعلومات اللازمة لتقديم خدماتنا وتحسينها. ولا تُباع بياناتك الشخصية أبدًا لأي طرف ثالث، وتُحمى باستخدام معايير الأمان المتّبعة في القطاع.",
   "termsSectionContactTitle": "4. تواصل معنا",
-  "termsSectionContactBody": "إذا كان لديك أي استفسار حول هذه الشروط أو كيفية تعاملنا مع بياناتك، تواصل مع فريق الدعم عبر support@shoply.com.",
-
+  "termsSectionContactBody": "إذا كان لديك أي استفسار حول هذه الشروط أو كيفية تعاملنا مع بياناتك، تواصل مع فريق الدعم عبر support@vellora.com.",
   "fieldRequired": "هذا الحقل مطلوب",
   "invalidEmail": "الرجاء إدخال بريد إلكتروني صحيح",
   "passwordTooShort": "يجب ألا تقل كلمة المرور عن 6 أحرف",
   "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
   "nameTooShort": "يجب ألا يقل الاسم عن حرفين",
-
   "home": "الرئيسية",
   "goodMorning": "صباح الخير",
   "searchHint": "ابحث عن المنتجات",
@@ -96,10 +93,21 @@
   "noProductsBody": "لا توجد منتجات في هذه الفئة حاليًا.",
   "noResultsTitle": "لا توجد نتائج",
   "noResultsBody": "لم نتمكّن من العثور على أي شيء لـ \"{query}\". جرّب كلمة أخرى.",
-  "@noResultsBody": {"placeholders": {"query": {"type": "String"}}},
+  "@noResultsBody": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
   "resultsCount": "{count, plural, =1{نتيجة واحدة} =2{نتيجتان} few{{count} نتائج} other{{count} نتيجة}}",
-  "@resultsCount": {"placeholders": {"count": {"type": "int"}}},
-
+  "@resultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "productDetails": "تفاصيل المنتج",
   "selectColor": "اللون",
   "selectSize": "المقاس",
@@ -112,7 +120,6 @@
   "quantity": "الكمية",
   "inStock": "متوفّر",
   "outOfStock": "غير متوفّر",
-
   "cart": "السلة",
   "myCart": "سلّتي",
   "emptyCartTitle": "سلّتك فارغة",
@@ -134,10 +141,21 @@
   "secureCheckout": "دفع آمن",
   "freeShippingUnlocked": "لقد حصلت على شحن مجاني!",
   "addForFreeShipping": "أضِف {amount} للحصول على شحن مجاني",
-  "@addForFreeShipping": {"placeholders": {"amount": {"type": "String"}}},
+  "@addForFreeShipping": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "cartItemsCount": "{count, plural, =0{لا عناصر} =1{عنصر واحد} =2{عنصران} few{{count} عناصر} other{{count} عنصرًا}}",
-  "@cartItemsCount": {"placeholders": {"count": {"type": "int"}}},
-
+  "@cartItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "retry": "إعادة المحاولة",
   "somethingWentWrong": "حدث خطأ ما",
   "noConnection": "لا يوجد اتصال بالإنترنت",
@@ -145,7 +163,6 @@
   "cacheError": "تعذّر تحميل البيانات المحلية",
   "unexpectedError": "حدث خطأ غير متوقّع",
   "loading": "جارٍ التحميل...",
-
   "settings": "الإعدادات",
   "language": "اللغة",
   "theme": "المظهر",
@@ -155,13 +172,11 @@
   "english": "English",
   "arabic": "العربية",
   "logout": "تسجيل الخروج",
-
   "wishlist": "المفضّلة",
   "emptyWishlistTitle": "قائمة مفضّلتك فارغة",
   "emptyWishlistBody": "احفظ العناصر المفضّلة لديك هنا لشرائها لاحقًا.",
   "browseProducts": "تصفّح المنتجات",
   "removedFromWishlist": "تمت الإزالة من المفضّلة",
-
   "profile": "الملف الشخصي",
   "account": "الحساب",
   "preferences": "التفضيلات",
@@ -175,7 +190,6 @@
   "cancel": "إلغاء",
   "logoutConfirmTitle": "تسجيل الخروج؟",
   "logoutConfirmBody": "هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟",
-
   "phoneNumber": "رقم الهاتف",
   "saveChanges": "حفظ التغييرات",
   "profileUpdated": "تم تحديث الملف الشخصي بنجاح",
@@ -216,7 +230,6 @@
   "deleteAccount": "حذف الحساب",
   "deleteAccountConfirmTitle": "حذف الحساب؟",
   "deleteAccountConfirmBody": "سيؤدي هذا إلى إزالة حسابك وجميع بياناتك نهائيًا. لا يمكن التراجع عن هذا الإجراء.",
-
   "checkoutTitle": "إتمام الشراء",
   "shippingAddress": "عنوان الشحن",
   "change": "تغيير",
@@ -229,7 +242,250 @@
   "orderPlacedBody": "شكرًا لشرائك. تم تأكيد طلبك وسيكون في طريقه إليك قريبًا.",
   "orderNumber": "رقم الطلب",
   "continueShopping": "مواصلة التسوّق",
-
   "comingSoon": "قريبًا",
-  "comingSoonBody": "هذه الميزة في طريقها إليك. ترقّبها قريبًا!"
+  "comingSoonBody": "هذه الميزة في طريقها إليك. ترقّبها قريبًا!",
+  "decreaseQuantity": "تقليل الكمية",
+  "increaseQuantity": "زيادة الكمية",
+  "wasPrice": "كان {price}",
+  "@wasPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "percentOff": "خصم {percent}٪",
+  "@percentOff": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "addToWishlist": "أضف إلى المفضلة",
+  "removeFromWishlist": "إزالة من المفضلة",
+  "pageOf": "الصفحة {current} من {total}",
+  "@pageOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "explore": "استكشف",
+  "notifications": "الإشعارات",
+  "splashTagline": "تسوّق راقٍ، بكل بساطة",
+  "languageEnglishHint": "الإنجليزية",
+  "languageArabicHint": "العربية",
+  "onboardingChipSecure": "دفع آمن",
+  "onboardingChipFast": "توصيل سريع",
+  "continueWithGoogle": "المتابعة باستخدام Google",
+  "continueWithApple": "المتابعة باستخدام Apple",
+  "continueWithFacebook": "المتابعة باستخدام Facebook",
+  "greetingMorning": "صباح الخير",
+  "greetingAfternoon": "طاب يومك",
+  "greetingEvening": "مساء الخير",
+  "shopNow": "تسوّق الآن",
+  "viewCart": "عرض السلة",
+  "featuredSubtitle": "مختارات لك بعناية",
+  "newArrivalsSubtitle": "وصل حديثًا هذا الأسبوع",
+  "recommendedForYou": "مقترح لك",
+  "recommendedSubtitle": "بناءً على الأكثر رواجًا",
+  "bannerSummerTitle": "مجموعة الصيف",
+  "bannerSummerSubtitle": "خصومات تصل إلى 50٪ على تشكيلة مختارة",
+  "bannerFlashTitle": "تخفيضات خاطفة",
+  "bannerFlashSubtitle": "تنتهي قريبًا — لا تفوّتها",
+  "bannerNewTitle": "وصل حديثًا",
+  "bannerNewSubtitle": "إصدارات جديدة كل أسبوع",
+  "endsInSemantics": "ينتهي خلال {hours} ساعة و{minutes} دقيقة",
+  "@endsInSemantics": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "categoryMen": "رجال",
+  "categoryWomen": "نساء",
+  "categoryShoes": "أحذية",
+  "categoryAccessories": "إكسسوارات",
+  "categoryBeauty": "جمال",
+  "categoryElectronics": "إلكترونيات",
+  "categoryGrocery": "بقالة",
+  "colorBlack": "أسود",
+  "colorWhite": "أبيض",
+  "colorRed": "أحمر",
+  "colorNavy": "كحلي",
+  "colorSand": "رملي",
+  "colorOlive": "زيتي",
+  "filters": "التصفية",
+  "sortBy": "الترتيب",
+  "sortRelevance": "الأكثر صلة",
+  "sortPriceLowHigh": "السعر: من الأقل إلى الأعلى",
+  "sortPriceHighLow": "السعر: من الأعلى إلى الأقل",
+  "sortTopRated": "الأعلى تقييمًا",
+  "category": "الفئة",
+  "priceRange": "نطاق السعر",
+  "brand": "العلامة التجارية",
+  "rating": "التقييم",
+  "anyRating": "أي تقييم",
+  "onSaleOnly": "العروض فقط",
+  "clearAll": "مسح الكل",
+  "applyFilters": "{count, plural, =0{لا توجد نتائج} =1{عرض نتيجة واحدة} =2{عرض نتيجتين} few{عرض {count} نتائج} other{عرض {count} نتيجة}}",
+  "@applyFilters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "listView": "عرض قائمة",
+  "gridView": "عرض شبكة",
+  "notifOrderShippedTitle": "طلبك في الطريق إليك",
+  "notifOrderShippedBody": "تم شحن الطلب رقم SH-20418 وسيصل خلال 2–3 أيام.",
+  "notifFlashSaleTitle": "بدأت التخفيضات الخاطفة",
+  "notifFlashSaleBody": "خصومات تصل إلى 50٪ على منتجات مختارة، اليوم فقط.",
+  "notifOrderDeliveredTitle": "تم تسليم الطلب",
+  "notifOrderDeliveredBody": "تم تسليم الطلب رقم SH-20377. نتمنى أن ينال إعجابك! شاركنا رأيك.",
+  "notifWelcomeTitle": "أهلًا بك في Vellora",
+  "notifWelcomeBody": "اكتشف منتجات راقية مختارة خصيصًا لك.",
+  "notifNewArrivalsTitle": "وصلت منتجات جديدة",
+  "notifNewArrivalsBody": "تشكيلات جديدة وصلت للتو. كن أول من يتسوّقها.",
+  "exploreSubtitle": "تصفّح جميع الفئات",
+  "exploreProducts": "استكشف المنتجات",
+  "products": "المنتجات",
+  "productsCount": "{count, plural, =0{لا منتجات} =1{منتج واحد} =2{منتجان} few{{count} منتجات} other{{count} منتجًا}}",
+  "@productsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noFilterResultsTitle": "لا توجد منتجات مطابقة",
+  "noFilterResultsBody": "جرّب إزالة بعض عوامل التصفية لعرض المزيد من المنتجات.",
+  "clearSearch": "مسح البحث",
+  "recentSearches": "عمليات البحث الأخيرة",
+  "browseCategories": "تصفّح الفئات",
+  "reviewsCount": "{count, plural, =1{تقييم واحد} =2{تقييمان} few{{count} تقييمات} other{{count} تقييمًا}}",
+  "@reviewsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "copyLink": "نسخ الرابط",
+  "linkCopied": "تم نسخ الرابط",
+  "youSave": "وفّرت {amount}",
+  "@youSave": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "perkDeliveryTitle": "توصيل مجاني للطلبات فوق 100$",
+  "perkDeliveryBody": "يصل خلال 3–5 أيام عمل",
+  "perkReturnsTitle": "إرجاع سهل",
+  "perkReturnsBody": "إرجاع بدون تعقيد خلال 30 يومًا",
+  "perkSecureTitle": "دفع آمن",
+  "perkSecureBody": "بيانات الدفع الخاصة بك محمية",
+  "showLess": "عرض أقل",
+  "readMore": "اقرأ المزيد",
+  "undo": "تراجع",
+  "deliveryMethod": "طريقة التوصيل",
+  "deliveryStandard": "توصيل عادي",
+  "deliveryExpress": "توصيل سريع",
+  "deliveryEta": "{min}–{max} أيام عمل",
+  "@deliveryEta": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "cashOnDelivery": "الدفع عند الاستلام",
+  "payOnArrival": "ادفع عند وصول طلبك",
+  "addressHome": "المنزل",
+  "addressWork": "العمل",
+  "trackOrder": "تتبّع الطلب",
+  "myOrders": "طلباتي",
+  "ordersAll": "الكل",
+  "orderStatusProcessing": "قيد التجهيز",
+  "orderStatusShipped": "تم الشحن",
+  "orderStatusDelivered": "تم التسليم",
+  "orderStatusCancelled": "ملغي",
+  "viewDetails": "عرض التفاصيل",
+  "noOrdersTitle": "لا توجد طلبات بعد",
+  "noOrdersBody": "عند إتمام أي طلب سيظهر هنا.",
+  "orderDetails": "تفاصيل الطلب",
+  "orderNotFoundTitle": "لم يتم العثور على الطلب",
+  "orderNotFoundBody": "تعذّر العثور على هذا الطلب. ربما تمت إزالته.",
+  "orderTracking": "تتبّع الطلب",
+  "orderItems": "المنتجات",
+  "trackPlaced": "تم تقديم الطلب",
+  "markAllRead": "تحديد الكل كمقروء",
+  "noNotificationsTitle": "لا إشعارات جديدة",
+  "noNotificationsBody": "ستظهر هنا التحديثات الجديدة حول طلباتك والعروض.",
+  "today": "اليوم",
+  "yesterday": "أمس",
+  "earlier": "سابقًا",
+  "unread": "غير مقروء",
+  "justNow": "الآن",
+  "minutesAgo": "{count, plural, =1{منذ دقيقة} =2{منذ دقيقتين} few{منذ {count} دقائق} other{منذ {count} دقيقة}}",
+  "@minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{count, plural, =1{منذ ساعة} =2{منذ ساعتين} few{منذ {count} ساعات} other{منذ {count} ساعة}}",
+  "@hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{count, plural, =1{منذ يوم} =2{منذ يومين} few{منذ {count} أيام} other{منذ {count} يومًا}}",
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appearance": "المظهر",
+  "privacy": "الخصوصية",
+  "about": "حول التطبيق",
+  "versionLabel": "الإصدار {version}",
+  "@versionLabel": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "notifPrefOrders": "تحديثات الطلبات",
+  "notifPrefOrdersSub": "حالة الشحن والتوصيل",
+  "notifPrefPromos": "العروض والتخفيضات",
+  "notifPrefPromosSub": "التخفيضات والمنتجات الجديدة والصفقات",
+  "myShopping": "تسوّقي",
+  "support": "الدعم",
+  "helpSupport": "المساعدة والدعم",
+  "helpBody": "لديك سؤال عن طلب أو عن حسابك؟ فريقنا جاهز لمساعدتك.",
+  "pageNotFoundTitle": "الصفحة غير موجودة",
+  "pageNotFoundBody": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+  "goHome": "العودة إلى الرئيسية"
 }

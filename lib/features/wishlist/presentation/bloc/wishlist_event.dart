@@ -19,3 +19,9 @@ class WishlistItemRemoved extends WishlistEvent {
   @override
   List<Object?> get props => [productId];
 }
+
+/// Re-reads favourites without showing the loading state (used when another
+/// screen changed them).
+class WishlistRefreshed extends WishlistEvent {
+  const WishlistRefreshed();
+}

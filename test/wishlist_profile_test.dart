@@ -4,19 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ui_kit/core/di/injection.dart';
-import 'package:ui_kit/core/localization/l10n/app_localizations.dart';
-import 'package:ui_kit/core/localization/locale_cubit.dart';
-import 'package:ui_kit/core/theme/app_theme.dart';
-import 'package:ui_kit/core/theme/theme_cubit.dart';
-import 'package:ui_kit/features/product/domain/repositories/favorites_repository.dart';
-import 'package:ui_kit/features/profile/presentation/cubit/profile_cubit.dart';
-import 'package:ui_kit/features/profile/presentation/pages/profile_page.dart';
-import 'package:ui_kit/features/wishlist/presentation/pages/wishlist_page.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/localization/l10n/app_localizations.dart';
+import 'package:vellora/core/localization/locale_cubit.dart';
+import 'package:vellora/core/theme/app_theme.dart';
+import 'package:vellora/core/theme/theme_cubit.dart';
+import 'package:vellora/features/product/domain/repositories/favorites_repository.dart';
+import 'package:vellora/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:vellora/features/profile/presentation/pages/profile_page.dart';
+import 'package:vellora/features/wishlist/presentation/pages/wishlist_page.dart';
 
 /// Renders the new Wishlist and Profile screens at multiple viewport aspect
 /// ratios (portrait phone, short-wide desktop, landscape phone) in both light
@@ -64,17 +63,21 @@ void main() {
   });
 
   tearDownAll(() async {
-    await Hive.deleteFromDisk();
-    await hiveDir.delete(recursive: true);
+    // Box watchers created inside the fake-async test zone can never finish
+    // closing, so don't wait on them forever.
+    await Hive.deleteFromDisk().timeout(
+      const Duration(seconds: 2),
+      onTimeout: () => <void>[],
+    );
+    try {
+      await hiveDir.delete(recursive: true);
+    } catch (_) {}
     await sl.reset();
   });
 
   Widget harness(Widget page, {ThemeMode themeMode = ThemeMode.light}) {
-    return ScreenUtilInit(
-      designSize: const Size(375, 812),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, _) => MultiBlocProvider(
+    return Builder(
+      builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider.value(value: sl<LocaleCubit>()),
           BlocProvider.value(value: sl<ThemeCubit>()),
@@ -128,8 +131,10 @@ void main() {
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
+        // Unmount so listeners (e.g. Hive box watchers) are released.
+        addTearDown(() => tester.pumpWidget(const SizedBox.shrink()));
 
-        await seedFavorites();
+        await tester.runAsync(seedFavorites);
         await tester.pumpWidget(
           harness(const WishlistPage(), themeMode: mode),
         );
@@ -144,8 +149,10 @@ void main() {
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
+        // Unmount so listeners (e.g. Hive box watchers) are released.
+        addTearDown(() => tester.pumpWidget(const SizedBox.shrink()));
 
-        await clearFavorites();
+        await tester.runAsync(clearFavorites);
         await tester.pumpWidget(
           harness(const WishlistPage(), themeMode: mode),
         );
@@ -160,6 +167,8 @@ void main() {
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
+        // Unmount so listeners (e.g. Hive box watchers) are released.
+        addTearDown(() => tester.pumpWidget(const SizedBox.shrink()));
 
         await tester.pumpWidget(
           harness(const ProfilePage(), themeMode: mode),
@@ -176,15 +185,19 @@ void main() {
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
+        // Unmount so listeners (e.g. Hive box watchers) are released.
+        addTearDown(() => tester.pumpWidget(const SizedBox.shrink()));
 
-    await clearFavorites();
-    await sl<FavoritesRepository>().toggle('p1');
+    await tester.runAsync(() async {
+      await clearFavorites();
+      await sl<FavoritesRepository>().toggle('p1');
+    });
 
     await tester.pumpWidget(harness(const WishlistPage()));
     await tester.pump(const Duration(milliseconds: 300));
 
     // The seeded product renders.
-    expect(find.text('Aero Runner Sneakers'), findsOneWidget);
+    expect(find.text('Graphic Pullover Hoodie'), findsOneWidget);
 
     // Tap its favorite (heart) toggle to remove it.
     await tester.tap(find.byIcon(Icons.favorite_rounded).first);

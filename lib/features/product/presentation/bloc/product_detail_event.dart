@@ -50,3 +50,9 @@ class ProductFavoriteToggled extends ProductDetailEvent {
 class ProductAddToCartRequested extends ProductDetailEvent {
   const ProductAddToCartRequested();
 }
+
+/// Adds the current selection to the cart, then signals the page to continue
+/// to checkout.
+class ProductBuyNowRequested extends ProductDetailEvent {
+  const ProductBuyNowRequested();
+}

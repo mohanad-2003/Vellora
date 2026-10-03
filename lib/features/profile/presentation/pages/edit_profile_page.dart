@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
@@ -98,7 +97,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
                         ProfileAvatar(
                           name: _name.text.isEmpty ? '?' : _name.text,
                           avatarUrl: widget.user?.avatarUrl,
-                          size: 96.w,
+                          size: 96,
                           editable: true,
                           onEdit: () => AppSnackbar.show(
                             context,

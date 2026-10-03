@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../extensions/context_extensions.dart';
 import '../theme/app_colors.dart';
@@ -56,8 +55,8 @@ class PasswordStrengthIndicator extends StatelessWidget {
           children: List.generate(3, (i) {
             return Expanded(
               child: Container(
-                margin: EdgeInsets.only(right: i < 2 ? AppSpacing.xs : 0),
-                height: 6.h,
+                margin: EdgeInsetsDirectional.only(end: i < 2 ? AppSpacing.xs : 0),
+                height: 6,
                 decoration: BoxDecoration(
                   color: i < filled
                       ? color

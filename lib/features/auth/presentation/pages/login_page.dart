@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ui_kit/core/di/injection.dart';
-import 'package:ui_kit/core/extensions/context_extensions.dart';
-import 'package:ui_kit/core/localization/l10n_lookup.dart';
-import 'package:ui_kit/core/routing/route_names.dart';
-import 'package:ui_kit/core/theme/app_spacing.dart';
-import 'package:ui_kit/core/utils/input_validators.dart';
-import 'package:ui_kit/core/widgets/app_button.dart';
-import 'package:ui_kit/core/widgets/app_text_field.dart';
-import 'package:ui_kit/core/widgets/auth_error_banner.dart';
-import 'package:ui_kit/core/widgets/custom_snackbar.dart';
-import 'package:ui_kit/core/widgets/staggered_reveal.dart';
-import 'package:ui_kit/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:ui_kit/features/auth/presentation/widgets/auth_header.dart';
-import 'package:ui_kit/features/auth/presentation/widgets/social_login_buttons.dart';
+
+import '../../../../core/di/injection.dart';
+import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/localization/l10n_lookup.dart';
+import '../../../../core/responsive/responsive.dart';
+import '../../../../core/routing/route_names.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/utils/input_validators.dart';
+import '../../../../core/widgets/app_bar_widget.dart';
+import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/widgets/auth_error_banner.dart';
+import '../../../../core/widgets/custom_snackbar.dart';
+import '../../../../core/widgets/staggered_reveal.dart';
+import '../bloc/auth_bloc.dart';
+import '../widgets/auth_header.dart';
+import '../widgets/social_login_buttons.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -55,19 +57,25 @@ class _LoginViewState extends State<_LoginView> {
     context.hideKeyboard();
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
-        AuthLoginRequested(
-          email: _emailController.text,
-          password: _passwordController.text,
-        ),
-      );
+            AuthLoginRequested(
+              email: _emailController.text,
+              password: _passwordController.text,
+            ),
+          );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final gutter = context.pageGutter;
+
     return Scaffold(
+      // Back button only when reached from Welcome; Login is also the landing
+      // page for returning signed-out users, where there is nothing to pop.
+      appBar: const AppBarWidget(),
       body: SafeArea(
+        top: false,
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state.status == AuthStatus.authenticated) {
@@ -83,140 +91,176 @@ class _LoginViewState extends State<_LoginView> {
           },
           builder: (context, state) {
             return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSpacing.screenH,
-                vertical: AppSpacing.vXl,
+              keyboardDismissBehavior:
+                  ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: EdgeInsets.fromLTRB(
+                gutter,
+                AppSpacing.sm,
+                gutter,
+                AppSpacing.xxl,
               ),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(height: 24.h),
-                    StaggeredReveal(
-                      child: AuthHeader(
-                        title: l10n.welcomeBack,
-                        subtitle: l10n.loginSubtitle,
+              child: ResponsiveCenter(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      StaggeredReveal(
+                        child: AuthHeader(
+                          showLogo: true,
+                          title: l10n.welcomeBack,
+                          subtitle: l10n.loginSubtitle,
+                        ),
                       ),
-                    ),
-                    if (_showBanner && _bannerKey != null)
-                      AuthErrorBanner(
-                        failureKey: _bannerKey!,
-                        onDismiss: () => setState(() => _showBanner = false),
-                      ),
-                    StaggeredReveal(
-                      delay: const Duration(milliseconds: 90),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          AppTextField(
-                            controller: _emailController,
-                            label: l10n.email,
-                            hint: 'you@example.com',
-                            prefixIcon: Icons.mail_outline_rounded,
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            validator: (v) {
-                              final key = InputValidators.email(v);
-                              return key == null ? null : tr(context, key);
-                            },
-                          ),
-                          SizedBox(height: AppSpacing.vLg),
-                          AppTextField(
-                            controller: _passwordController,
-                            label: l10n.password,
-                            hint: '••••••',
-                            prefixIcon: Icons.lock_outline_rounded,
-                            obscureText: true,
-                            textInputAction: TextInputAction.done,
-                            onSubmitted: (_) => _submit(),
-                            validator: (v) {
-                              final key = InputValidators.password(v);
-                              return key == null ? null : tr(context, key);
-                            },
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 24.w,
-                                height: 24.w,
-                                child: Checkbox(
+                      if (_showBanner && _bannerKey != null)
+                        AuthErrorBanner(
+                          failureKey: _bannerKey!,
+                          onDismiss: () => setState(() => _showBanner = false),
+                        ),
+                      StaggeredReveal(
+                        delay: const Duration(milliseconds: 80),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            AppTextField(
+                              controller: _emailController,
+                              label: l10n.email,
+                              hint: 'you@example.com',
+                              prefixIcon: Icons.mail_outline_rounded,
+                              keyboardType: TextInputType.emailAddress,
+                              autofillHints: const [AutofillHints.email],
+                              autocorrect: false,
+                              textInputAction: TextInputAction.next,
+                              validator: (v) {
+                                final key = InputValidators.email(v);
+                                return key == null ? null : tr(context, key);
+                              },
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            AppTextField(
+                              controller: _passwordController,
+                              label: l10n.password,
+                              hint: '••••••',
+                              prefixIcon: Icons.lock_outline_rounded,
+                              obscureText: true,
+                              autofillHints: const [AutofillHints.password],
+                              autocorrect: false,
+                              textInputAction: TextInputAction.done,
+                              onSubmitted: (_) => _submit(),
+                              validator: (v) {
+                                final key = InputValidators.password(v);
+                                return key == null ? null : tr(context, key);
+                              },
+                            ),
+                            const SizedBox(height: AppSpacing.sm),
+                            // Wraps onto two lines instead of squeezing when
+                            // the text is long (Arabic) or scaled up.
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                _RememberMe(
                                   value: _rememberMe,
-                                  onChanged: (v) => setState(
-                                    () => _rememberMe = v ?? false,
-                                  ),
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
+                                  label: l10n.rememberMe,
+                                  onChanged: (v) =>
+                                      setState(() => _rememberMe = v),
                                 ),
-                              ),
-                              SizedBox(width: AppSpacing.sm),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => setState(
-                                    () => _rememberMe = !_rememberMe,
-                                  ),
-                                  child: Text(
-                                    l10n.rememberMe,
-                                    style: context.textTheme.bodyMedium,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                TextButton(
+                                  onPressed: () => context
+                                      .pushNamed(RouteNames.nForgotPassword),
+                                  child: Text(l10n.forgotPassword),
                                 ),
-                              ),
-                              SizedBox(width: AppSpacing.sm),
-                              TextButton(
-                                onPressed: () => context.pushNamed(
-                                  RouteNames.nForgotPassword,
-                                ),
-                                child: Text(
-                                  l10n.forgotPassword,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: AppSpacing.vSm),
-                          AppButton(
-                            label: l10n.login,
-                            isLoading: state.isLoading,
-                            onPressed: _submit,
-                          ),
-                        ],
+                              ],
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            AppButton(
+                              label: l10n.login,
+                              isLoading: state.isLoading,
+                              onPressed: _submit,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(height: AppSpacing.vXxl),
-                    StaggeredReveal(
-                      delay: const Duration(milliseconds: 180),
-                      child: Column(
+                      const SizedBox(height: AppSpacing.xxl),
+                      StaggeredReveal(
+                        delay: const Duration(milliseconds: 160),
+                        child: Column(
+                          children: [
+                            _OrDivider(label: l10n.orContinueWith),
+                            const SizedBox(height: AppSpacing.xl),
+                            const SocialLoginButtons(),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xxl),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          _OrDivider(label: l10n.orContinueWith),
-                          SizedBox(height: AppSpacing.vXl),
-                          const SocialLoginButtons(),
+                          Text(
+                            l10n.dontHaveAccount,
+                            style: context.textTheme.bodyMedium,
+                          ),
+                          TextButton(
+                            // Swap rather than stack (see Register).
+                            onPressed: () => context
+                                .pushReplacementNamed(RouteNames.nRegister),
+                            child: Text(l10n.register),
+                          ),
                         ],
                       ),
-                    ),
-                    SizedBox(height: AppSpacing.vXxl),
-                    Wrap(
-                      alignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(
-                          l10n.dontHaveAccount,
-                          style: context.textTheme.bodyMedium,
-                        ),
-                        TextButton(
-                          onPressed: () =>
-                              context.pushNamed(RouteNames.nRegister),
-                          child: Text(l10n.register),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+/// Checkbox + label as one 48dp-high tap target.
+class _RememberMe extends StatelessWidget {
+  const _RememberMe({
+    required this.value,
+    required this.label,
+    required this.onChanged,
+  });
+
+  final bool value;
+  final String label;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      checked: value,
+      label: label,
+      excludeSemantics: true,
+      onTap: () => onChanged(!value),
+      child: InkWell(
+        onTap: () => onChanged(!value),
+        borderRadius: BorderRadius.circular(8),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox.square(
+                dimension: 24,
+                child: Checkbox(
+                  value: value,
+                  onChanged: (v) => onChanged(v ?? false),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Text(label, style: context.textTheme.bodyMedium),
+              const SizedBox(width: AppSpacing.sm),
+            ],
+          ),
         ),
       ),
     );
@@ -234,7 +278,7 @@ class _OrDivider extends StatelessWidget {
       children: [
         const Expanded(child: Divider()),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Text(label, style: context.textTheme.bodySmall),
         ),
         const Expanded(child: Divider()),

@@ -1,65 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:ui_kit/core/extensions/context_extensions.dart';
-import 'package:ui_kit/core/extensions/num_extensions.dart';
-import 'package:ui_kit/core/theme/app_spacing.dart';
-import 'package:ui_kit/core/widgets/app_button.dart';
-import 'package:ui_kit/core/widgets/quantity_selector.dart';
 
+import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/app_button.dart';
 
-/// Sticky bottom bar: quantity stepper + total price + Add to Cart.
+/// Sticky purchase bar: Add to Cart + Buy Now, always within reach.
 class ProductActionsBar extends StatelessWidget {
   const ProductActionsBar({
     super.key,
-    required this.quantity,
-    required this.unitPrice,
     required this.inStock,
-    required this.onQuantityChanged,
     required this.onAddToCart,
+    required this.onBuyNow,
   });
 
-  final int quantity;
-  final double unitPrice;
   final bool inStock;
-  final ValueChanged<int> onQuantityChanged;
   final VoidCallback onAddToCart;
+  final VoidCallback onBuyNow;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-        AppSpacing.screenH,
-        AppSpacing.md,
-        AppSpacing.screenH,
-        AppSpacing.md,
-      ),
+    final l10n = context.l10n;
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: context.colors.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
-          ),
-        ],
+        border: Border(
+          top: BorderSide(color: context.colors.outlineVariant),
+        ),
       ),
       child: SafeArea(
         top: false,
-        child: Row(
-          children: [
-            QuantitySelector(
-              quantity: quantity,
-              onChanged: onQuantityChanged,
-            ),
-            SizedBox(width: AppSpacing.lg),
-            Expanded(
-              child: AppButton(
-                label:
-                    '${context.l10n.addToCart}  •  ${(unitPrice * quantity).toPrice()}',
-                icon: Icons.shopping_bag_outlined,
-                onPressed: inStock ? onAddToCart : null,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.screenH,
+            AppSpacing.md,
+            AppSpacing.screenH,
+            AppSpacing.md,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: AppButton(
+                  label: l10n.addToCart,
+                  icon: Icons.shopping_bag_outlined,
+                  variant: AppButtonVariant.outline,
+                  haptic: true,
+                  onPressed: inStock ? onAddToCart : null,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: AppButton(
+                  label: l10n.buyNow,
+                  haptic: true,
+                  onPressed: inStock ? onBuyNow : null,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -50,6 +50,31 @@ class PaymentMethodOption extends Equatable {
   List<Object?> get props => [id, kind, title, subtitle, assetPath];
 }
 
+/// How the order is delivered.
+enum DeliveryKind { standard, express }
+
+class DeliveryOption extends Equatable {
+  const DeliveryOption({
+    required this.id,
+    required this.kind,
+    required this.minDays,
+    required this.maxDays,
+    this.flatFee,
+  });
+
+  final String id;
+  final DeliveryKind kind;
+  final int minDays;
+  final int maxDays;
+
+  /// Fixed fee. Null means "use the cart's standard shipping rule" (free over
+  /// the free-shipping threshold).
+  final double? flatFee;
+
+  @override
+  List<Object?> get props => [id, kind, minDays, maxDays, flatFee];
+}
+
 /// Static checkout options standing in for a real account/backend.
 class CheckoutMockData {
   CheckoutMockData._();
@@ -70,6 +95,22 @@ class CheckoutMockData {
       line: '900 Market Street, Floor 7',
       city: 'San Francisco, CA 94102',
       phone: '+1 415 555 0199',
+    ),
+  ];
+
+  static const List<DeliveryOption> deliveryOptions = [
+    DeliveryOption(
+      id: 'del_standard',
+      kind: DeliveryKind.standard,
+      minDays: 3,
+      maxDays: 5,
+    ),
+    DeliveryOption(
+      id: 'del_express',
+      kind: DeliveryKind.express,
+      minDays: 1,
+      maxDays: 2,
+      flatFee: 14.99,
     ),
   ];
 

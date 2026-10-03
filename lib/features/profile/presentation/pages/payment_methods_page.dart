@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
@@ -13,7 +12,7 @@ import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../checkout/presentation/models/checkout_models.dart';
-import '../../../checkout/presentation/widgets/payment_method_tile.dart';
+import '../../../checkout/presentation/widgets/checkout_tiles.dart';
 import '../cubit/payment_methods_cubit.dart';
 
 class PaymentMethodsPage extends StatelessWidget {
@@ -61,7 +60,7 @@ class _PaymentMethodsView extends StatelessWidget {
                       final isDefault = method.id == state.defaultId;
                       return Stack(
                         children: [
-                          PaymentMethodTile(
+                          PaymentTile(
                             method: method,
                             selected: isDefault,
                             onTap: () => context
@@ -136,7 +135,7 @@ class _CardMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return PopupMenuButton<String>(
-      icon: Icon(Icons.more_vert_rounded, size: 20.r),
+      icon: Icon(Icons.more_vert_rounded, size: 20),
       onSelected: (value) {
         if (value == 'default') onSetDefault();
         if (value == 'delete') onDelete();

@@ -1,0 +1,198 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:injectable/injectable.dart';
+
+import '../../../../core/di/injection.dart';
+import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/localization/l10n_lookup.dart';
+import '../../../../core/responsive/responsive.dart';
+import '../../../../core/routing/route_names.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../../../../core/widgets/category_card.dart';
+import '../../../../core/widgets/error_state_widget.dart';
+import '../../../../core/widgets/shimmer_widgets.dart';
+import '../../../catalog/presentation/pages/catalog_page.dart';
+import '../../../home/domain/entities/category_entity.dart';
+import '../../../home/domain/usecases/get_home_data_usecase.dart';
+import '../../../home/presentation/widgets/search_bar_entry.dart';
+
+enum ExploreStatus { loading, loaded, error }
+
+class ExploreState extends Equatable {
+  const ExploreState({
+    this.status = ExploreStatus.loading,
+    this.categories = const [],
+    this.failureKey,
+  });
+
+  final ExploreStatus status;
+  final List<CategoryEntity> categories;
+  final String? failureKey;
+
+  @override
+  List<Object?> get props => [status, categories, failureKey];
+}
+
+/// Loads the category list for the Explore tab.
+@injectable
+class ExploreCubit extends Cubit<ExploreState> {
+  ExploreCubit(this._getHomeData) : super(const ExploreState());
+
+  final GetHomeDataUseCase _getHomeData;
+
+  Future<void> load() async {
+    emit(const ExploreState());
+    final result = await _getHomeData(const NoParams());
+    result.match(
+      (failure) => emit(ExploreState(
+        status: ExploreStatus.error,
+        failureKey: failure.l10nKey,
+      )),
+      (data) => emit(ExploreState(
+        status: ExploreStatus.loaded,
+        categories: data.categories,
+      )),
+    );
+  }
+}
+
+/// The Explore tab: browse every category as a large photo tile.
+class ExplorePage extends StatelessWidget {
+  const ExplorePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<ExploreCubit>()..load(),
+      child: const _ExploreView(),
+    );
+  }
+}
+
+class _ExploreView extends StatelessWidget {
+  const _ExploreView();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final gutter = context.pageGutter;
+
+    return Scaffold(
+      body: SafeArea(
+        bottom: false,
+        child: ResponsiveCenter(
+          maxWidth: Breakpoints.contentMaxWidth,
+          child: BlocBuilder<ExploreCubit, ExploreState>(
+            builder: (context, state) {
+              return CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        gutter,
+                        AppSpacing.lg,
+                        gutter,
+                        AppSpacing.xl,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Semantics(
+                            header: true,
+                            child: Text(
+                              l10n.explore,
+                              style: context.textTheme.displaySmall,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(l10n.exploreSubtitle),
+                          const SizedBox(height: AppSpacing.xl),
+                          const SearchBarEntry(),
+                        ],
+                      ),
+                    ),
+                  ),
+                  switch (state.status) {
+                    ExploreStatus.loading => SliverPadding(
+                        padding: EdgeInsets.symmetric(horizontal: gutter),
+                        sliver: SliverGrid.count(
+                          crossAxisCount: context.isTablet ? 3 : 2,
+                          mainAxisSpacing: AppSpacing.md,
+                          crossAxisSpacing: AppSpacing.md,
+                          childAspectRatio: 1.15,
+                          children: List.generate(
+                            6,
+                            (_) => const AppShimmer(
+                              child: ShimmerBox(width: double.infinity),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ExploreStatus.error => SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: ErrorStateWidget(
+                          message: l10n.somethingWentWrong,
+                          onRetry: () => context.read<ExploreCubit>().load(),
+                        ),
+                      ),
+                    ExploreStatus.loaded => SliverPadding(
+                        padding: EdgeInsets.fromLTRB(
+                          gutter,
+                          0,
+                          gutter,
+                          AppSpacing.xxl,
+                        ),
+                        sliver: SliverLayoutBuilder(
+                          builder: (context, c) {
+                            final columns = c.crossAxisExtent >= 840
+                                ? 4
+                                : c.crossAxisExtent >= 560
+                                    ? 3
+                                    : 2;
+                            return SliverGrid.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: columns,
+                                mainAxisSpacing: AppSpacing.md,
+                                crossAxisSpacing: AppSpacing.md,
+                                childAspectRatio: 1.15,
+                              ),
+                              itemCount: state.categories.length,
+                              itemBuilder: (context, i) {
+                                final c = state.categories[i];
+                                final label = categoryLabel(
+                                  context,
+                                  c.id,
+                                  fallback: c.name,
+                                );
+                                return CategoryTile(
+                                  label: label,
+                                  caption:
+                                      l10n.productsCount(c.productCount),
+                                  imagePath: c.imagePath,
+                                  onTap: () => context.pushNamed(
+                                    RouteNames.nCatalog,
+                                    extra: CatalogArgs(
+                                      title: label,
+                                      categoryId: c.id,
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                  },
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ui_kit/core/extensions/context_extensions.dart';
-import 'package:ui_kit/core/routing/route_names.dart';
-import 'package:ui_kit/core/theme/app_colors.dart';
-import 'package:ui_kit/core/theme/app_spacing.dart';
-import 'package:ui_kit/core/widgets/app_button.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_colors.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/app_button.dart';
 
 class PasswordResetSuccessPage extends StatelessWidget {
   const PasswordResetSuccessPage({super.key});
@@ -34,36 +33,46 @@ class PasswordResetSuccessPage extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          width: 112.w,
-                          height: 112.w,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: AppColors.success.withValues(alpha: 0.12),
-                            shape: BoxShape.circle,
+                        TweenAnimationBuilder<double>(
+                          tween: Tween(
+                            begin: MediaQuery.disableAnimationsOf(context)
+                                ? 1
+                                : 0.6,
+                            end: 1,
                           ),
+                          duration: const Duration(milliseconds: 520),
+                          curve: Curves.easeOutBack,
+                          builder: (_, scale, child) =>
+                              Transform.scale(scale: scale, child: child),
                           child: Container(
-                            width: 72.w,
-                            height: 72.w,
+                            width: 112,
+                            height: 112,
                             alignment: Alignment.center,
-                            decoration: const BoxDecoration(
-                              color: AppColors.success,
+                            decoration: BoxDecoration(
+                              color: AppColors.success.withValues(alpha: 0.12),
                               shape: BoxShape.circle,
                             ),
-                            child: Icon(
-                              Icons.check_rounded,
-                              color: Colors.white,
-                              size: 40.r,
+                            child: Container(
+                              width: 72,
+                              height: 72,
+                              alignment: Alignment.center,
+                              decoration: const BoxDecoration(
+                                color: AppColors.success,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.check_rounded,
+                                color: Colors.white,
+                                size: 40,
+                              ),
                             ),
                           ),
                         ),
                         SizedBox(height: AppSpacing.vXxl),
                         Text(
                           l10n.passwordResetSuccessTitle,
-                          style: context.textTheme.displayLarge,
+                          style: context.textTheme.displaySmall,
                           textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
                         SizedBox(height: AppSpacing.vMd),
                         Padding(
@@ -76,8 +85,6 @@ class PasswordResetSuccessPage extends StatelessWidget {
                               color: context.colors.onSurfaceVariant,
                             ),
                             textAlign: TextAlign.center,
-                            maxLines: 4,
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],

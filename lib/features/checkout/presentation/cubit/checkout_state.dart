@@ -11,7 +11,9 @@ class CheckoutState extends Equatable {
     this.selectedAddressId,
     this.paymentMethods = const [],
     this.selectedPaymentId,
-    this.orderNumber,
+    this.deliveryOptions = const [],
+    this.selectedDeliveryId,
+    this.order,
     this.failureKey,
   });
 
@@ -22,7 +24,11 @@ class CheckoutState extends Equatable {
   final String? selectedAddressId;
   final List<PaymentMethodOption> paymentMethods;
   final String? selectedPaymentId;
-  final String? orderNumber;
+  final List<DeliveryOption> deliveryOptions;
+  final String? selectedDeliveryId;
+
+  /// The order that was just placed (set on [CheckoutStatus.success]).
+  final OrderEntity? order;
   final String? failureKey;
 
   ShippingAddress? get selectedAddress {
@@ -30,6 +36,13 @@ class CheckoutState extends Equatable {
       if (a.id == selectedAddressId) return a;
     }
     return addresses.isEmpty ? null : addresses.first;
+  }
+
+  DeliveryOption? get selectedDelivery {
+    for (final d in deliveryOptions) {
+      if (d.id == selectedDeliveryId) return d;
+    }
+    return deliveryOptions.isEmpty ? null : deliveryOptions.first;
   }
 
   PaymentMethodOption? get selectedPayment {
@@ -47,7 +60,9 @@ class CheckoutState extends Equatable {
     String? selectedAddressId,
     List<PaymentMethodOption>? paymentMethods,
     String? selectedPaymentId,
-    String? orderNumber,
+    List<DeliveryOption>? deliveryOptions,
+    String? selectedDeliveryId,
+    OrderEntity? order,
     String? failureKey,
   }) {
     return CheckoutState(
@@ -58,7 +73,9 @@ class CheckoutState extends Equatable {
       selectedAddressId: selectedAddressId ?? this.selectedAddressId,
       paymentMethods: paymentMethods ?? this.paymentMethods,
       selectedPaymentId: selectedPaymentId ?? this.selectedPaymentId,
-      orderNumber: orderNumber ?? this.orderNumber,
+      deliveryOptions: deliveryOptions ?? this.deliveryOptions,
+      selectedDeliveryId: selectedDeliveryId ?? this.selectedDeliveryId,
+      order: order ?? this.order,
       failureKey: failureKey,
     );
   }
@@ -72,7 +89,9 @@ class CheckoutState extends Equatable {
         selectedAddressId,
         paymentMethods,
         selectedPaymentId,
-        orderNumber,
+        deliveryOptions,
+        selectedDeliveryId,
+        order,
         failureKey,
       ];
 }

@@ -4,25 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ui_kit/core/di/injection.dart';
-import 'package:ui_kit/core/localization/l10n/app_localizations.dart';
-import 'package:ui_kit/core/localization/locale_cubit.dart';
-import 'package:ui_kit/core/theme/app_theme.dart';
-import 'package:ui_kit/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:ui_kit/features/auth/presentation/pages/create_new_password_page.dart';
-import 'package:ui_kit/features/auth/presentation/pages/forgot_password_page.dart';
-import 'package:ui_kit/features/auth/presentation/pages/login_page.dart';
-import 'package:ui_kit/features/auth/presentation/pages/otp_verification_page.dart';
-import 'package:ui_kit/features/auth/presentation/pages/password_reset_success_page.dart';
-import 'package:ui_kit/features/auth/presentation/pages/register_page.dart';
-import 'package:ui_kit/features/auth/presentation/pages/terms_privacy_page.dart';
-import 'package:ui_kit/features/auth/presentation/pages/welcome_page.dart';
-import 'package:ui_kit/features/language_select/presentation/pages/language_select_page.dart';
-import 'package:ui_kit/features/onboarding/presentation/pages/onboarding_page.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/localization/l10n/app_localizations.dart';
+import 'package:vellora/core/localization/locale_cubit.dart';
+import 'package:vellora/core/theme/app_theme.dart';
+import 'package:vellora/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:vellora/features/auth/presentation/pages/create_new_password_page.dart';
+import 'package:vellora/features/auth/presentation/pages/forgot_password_page.dart';
+import 'package:vellora/features/auth/presentation/pages/login_page.dart';
+import 'package:vellora/features/auth/presentation/pages/otp_verification_page.dart';
+import 'package:vellora/features/auth/presentation/pages/password_reset_success_page.dart';
+import 'package:vellora/features/auth/presentation/pages/register_page.dart';
+import 'package:vellora/features/auth/presentation/pages/terms_privacy_page.dart';
+import 'package:vellora/features/auth/presentation/pages/welcome_page.dart';
+import 'package:vellora/features/language_select/presentation/pages/language_select_page.dart';
+import 'package:vellora/features/onboarding/presentation/pages/onboarding_page.dart';
 
 /// Renders every new / redesigned pre-Home screen at multiple viewport aspect
 /// ratios (including a short-wide desktop-like one) and asserts none overflow.
@@ -73,11 +72,8 @@ void main() {
   });
 
   Widget harness(Widget page) {
-    return ScreenUtilInit(
-      designSize: const Size(375, 812),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, _) => BlocProvider.value(
+    return Builder(
+      builder: (context) => BlocProvider.value(
         value: sl<LocaleCubit>(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

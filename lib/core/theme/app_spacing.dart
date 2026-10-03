@@ -1,30 +1,31 @@
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-/// 8pt spacing system. Values are responsive via ScreenUtil (`.w` / `.h`).
-/// Use these instead of hardcoded pixel values anywhere in the app.
+/// 4-pt spacing scale: 4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48.
+///
+/// Plain, unscaled logical pixels. Use these everywhere instead of ad-hoc
+/// numbers. Horizontal (`xs`…) and vertical (`vXs`…) names are kept so existing
+/// call sites read naturally; both resolve to the same scale.
 class AppSpacing {
   AppSpacing._();
 
-  static double get xxs => 2.w;
-  static double get xs => 4.w;
-  static double get sm => 8.w;
-  static double get md => 12.w;
-  static double get lg => 16.w;
-  static double get xl => 20.w;
-  static double get xxl => 24.w;
-  static double get xxxl => 32.w;
-  static double get huge => 48.w;
+  static const double xxs = 2;
+  static const double xs = 4;
+  static const double sm = 8;
+  static const double md = 12;
+  static const double lg = 16;
+  static const double xl = 20;
+  static const double xxl = 24;
+  static const double xxxl = 32;
+  static const double x4l = 40;
+  static const double huge = 48;
 
-  // Vertical rhythm helpers.
-  static double get vXs => 4.h;
-  static double get vSm => 8.h;
-  static double get vMd => 12.h;
-  static double get vLg => 16.h;
-  static double get vXl => 20.h;
-  static double get vXxl => 24.h;
-  static double get vXxxl => 32.h;
+  static const double vXs = xs;
+  static const double vSm = sm;
+  static const double vMd = md;
+  static const double vLg = lg;
+  static const double vXl = xl;
+  static const double vXxl = xxl;
+  static const double vXxxl = xxxl;
 
   /// Standard screen edge padding.
-  static double get screenH => 20.w;
-  static double get screenV => 16.h;
+  static const double screenH = lg + xs; // 20
+  static const double screenV = lg;
 }

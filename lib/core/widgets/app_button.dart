@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../theme/app_radius.dart';
+import '../utils/haptics.dart';
 
 enum AppButtonVariant { primary, secondary, outline, text }
 
-/// A single, theme-driven button used across the app, with built-in loading
-/// state and optional leading icon.
+/// The single button used across the app: theme-driven, with loading state,
+/// optional leading/trailing icon and optional haptic confirmation.
+///
+/// The label wraps (up to two lines) instead of shrinking, so it stays legible
+/// at large text scales and with longer Arabic copy.
 class AppButton extends StatelessWidget {
   const AppButton({
     super.key,
@@ -15,7 +18,9 @@ class AppButton extends StatelessWidget {
     this.variant = AppButtonVariant.primary,
     this.isLoading = false,
     this.icon,
+    this.trailingIcon,
     this.expand = true,
+    this.haptic = false,
   });
 
   final String label;
@@ -23,71 +28,140 @@ class AppButton extends StatelessWidget {
   final AppButtonVariant variant;
   final bool isLoading;
   final IconData? icon;
+  final IconData? trailingIcon;
   final bool expand;
+
+  /// Fires a light haptic when pressed. Reserve for committing actions.
+  final bool haptic;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final effectiveOnPressed = isLoading ? null : onPressed;
+    final enabled = onPressed != null && !isLoading;
 
+    VoidCallback? handler;
+    if (enabled) {
+      handler = () {
+        if (haptic) Haptics.light();
+        onPressed!();
+      };
+    }
+
+    final foreground = switch (variant) {
+      AppButtonVariant.primary => colors.onPrimary,
+      AppButtonVariant.secondary => colors.onPrimaryContainer,
+      AppButtonVariant.outline => colors.onSurface,
+      AppButtonVariant.text => colors.primary,
+    };
+
+    final content = Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (icon != null) ...[
+          Icon(icon, size: 20),
+          const SizedBox(width: 8),
+        ],
+        Flexible(
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        if (trailingIcon != null) ...[
+          const SizedBox(width: 8),
+          Icon(trailingIcon, size: 20),
+        ],
+      ],
+    );
+
+    // Keep the label in the tree (hidden) while loading so the button does not
+    // change size.
     final child = isLoading
-        ? SizedBox(
-            height: 20.r,
-            width: 20.r,
-            child: CircularProgressIndicator(
-              strokeWidth: 2.2,
-              valueColor: AlwaysStoppedAnimation(
-                variant == AppButtonVariant.primary
-                    ? colors.onPrimary
-                    : colors.primary,
-              ),
-            ),
-          )
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
+        ? Stack(
+            alignment: Alignment.center,
             children: [
-              if (icon != null) ...[
-                Icon(icon, size: 18.r),
-                SizedBox(width: 8.w),
-              ],
-              Flexible(child: Text(label, overflow: TextOverflow.ellipsis)),
+              Opacity(opacity: 0, child: content),
+              SizedBox.square(
+                dimension: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.2,
+                  valueColor: AlwaysStoppedAnimation(foreground),
+                ),
+              ),
             ],
-          );
+          )
+        : content;
+
+    const shape = RoundedRectangleBorder(borderRadius: AppRadius.rMd);
 
     final Widget button = switch (variant) {
       AppButtonVariant.primary => ElevatedButton(
-          onPressed: effectiveOnPressed,
-          style: ElevatedButton.styleFrom(
-            minimumSize: Size(0, 54.h),
-            shape: RoundedRectangleBorder(borderRadius: AppRadius.rMd),
-          ),
+          onPressed: handler,
+          style: isLoading
+              ? ElevatedButton.styleFrom(
+                  disabledBackgroundColor: colors.primary,
+                  disabledForegroundColor: colors.onPrimary,
+                )
+              : null,
           child: child,
         ),
       AppButtonVariant.secondary => ElevatedButton(
-          onPressed: effectiveOnPressed,
+          onPressed: handler,
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(0, 54.h),
-            backgroundColor: colors.secondaryContainer,
-            foregroundColor: colors.onSecondaryContainer,
-            shape: RoundedRectangleBorder(borderRadius: AppRadius.rMd),
+            backgroundColor: colors.primaryContainer,
+            foregroundColor: colors.onPrimaryContainer,
+            disabledBackgroundColor: colors.primaryContainer,
+            disabledForegroundColor: colors.onPrimaryContainer,
+            shape: shape,
           ),
           child: child,
         ),
       AppButtonVariant.outline => OutlinedButton(
-          onPressed: effectiveOnPressed,
-          style: OutlinedButton.styleFrom(
-            minimumSize: Size(0, 54.h),
-            shape: RoundedRectangleBorder(borderRadius: AppRadius.rMd),
-          ),
+          onPressed: handler,
           child: child,
         ),
       AppButtonVariant.text => TextButton(
-          onPressed: effectiveOnPressed,
+          onPressed: handler,
           child: child,
         ),
     };
 
     return expand ? SizedBox(width: double.infinity, child: button) : button;
   }
+}
+
+/// Filled brand button — the main call to action on a screen.
+class PrimaryButton extends AppButton {
+  const PrimaryButton({
+    super.key,
+    required super.label,
+    super.onPressed,
+    super.isLoading,
+    super.icon,
+    super.trailingIcon,
+    super.expand,
+    super.haptic,
+  }) : super(variant: AppButtonVariant.primary);
+}
+
+/// Soft / outlined secondary action.
+class SecondaryButton extends AppButton {
+  const SecondaryButton({
+    super.key,
+    required super.label,
+    super.onPressed,
+    super.isLoading,
+    super.icon,
+    super.trailingIcon,
+    super.expand,
+    super.haptic,
+    bool outlined = true,
+  }) : super(
+          variant: outlined
+              ? AppButtonVariant.outline
+              : AppButtonVariant.secondary,
+        );
 }

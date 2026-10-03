@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Vellora brand navy: shown by the OS while the app process starts. -->
+    <color name="vellora_splash">#FF0B0E4A</color>
+</resources>

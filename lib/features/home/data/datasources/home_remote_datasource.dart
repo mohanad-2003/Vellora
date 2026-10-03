@@ -6,6 +6,7 @@ import '../../../../core/mock/mock_catalog.dart';
 import '../../domain/entities/banner_entity.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/home_data_entity.dart';
+import '../../domain/entities/product_entity.dart';
 
 /// Mocked home backend. Builds the home payload from the shared [MockCatalog]
 /// with a simulated delay. A real datasource would deserialize JSON models.
@@ -21,48 +22,98 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
 
     final products = MockCatalog.products;
 
+    double discount(ProductEntity p) =>
+        p.hasDiscount ? (p.originalPrice! - p.price) / p.originalPrice! : 0;
+
+    final flashSale = products.where((p) => p.hasDiscount).toList()
+      ..sort((a, b) => discount(b).compareTo(discount(a)));
+    final bestSellers = [...products]
+      ..sort((a, b) => b.reviewCount.compareTo(a.reviewCount));
+    final featured = products.where((p) => p.rating >= 4.7).toList();
+    final newArrivals = products.reversed.toList();
+    // Deterministic "for you" slice — every third item, so it differs from the
+    // other rails without needing randomness (keeps tests stable).
+    final recommended = [
+      for (var i = 0; i < products.length; i += 2) products[i],
+    ];
+
     return HomeDataEntity(
       banners: _banners,
-      categories: _categories,
-      featured: products.take(6).toList(),
-      flashSale: products.where((p) => p.hasDiscount).take(6).toList(),
-      newArrivals: products.reversed.take(6).toList(),
-      bestSellers: [...products]
-          .where((p) => p.rating >= 4.5)
-          .take(6)
-          .toList(),
+      categories: _categories(products),
+      featured: featured.take(8).toList(),
+      flashSale: flashSale.take(8).toList(),
+      newArrivals: newArrivals.take(8).toList(),
+      bestSellers: bestSellers.take(8).toList(),
+      recommended: recommended.take(10).toList(),
     );
   }
 
-  static const List<CategoryEntity> _categories = [
-    CategoryEntity(id: 'men', name: 'Men', iconPath: AssetPaths.catMen),
-    CategoryEntity(id: 'women', name: 'Women', iconPath: AssetPaths.catWomen),
-    CategoryEntity(id: 'kids', name: 'Kids', iconPath: AssetPaths.catKids),
-    CategoryEntity(
-        id: 'beauty', name: 'Beauty', iconPath: AssetPaths.catBeauty),
-    CategoryEntity(
-        id: 'fashion', name: 'Fashion', iconPath: AssetPaths.catFashion),
-    CategoryEntity(id: 'gifts', name: 'Gifts', iconPath: AssetPaths.catGifts),
-  ];
+  static List<CategoryEntity> _categories(List<ProductEntity> products) {
+    int count(String id) => products.where((p) => p.category == id).length;
+    return [
+      CategoryEntity(
+        id: 'men',
+        name: 'Men',
+        imagePath: AssetPaths.hoodieBlack,
+        productCount: count('men'),
+      ),
+      CategoryEntity(
+        id: 'women',
+        name: 'Women',
+        imagePath: AssetPaths.dressBlackTrench,
+        productCount: count('women'),
+      ),
+      CategoryEntity(
+        id: 'shoes',
+        name: 'Shoes',
+        imagePath: AssetPaths.sneakersHighTopMono,
+        productCount: count('shoes'),
+      ),
+      CategoryEntity(
+        id: 'accessories',
+        name: 'Accessories',
+        imagePath: AssetPaths.watchAviator,
+        productCount: count('accessories'),
+      ),
+      CategoryEntity(
+        id: 'beauty',
+        name: 'Beauty',
+        imagePath: AssetPaths.lipstickRed,
+        productCount: count('beauty'),
+      ),
+      CategoryEntity(
+        id: 'electronics',
+        name: 'Electronics',
+        imagePath: AssetPaths.cameraDslr,
+        productCount: count('electronics'),
+      ),
+      CategoryEntity(
+        id: 'grocery',
+        name: 'Grocery',
+        imagePath: AssetPaths.hotChocolate,
+        productCount: count('grocery'),
+      ),
+    ];
+  }
 
   static const List<BannerEntity> _banners = [
     BannerEntity(
-      id: 'b1',
+      id: 'summer',
       title: 'Summer Collection',
       subtitle: 'Up to 50% off selected styles',
-      imagePath: AssetPaths.hero,
+      imagePath: AssetPaths.dressBlackTrench,
     ),
     BannerEntity(
-      id: 'b2',
+      id: 'flash',
       title: 'Flash Sale',
       subtitle: 'Ends soon — grab it fast',
-      imagePath: AssetPaths.sale,
+      imagePath: AssetPaths.sneakersStreetOrange,
     ),
     BannerEntity(
-      id: 'b3',
+      id: 'new',
       title: 'New Arrivals',
       subtitle: 'Fresh drops every week',
-      imagePath: AssetPaths.shopping,
+      imagePath: AssetPaths.bannerShoppingWoman,
     ),
   ];
 }

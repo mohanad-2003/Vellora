@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../extensions/context_extensions.dart';
 import '../theme/app_spacing.dart';
@@ -25,8 +24,8 @@ class TermsCheckbox extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-          width: 24.w,
-          height: 24.w,
+          width: 24,
+          height: 24,
           child: Checkbox(
             value: value,
             onChanged: (v) => onChanged(v ?? false),

@@ -1,4 +1,4 @@
-name: ui_kit
+name: vellora
 description: "A premium Clean Architecture + Bloc e-commerce app (Phase 1)."
 publish_to: "none"
 
@@ -44,7 +44,6 @@ dependencies:
   internet_connection_checker_plus: ^3.1.1
 
   # UI / responsiveness
-  flutter_screenutil: ^5.9.3
   cached_network_image: ^3.4.1
   lottie: ^3.2.1
   flutter_svg: ^2.0.14
@@ -66,76 +65,49 @@ dev_dependencies:
   retrofit_generator: ^10.2.7
   bloc_test: ^10.0.0
   mocktail: ^1.0.4
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
   generate: true
 
   assets:
-    - assets/vector.png
-    - assets/facebook.png
-    - assets/apple.png
-    - assets/google.png
-    - assets/main.png
-    - assets/profile.png
-    - assets/beauty.png
-    - assets/kids.png
-    - assets/mens.png
-    - assets/womens.png
-    - assets/grifts.png
-    - assets/fashion.png
-    - assets/image.png
-    - assets/hour.png
-    - assets/shope1.png
-    - assets/sales.png
-    - assets/order.png
-    - assets/mask.png
-    - assets/mask2.png
-    - assets/mask3.png
-    - assets/mask4.png
-    - assets/rectangle.png
-    - assets/rectangle2.png
-    - assets/groub.png
-    - assets/rectangle3.png
-    - assets/hour2.png
-    - assets/maskgroub1.png
-    - assets/maskgroub2.png
-    - assets/maskgroub3.png
-    - assets/shose.png
-    - assets/maskgroub4.png
-    - assets/mask5.png
-    - assets/store.png
-    - assets/fillter.png
-    - assets/p1.png
-    - assets/p2.png
-    - assets/p3.png
-    - assets/p4.png
-    - assets/p5.png
-    - assets/p6.png
-    - assets/p7.png
-    - assets/p8.png
-    - assets/p9.png
-    - assets/p10.png
-    - assets/p11.png
-    - assets/p12.png
-    - assets/p13.png
-    - assets/p14.png
-    - assets/sh1.png
-    - assets/sh2.png
-    - assets/sh3.png
-    - assets/sh4.png
-    - assets/sh5.png
-    - assets/nike1.png
-    - assets/nike2.png
-    - assets/nike3.png
-    - assets/nike4.png
-    - assets/hand.png
-    - assets/check.png
-    - assets/personal.png
-    - assets/men.png
-    - assets/icon.png
-    - assets/paypal.png
-    - assets/visa.png
-    - assets/maestro.png
-    - assets/app.png
-    - assets/star.png
+    - assets/branding/
+    - assets/images/products/
+    - assets/images/banners/
+    - assets/images/onboarding/
+    - assets/images/categories/
+    - assets/images/social/
+    - assets/images/payment/
+    - assets/images/avatars/
+    - assets/images/icons/
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter.ttf
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo.ttf
+
+flutter_launcher_icons:
+  # Master: full-bleed 1024px square (no alpha) — used for iOS, legacy Android
+  # launchers, web, Windows and macOS. Android 8+ uses the adaptive pair below.
+  image_path: assets/branding/vellora_icon.png
+  android: true
+  adaptive_icon_background: assets/branding/vellora_icon_background.png
+  adaptive_icon_foreground: assets/branding/vellora_icon_foreground.png
+  ios: true
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: assets/branding/vellora_icon.png
+    background_color: "#0B0E4A"
+    theme_color: "#0B0E4A"
+  windows:
+    generate: true
+    image_path: assets/branding/vellora_icon.png
+    icon_size: 256
+  macos:
+    generate: true
+    image_path: assets/branding/vellora_icon.png

@@ -2,17 +2,17 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:ui_kit/core/errors/failures.dart';
-import 'package:ui_kit/core/usecases/usecase.dart';
-import 'package:ui_kit/features/auth/domain/entities/user_entity.dart';
-import 'package:ui_kit/features/auth/domain/usecases/forgot_password_usecase.dart';
-import 'package:ui_kit/features/auth/domain/usecases/get_cached_user_usecase.dart';
-import 'package:ui_kit/features/auth/domain/usecases/login_usecase.dart';
-import 'package:ui_kit/features/auth/domain/usecases/logout_usecase.dart';
-import 'package:ui_kit/features/auth/domain/usecases/register_usecase.dart';
-import 'package:ui_kit/features/auth/domain/usecases/reset_password_usecase.dart';
-import 'package:ui_kit/features/auth/domain/usecases/verify_otp_usecase.dart';
-import 'package:ui_kit/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:vellora/core/errors/failures.dart';
+import 'package:vellora/core/usecases/usecase.dart';
+import 'package:vellora/features/auth/domain/entities/user_entity.dart';
+import 'package:vellora/features/auth/domain/usecases/forgot_password_usecase.dart';
+import 'package:vellora/features/auth/domain/usecases/get_cached_user_usecase.dart';
+import 'package:vellora/features/auth/domain/usecases/login_usecase.dart';
+import 'package:vellora/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:vellora/features/auth/domain/usecases/register_usecase.dart';
+import 'package:vellora/features/auth/domain/usecases/reset_password_usecase.dart';
+import 'package:vellora/features/auth/domain/usecases/verify_otp_usecase.dart';
+import 'package:vellora/features/auth/presentation/bloc/auth_bloc.dart';
 
 class _MockLogin extends Mock implements LoginUseCase {}
 

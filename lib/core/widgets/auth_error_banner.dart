@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../extensions/context_extensions.dart';
 import '../localization/l10n_lookup.dart';
@@ -73,7 +72,7 @@ class _AuthErrorBannerState extends State<AuthErrorBanner>
           ),
           child: Row(
             children: [
-              Icon(_icon, color: tone, size: 20.r),
+              Icon(_icon, color: tone, size: 20),
               SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Text(
@@ -87,7 +86,7 @@ class _AuthErrorBannerState extends State<AuthErrorBanner>
               InkWell(
                 onTap: widget.onDismiss,
                 borderRadius: AppRadius.rPill,
-                child: Icon(Icons.close_rounded, color: tone, size: 18.r),
+                child: Icon(Icons.close_rounded, color: tone, size: 18),
               ),
             ],
           ),

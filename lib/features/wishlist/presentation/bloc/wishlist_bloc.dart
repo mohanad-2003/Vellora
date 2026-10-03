@@ -15,6 +15,7 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
       : super(const WishlistState()) {
     on<WishlistStarted>(_onStarted);
     on<WishlistItemRemoved>(_onItemRemoved);
+    on<WishlistRefreshed>((event, emit) => _load(emit));
   }
 
   final GetWishlistProductsUseCase _getProducts;

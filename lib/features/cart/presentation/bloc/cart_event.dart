@@ -42,3 +42,22 @@ class CartPromoApplied extends CartEvent {
 class CartPromoRemoved extends CartEvent {
   const CartPromoRemoved();
 }
+
+class CartItemRestored extends CartEvent {
+  const CartItemRestored(this.item);
+
+  final CartItemEntity item;
+
+  @override
+  List<Object?> get props => [item];
+}
+
+/// Fired when the shared cart count changes; the bloc reloads if it is stale.
+class CartSynced extends CartEvent {
+  const CartSynced(this.itemCount);
+
+  final int itemCount;
+
+  @override
+  List<Object?> get props => [itemCount];
+}

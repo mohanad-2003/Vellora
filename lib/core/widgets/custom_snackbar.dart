@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../theme/app_colors.dart';
+import '../extensions/context_extensions.dart';
 import '../theme/app_radius.dart';
 
 enum SnackType { success, error, info }
 
-/// Helper for showing consistent, themed snackbars.
+/// Themed floating snackbars. Content is announced to screen readers by the
+/// framework's [SnackBar] semantics.
 class AppSnackbar {
   AppSnackbar._();
 
@@ -14,15 +14,17 @@ class AppSnackbar {
     BuildContext context, {
     required String message,
     SnackType type = SnackType.info,
+    String? actionLabel,
+    VoidCallback? onAction,
   }) {
+    final vellora = context.vellora;
     final (color, icon) = switch (type) {
-      SnackType.success => (AppColors.success, Icons.check_circle_rounded),
-      SnackType.error => (AppColors.error, Icons.error_rounded),
-      SnackType.info => (
-          Theme.of(context).colorScheme.inverseSurface,
-          Icons.info_rounded
-        ),
+      SnackType.success => (vellora.success, Icons.check_circle_rounded),
+      SnackType.error => (context.colors.error, Icons.error_rounded),
+      SnackType.info => (context.colors.inverseSurface, Icons.info_rounded),
     };
+    final onColor =
+        type == SnackType.info ? context.colors.onInverseSurface : Colors.white;
 
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -30,20 +32,28 @@ class AppSnackbar {
         SnackBar(
           content: Row(
             children: [
-              Icon(icon, color: Colors.white, size: 20.r),
-              SizedBox(width: 12.w),
+              Icon(icon, color: onColor, size: 20),
+              const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   message,
-                  style: const TextStyle(color: Colors.white),
+                  style: context.textTheme.bodyMedium?.copyWith(color: onColor),
                 ),
               ),
             ],
           ),
+          action: actionLabel != null
+              ? SnackBarAction(
+                  label: actionLabel,
+                  textColor: onColor,
+                  onPressed: onAction ?? () {},
+                )
+              : null,
           backgroundColor: color,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: AppRadius.rMd),
-          margin: EdgeInsets.all(16.w),
+          duration: const Duration(seconds: 3),
+          shape: const RoundedRectangleBorder(borderRadius: AppRadius.rMd),
+          margin: const EdgeInsets.all(16),
         ),
       );
   }

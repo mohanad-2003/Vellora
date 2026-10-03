@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ui_kit/core/di/injection.dart';
-import 'package:ui_kit/core/extensions/context_extensions.dart';
-import 'package:ui_kit/core/localization/l10n_lookup.dart';
-import 'package:ui_kit/core/routing/route_names.dart';
-import 'package:ui_kit/core/theme/app_spacing.dart';
-import 'package:ui_kit/core/utils/input_validators.dart';
-import 'package:ui_kit/core/widgets/app_bar_widget.dart';
-import 'package:ui_kit/core/widgets/app_button.dart';
-import 'package:ui_kit/core/widgets/app_text_field.dart';
-import 'package:ui_kit/core/widgets/auth_error_banner.dart';
-import 'package:ui_kit/core/widgets/custom_snackbar.dart';
-import 'package:ui_kit/core/widgets/terms_checkbox.dart';
-import 'package:ui_kit/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:ui_kit/features/auth/presentation/widgets/auth_header.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/utils/input_validators.dart';
+import 'package:vellora/core/widgets/app_bar_widget.dart';
+import 'package:vellora/core/widgets/app_button.dart';
+import 'package:vellora/core/widgets/app_text_field.dart';
+import 'package:vellora/core/widgets/auth_error_banner.dart';
+import 'package:vellora/core/widgets/custom_snackbar.dart';
+import 'package:vellora/core/widgets/terms_checkbox.dart';
+import 'package:vellora/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:vellora/features/auth/presentation/widgets/auth_header.dart';
+import 'package:vellora/features/auth/presentation/widgets/social_login_buttons.dart';
+import 'package:vellora/core/widgets/password_strength_indicator.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -89,16 +92,22 @@ class _RegisterViewState extends State<_RegisterView> {
           },
           builder: (context, state) {
             return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSpacing.screenH,
-                vertical: AppSpacing.vSm,
+              keyboardDismissBehavior:
+                  ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: EdgeInsets.fromLTRB(
+                context.pageGutter,
+                AppSpacing.sm,
+                context.pageGutter,
+                AppSpacing.xxl,
               ),
-              child: Form(
+              child: ResponsiveCenter(
+                child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     AuthHeader(
+                      showLogo: true,
                       title: l10n.createAccount,
                       subtitle: l10n.registerSubtitle,
                     ),
@@ -111,6 +120,8 @@ class _RegisterViewState extends State<_RegisterView> {
                       controller: _nameController,
                       label: l10n.fullName,
                       prefixIcon: Icons.person_outline_rounded,
+                      textCapitalization: TextCapitalization.words,
+                      autofillHints: const [AutofillHints.name],
                       textInputAction: TextInputAction.next,
                       validator: (v) {
                         final key = InputValidators.name(v);
@@ -123,6 +134,8 @@ class _RegisterViewState extends State<_RegisterView> {
                       label: l10n.email,
                       prefixIcon: Icons.mail_outline_rounded,
                       keyboardType: TextInputType.emailAddress,
+                      autofillHints: const [AutofillHints.email],
+                      autocorrect: false,
                       textInputAction: TextInputAction.next,
                       validator: (v) {
                         final key = InputValidators.email(v);
@@ -135,11 +148,19 @@ class _RegisterViewState extends State<_RegisterView> {
                       label: l10n.password,
                       prefixIcon: Icons.lock_outline_rounded,
                       obscureText: true,
+                      autofillHints: const [AutofillHints.newPassword],
+                      autocorrect: false,
                       textInputAction: TextInputAction.next,
                       validator: (v) {
                         final key = InputValidators.password(v);
                         return key == null ? null : tr(context, key);
                       },
+                    ),
+                    // Live strength feedback as the user types.
+                    ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _passwordController,
+                      builder: (_, value, _) =>
+                          PasswordStrengthIndicator(password: value.text),
                     ),
                     SizedBox(height: AppSpacing.vLg),
                     AppTextField(
@@ -147,6 +168,8 @@ class _RegisterViewState extends State<_RegisterView> {
                       label: l10n.confirmPassword,
                       prefixIcon: Icons.lock_outline_rounded,
                       obscureText: true,
+                      autofillHints: const [AutofillHints.newPassword],
+                      autocorrect: false,
                       textInputAction: TextInputAction.done,
                       onSubmitted: (_) => _submit(),
                       validator: (v) {
@@ -170,7 +193,11 @@ class _RegisterViewState extends State<_RegisterView> {
                       isLoading: state.isLoading,
                       onPressed: _agreedToTerms ? _submit : null,
                     ),
-                    SizedBox(height: AppSpacing.vLg),
+                    const SizedBox(height: AppSpacing.xxl),
+                    _OrDivider(label: l10n.orContinueWith),
+                    const SizedBox(height: AppSpacing.xl),
+                    const SocialLoginButtons(),
+                    const SizedBox(height: AppSpacing.xl),
                     Wrap(
                       alignment: WrapAlignment.center,
                       crossAxisAlignment: WrapCrossAlignment.center,
@@ -180,7 +207,10 @@ class _RegisterViewState extends State<_RegisterView> {
                           style: context.textTheme.bodyMedium,
                         ),
                         TextButton(
-                          onPressed: () => context.pop(),
+                          // Swap rather than stack, so Login <-> Sign up never
+                          // builds a long back-stack.
+                          onPressed: () =>
+                              context.pushReplacementNamed(RouteNames.nLogin),
                           child: Text(l10n.login),
                         ),
                       ],
@@ -188,10 +218,31 @@ class _RegisterViewState extends State<_RegisterView> {
                   ],
                 ),
               ),
+              ),
             );
           },
         ),
       ),
+    );
+  }
+}
+
+class _OrDivider extends StatelessWidget {
+  const _OrDivider({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Expanded(child: Divider()),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          child: Text(label, style: context.textTheme.bodySmall),
+        ),
+        const Expanded(child: Divider()),
+      ],
     );
   }
 }

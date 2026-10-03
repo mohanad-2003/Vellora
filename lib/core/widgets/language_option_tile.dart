@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../extensions/context_extensions.dart';
 import '../theme/app_radius.dart';
 import '../theme/app_spacing.dart';
+import '../utils/haptics.dart';
 
-/// Selectable language card used by the Language Select screen. Shows a leading
-/// glyph, the language name (+ optional native subtitle) and a check when
-/// selected. Height is driven by content, never tied to a `.w` width.
+/// Selectable language row for the language screen and settings.
+///
+/// Shows a short monogram (e.g. "EN", "ع"), the language name in its own
+/// script, a secondary label and a radio-style indicator. Deliberately uses no
+/// country flags — a flag is not a language.
 class LanguageOptionTile extends StatelessWidget {
   const LanguageOptionTile({
     super.key,
@@ -26,66 +28,92 @@ class LanguageOptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primary = context.colors.primary;
-    return InkWell(
+    final colors = context.colors;
+    final primary = colors.primary;
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: '$title, $subtitle',
+      excludeSemantics: true,
       onTap: onTap,
-      borderRadius: AppRadius.rLg,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.vLg,
-        ),
-        decoration: BoxDecoration(
-          color: selected
-              ? primary.withValues(alpha: 0.08)
-              : context.colors.surface,
-          borderRadius: AppRadius.rLg,
-          border: Border.all(
-            color: selected ? primary : context.colors.outlineVariant,
-            width: selected ? 2 : 1,
+      child: InkWell(
+        onTap: () {
+          if (!selected) Haptics.selection();
+          onTap();
+        },
+        borderRadius: AppRadius.rLg,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          constraints: const BoxConstraints(minHeight: 72),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
           ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 48.w,
-              height: 48.w,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: context.colors.surfaceContainerHighest,
-                borderRadius: AppRadius.rMd,
-              ),
-              child: Text(glyph, style: TextStyle(fontSize: 24.sp)),
+          decoration: BoxDecoration(
+            color: selected ? colors.primaryContainer : colors.surface,
+            borderRadius: AppRadius.rLg,
+            border: Border.all(
+              color: selected ? primary : colors.outlineVariant,
+              width: selected ? 1.6 : 1,
             ),
-            SizedBox(width: AppSpacing.lg),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    title,
-                    style: context.textTheme.titleMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: selected ? primary : colors.surfaceContainerHighest,
+                  borderRadius: AppRadius.rMd,
+                ),
+                child: Text(
+                  glyph,
+                  style: context.textTheme.titleMedium?.copyWith(
+                    color: selected ? colors.onPrimary : colors.onSurface,
                   ),
-                  Text(
-                    subtitle,
-                    style: context.textTheme.bodySmall,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                ),
               ),
-            ),
-            SizedBox(width: AppSpacing.sm),
-            AnimatedScale(
-              scale: selected ? 1 : 0,
-              duration: const Duration(milliseconds: 200),
-              child: Icon(Icons.check_circle_rounded, color: primary, size: 24.r),
-            ),
-          ],
+              const SizedBox(width: AppSpacing.lg),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: context.textTheme.titleMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      subtitle,
+                      style: context.textTheme.bodySmall,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: selected ? primary : Colors.transparent,
+                  border: Border.all(
+                    color: selected ? primary : colors.outline,
+                    width: 1.6,
+                  ),
+                ),
+                child: selected
+                    ? Icon(Icons.check_rounded, size: 16, color: colors.onPrimary)
+                    : null,
+              ),
+            ],
+          ),
         ),
       ),
     );

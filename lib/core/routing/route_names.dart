@@ -19,6 +19,11 @@ class RouteNames {
   static const String product = '/product/:id';
   static const String cart = '/cart';
   static const String catalog = '/catalog';
+  static const String explore = '/explore';
+  static const String orderDetails = '/orders/:id';
+  static const String orderSuccess = '/order-success';
+
+  static String orderDetailsPath(String id) => '/orders/$id';
 
   static String productPath(String id) => '/product/$id';
 
@@ -30,7 +35,6 @@ class RouteNames {
   static const String paymentMethods = '/profile/payment-methods';
   static const String security = '/profile/security';
 
-  // Reserved for later phases (placeholder "coming soon" pages).
   static const String orders = '/orders';
   static const String notifications = '/notifications';
   static const String settings = '/settings';
@@ -63,4 +67,7 @@ class RouteNames {
   static const String nNotifications = 'notifications';
   static const String nSettings = 'settings';
   static const String nSearch = 'search';
+  static const String nExplore = 'explore';
+  static const String nOrderDetails = 'orderDetails';
+  static const String nOrderSuccess = 'orderSuccess';
 }

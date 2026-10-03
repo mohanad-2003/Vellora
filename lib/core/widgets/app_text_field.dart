@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Reusable form field with label, optional prefix/suffix and password toggle.
 class AppTextField extends StatefulWidget {
@@ -17,6 +16,10 @@ class AppTextField extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     this.enabled = true,
+    this.autofillHints,
+    this.textCapitalization = TextCapitalization.none,
+    this.autocorrect = true,
+    this.focusNode,
   });
 
   final TextEditingController? controller;
@@ -31,6 +34,10 @@ class AppTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final bool enabled;
+  final Iterable<String>? autofillHints;
+  final TextCapitalization textCapitalization;
+  final bool autocorrect;
+  final FocusNode? focusNode;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -47,7 +54,7 @@ class _AppTextFieldState extends State<AppTextField> {
       children: [
         if (widget.label != null) ...[
           Text(widget.label!, style: textTheme.labelMedium),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
         ],
         TextFormField(
           controller: widget.controller,
@@ -58,11 +65,16 @@ class _AppTextFieldState extends State<AppTextField> {
           onChanged: widget.onChanged,
           onFieldSubmitted: widget.onSubmitted,
           enabled: widget.enabled,
+          focusNode: widget.focusNode,
+          autofillHints: widget.autofillHints,
+          textCapitalization: widget.textCapitalization,
+          autocorrect: widget.autocorrect,
+          enableSuggestions: widget.autocorrect,
           style: textTheme.bodyLarge,
           decoration: InputDecoration(
             hintText: widget.hint,
             prefixIcon: widget.prefixIcon != null
-                ? Icon(widget.prefixIcon, size: 20.r)
+                ? Icon(widget.prefixIcon, size: 20)
                 : null,
             suffixIcon: widget.obscureText
                 ? IconButton(
@@ -70,7 +82,7 @@ class _AppTextFieldState extends State<AppTextField> {
                       _obscured
                           ? Icons.visibility_off_outlined
                           : Icons.visibility_outlined,
-                      size: 20.r,
+                      size: 20,
                     ),
                     onPressed: () => setState(() => _obscured = !_obscured),
                   )

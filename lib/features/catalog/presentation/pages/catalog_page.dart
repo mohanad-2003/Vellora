@@ -1,89 +1,105 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:ui_kit/core/di/injection.dart';
-import 'package:ui_kit/core/extensions/context_extensions.dart';
-import 'package:ui_kit/core/localization/l10n_lookup.dart';
-import 'package:ui_kit/core/routing/route_names.dart';
-import 'package:ui_kit/core/widgets/app_bar_widget.dart';
-import 'package:ui_kit/core/widgets/custom_snackbar.dart';
-import 'package:ui_kit/features/catalog/presentation/cubit/catalog_cubit.dart';
-import 'package:ui_kit/features/home/domain/entities/product_entity.dart';
 
-import '../../../../core/widgets/empty_state_widget.dart';
-import '../../../../core/widgets/error_state_widget.dart';
-import '../widgets/product_grid.dart';
+import '../../../../core/di/injection.dart';
+import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/responsive/responsive.dart';
+import '../../../../core/widgets/app_bar_widget.dart';
+import '../../../../core/widgets/favorites_listener.dart';
+import '../../domain/catalog_filter.dart';
+import '../cubit/catalog_cubit.dart';
+import '../widgets/catalog_results_view.dart';
+import '../widgets/catalog_toolbar.dart';
 
 /// Navigation payload for [CatalogPage], passed as go_router `extra`.
 class CatalogArgs {
-  const CatalogArgs({required this.title, this.categoryId});
+  const CatalogArgs({required this.title, this.categoryId, this.collection});
 
   final String title;
   final String? categoryId;
+
+  /// A curated list (Flash Sale, Featured…) instead of a category.
+  final CatalogCollection? collection;
 }
 
-/// Product listing for a category tap or a section "See All".
+/// Product listing for a category tap or a section "See all", with sort,
+/// filters and a grid / list toggle.
 class CatalogPage extends StatelessWidget {
-  const CatalogPage({super.key, required this.title, this.categoryId});
+  const CatalogPage({
+    super.key,
+    required this.title,
+    this.categoryId,
+    this.collection,
+  });
 
   final String title;
   final String? categoryId;
+  final CatalogCollection? collection;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<CatalogCubit>()..load(categoryId: categoryId),
-      child: _CatalogView(title: title),
+      create: (_) => sl<CatalogCubit>()
+        ..load(categoryId: categoryId, collection: collection),
+      child: Builder(
+        builder: (context) => FavoritesListener(
+          onChanged: () => context.read<CatalogCubit>().syncFavorites(),
+          child: _CatalogView(
+            title: title,
+            categoryId: categoryId,
+            collection: collection,
+          ),
+        ),
+      ),
     );
   }
 }
 
-class _CatalogView extends StatelessWidget {
-  const _CatalogView({required this.title});
+class _CatalogView extends StatefulWidget {
+  const _CatalogView({
+    required this.title,
+    required this.categoryId,
+    required this.collection,
+  });
 
   final String title;
+  final String? categoryId;
+  final CatalogCollection? collection;
+
+  @override
+  State<_CatalogView> createState() => _CatalogViewState();
+}
+
+class _CatalogViewState extends State<_CatalogView> {
+  CatalogViewMode _viewMode = CatalogViewMode.grid;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBarWidget(title: title),
+      appBar: AppBarWidget(
+        title: widget.title.isEmpty ? l10n.products : widget.title,
+      ),
       body: SafeArea(
         top: false,
-        child: BlocBuilder<CatalogCubit, CatalogState>(
-          builder: (context, state) {
-            return switch (state.status) {
-              CatalogStatus.loading || CatalogStatus.initial => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              CatalogStatus.error => ErrorStateWidget(
-                message: state.failureKey != null
-                    ? tr(context, state.failureKey!)
-                    : l10n.somethingWentWrong,
-                onRetry: () => context.read<CatalogCubit>().load(),
-              ),
-              CatalogStatus.empty => EmptyStateWidget(
-                title: l10n.noProductsTitle,
-                message: l10n.noProductsBody,
-                icon: Icons.inventory_2_outlined,
-              ),
-              CatalogStatus.loaded => ProductGrid(
-                products: state.products,
-                onProductTap: (p) => _open(context, p),
-                onFavoriteToggle: (p) =>
-                    context.read<CatalogCubit>().toggleFavorite(p.id),
-                onAddToCart: (p) {
-                  context.read<CatalogCubit>().addToCart(p);
-                  AppSnackbar.success(context, l10n.addedToCart);
-                },
-              ),
-            };
-          },
+        child: ResponsiveCenter(
+          maxWidth: Breakpoints.contentMaxWidth,
+          child: BlocBuilder<CatalogCubit, CatalogState>(
+            builder: (context, state) => CatalogResultsView(
+              state: state,
+              viewMode: _viewMode,
+              onViewModeChanged: (m) => setState(() => _viewMode = m),
+              heroPrefix: 'catalog',
+              onRetry: () => context.read<CatalogCubit>().load(
+                    categoryId: widget.categoryId,
+                    collection: widget.collection,
+                  ),
+              emptyTitle: l10n.noProductsTitle,
+              emptyMessage: l10n.noProductsBody,
+            ),
+          ),
         ),
       ),
     );
   }
-
-  void _open(BuildContext context, ProductEntity p) =>
-      context.pushNamed(RouteNames.nProduct, pathParameters: {'id': p.id});
 }

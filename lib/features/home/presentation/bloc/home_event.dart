@@ -32,3 +32,8 @@ class HomeAddToCartRequested extends HomeEvent {
   @override
   List<Object?> get props => [product];
 }
+
+/// Another screen changed the favourites; re-mark the hearts.
+class HomeFavoritesSynced extends HomeEvent {
+  const HomeFavoritesSynced();
+}

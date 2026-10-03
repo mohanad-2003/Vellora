@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 
@@ -66,7 +65,7 @@ class ProfileAvatar extends StatelessWidget {
           child: GestureDetector(
             onTap: onEdit,
             child: Container(
-              padding: EdgeInsets.all(6.r),
+              padding: EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: colors.primary,
                 shape: BoxShape.circle,
@@ -74,7 +73,7 @@ class ProfileAvatar extends StatelessWidget {
               ),
               child: Icon(
                 Icons.camera_alt_rounded,
-                size: 14.r,
+                size: 14,
                 color: colors.onPrimary,
               ),
             ),
