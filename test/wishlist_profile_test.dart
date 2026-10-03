@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vellora/core/di/environments.dart';
 import 'package:vellora/core/di/injection.dart';
 import 'package:vellora/core/localization/l10n/app_localizations.dart';
 import 'package:vellora/core/localization/locale_cubit.dart';
@@ -59,7 +60,7 @@ void main() {
     hiveDir = await Directory.systemTemp.createTemp('hive_wishlist_test');
     Hive.init(hiveDir.path);
     SharedPreferences.setMockInitialValues({});
-    await configureDependencies();
+    await configureDependencies(environment: mockEnv);
   });
 
   tearDownAll(() async {
@@ -138,6 +139,8 @@ void main() {
         await tester.pumpWidget(
           harness(const WishlistPage(), themeMode: mode),
         );
+        // Products load through the (mock) catalogue, which has latency.
+        await tester.pump(const Duration(seconds: 1));
         await tester.pump(const Duration(milliseconds: 300));
         expect(tester.takeException(), isNull,
             reason: 'Wishlist grid overflowed at $sizeName/$themeName');
@@ -194,6 +197,8 @@ void main() {
     });
 
     await tester.pumpWidget(harness(const WishlistPage()));
+    // Products load through the (mock) catalogue, which has latency.
+    await tester.pump(const Duration(seconds: 1));
     await tester.pump(const Duration(milliseconds: 300));
 
     // The seeded product renders.

@@ -86,14 +86,15 @@ extension FailurePatterns on Failure {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerFailure value)?  server,TResult Function( CacheFailure value)?  cache,TResult Function( NetworkFailure value)?  network,TResult Function( ValidationFailure value)?  validation,TResult Function( UnexpectedFailure value)?  unexpected,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerFailure value)?  server,TResult Function( CacheFailure value)?  cache,TResult Function( NetworkFailure value)?  network,TResult Function( ValidationFailure value)?  validation,TResult Function( UnauthorizedFailure value)?  unauthorized,TResult Function( UnexpectedFailure value)?  unexpected,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
 return server(_that);case CacheFailure() when cache != null:
 return cache(_that);case NetworkFailure() when network != null:
 return network(_that);case ValidationFailure() when validation != null:
-return validation(_that);case UnexpectedFailure() when unexpected != null:
+return validation(_that);case UnauthorizedFailure() when unauthorized != null:
+return unauthorized(_that);case UnexpectedFailure() when unexpected != null:
 return unexpected(_that);case _:
   return orElse();
 
@@ -112,14 +113,15 @@ return unexpected(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerFailure value)  server,required TResult Function( CacheFailure value)  cache,required TResult Function( NetworkFailure value)  network,required TResult Function( ValidationFailure value)  validation,required TResult Function( UnexpectedFailure value)  unexpected,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerFailure value)  server,required TResult Function( CacheFailure value)  cache,required TResult Function( NetworkFailure value)  network,required TResult Function( ValidationFailure value)  validation,required TResult Function( UnauthorizedFailure value)  unauthorized,required TResult Function( UnexpectedFailure value)  unexpected,}){
 final _that = this;
 switch (_that) {
 case ServerFailure():
 return server(_that);case CacheFailure():
 return cache(_that);case NetworkFailure():
 return network(_that);case ValidationFailure():
-return validation(_that);case UnexpectedFailure():
+return validation(_that);case UnauthorizedFailure():
+return unauthorized(_that);case UnexpectedFailure():
 return unexpected(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -134,14 +136,15 @@ return unexpected(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerFailure value)?  server,TResult? Function( CacheFailure value)?  cache,TResult? Function( NetworkFailure value)?  network,TResult? Function( ValidationFailure value)?  validation,TResult? Function( UnexpectedFailure value)?  unexpected,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerFailure value)?  server,TResult? Function( CacheFailure value)?  cache,TResult? Function( NetworkFailure value)?  network,TResult? Function( ValidationFailure value)?  validation,TResult? Function( UnauthorizedFailure value)?  unauthorized,TResult? Function( UnexpectedFailure value)?  unexpected,}){
 final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
 return server(_that);case CacheFailure() when cache != null:
 return cache(_that);case NetworkFailure() when network != null:
 return network(_that);case ValidationFailure() when validation != null:
-return validation(_that);case UnexpectedFailure() when unexpected != null:
+return validation(_that);case UnauthorizedFailure() when unauthorized != null:
+return unauthorized(_that);case UnexpectedFailure() when unexpected != null:
 return unexpected(_that);case _:
   return null;
 
@@ -159,13 +162,14 @@ return unexpected(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  server,TResult Function( String message)?  cache,TResult Function( String message)?  network,TResult Function( String message)?  validation,TResult Function( String message)?  unexpected,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  server,TResult Function( String message)?  cache,TResult Function( String message)?  network,TResult Function( String message,  String? code)?  validation,TResult Function( String message)?  unauthorized,TResult Function( String message)?  unexpected,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
 return server(_that.message);case CacheFailure() when cache != null:
 return cache(_that.message);case NetworkFailure() when network != null:
 return network(_that.message);case ValidationFailure() when validation != null:
-return validation(_that.message);case UnexpectedFailure() when unexpected != null:
+return validation(_that.message,_that.code);case UnauthorizedFailure() when unauthorized != null:
+return unauthorized(_that.message);case UnexpectedFailure() when unexpected != null:
 return unexpected(_that.message);case _:
   return orElse();
 
@@ -184,13 +188,14 @@ return unexpected(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  server,required TResult Function( String message)  cache,required TResult Function( String message)  network,required TResult Function( String message)  validation,required TResult Function( String message)  unexpected,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  server,required TResult Function( String message)  cache,required TResult Function( String message)  network,required TResult Function( String message,  String? code)  validation,required TResult Function( String message)  unauthorized,required TResult Function( String message)  unexpected,}) {final _that = this;
 switch (_that) {
 case ServerFailure():
 return server(_that.message);case CacheFailure():
 return cache(_that.message);case NetworkFailure():
 return network(_that.message);case ValidationFailure():
-return validation(_that.message);case UnexpectedFailure():
+return validation(_that.message,_that.code);case UnauthorizedFailure():
+return unauthorized(_that.message);case UnexpectedFailure():
 return unexpected(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -205,13 +210,14 @@ return unexpected(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  server,TResult? Function( String message)?  cache,TResult? Function( String message)?  network,TResult? Function( String message)?  validation,TResult? Function( String message)?  unexpected,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  server,TResult? Function( String message)?  cache,TResult? Function( String message)?  network,TResult? Function( String message,  String? code)?  validation,TResult? Function( String message)?  unauthorized,TResult? Function( String message)?  unexpected,}) {final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
 return server(_that.message);case CacheFailure() when cache != null:
 return cache(_that.message);case NetworkFailure() when network != null:
 return network(_that.message);case ValidationFailure() when validation != null:
-return validation(_that.message);case UnexpectedFailure() when unexpected != null:
+return validation(_that.message,_that.code);case UnauthorizedFailure() when unauthorized != null:
+return unauthorized(_that.message);case UnexpectedFailure() when unexpected != null:
 return unexpected(_that.message);case _:
   return null;
 
@@ -422,10 +428,11 @@ as String,
 
 
 class ValidationFailure extends Failure {
-  const ValidationFailure({required this.message}): super._();
+  const ValidationFailure({required this.message, this.code}): super._();
   
 
 @override final  String message;
+ final  String? code;
 
 /// Create a copy of Failure
 /// with the given fields replaced by the non-null parameter values.
@@ -437,16 +444,16 @@ $ValidationFailureCopyWith<ValidationFailure> get copyWith => _$ValidationFailur
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ValidationFailure&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ValidationFailure&&(identical(other.message, message) || other.message == message)&&(identical(other.code, code) || other.code == code));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode => Object.hash(runtimeType,message,code);
 
 @override
 String toString() {
-  return 'Failure.validation(message: $message)';
+  return 'Failure.validation(message: $message, code: $code)';
 }
 
 
@@ -457,7 +464,7 @@ abstract mixin class $ValidationFailureCopyWith<$Res> implements $FailureCopyWit
   factory $ValidationFailureCopyWith(ValidationFailure value, $Res Function(ValidationFailure) _then) = _$ValidationFailureCopyWithImpl;
 @override @useResult
 $Res call({
- String message
+ String message, String? code
 });
 
 
@@ -474,8 +481,75 @@ class _$ValidationFailureCopyWithImpl<$Res>
 
 /// Create a copy of Failure
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,Object? code = freezed,}) {
   return _then(ValidationFailure(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,code: freezed == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class UnauthorizedFailure extends Failure {
+  const UnauthorizedFailure({required this.message}): super._();
+  
+
+@override final  String message;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UnauthorizedFailureCopyWith<UnauthorizedFailure> get copyWith => _$UnauthorizedFailureCopyWithImpl<UnauthorizedFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UnauthorizedFailure&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'Failure.unauthorized(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UnauthorizedFailureCopyWith<$Res> implements $FailureCopyWith<$Res> {
+  factory $UnauthorizedFailureCopyWith(UnauthorizedFailure value, $Res Function(UnauthorizedFailure) _then) = _$UnauthorizedFailureCopyWithImpl;
+@override @useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$UnauthorizedFailureCopyWithImpl<$Res>
+    implements $UnauthorizedFailureCopyWith<$Res> {
+  _$UnauthorizedFailureCopyWithImpl(this._self, this._then);
+
+  final UnauthorizedFailure _self;
+  final $Res Function(UnauthorizedFailure) _then;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(UnauthorizedFailure(
 message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));

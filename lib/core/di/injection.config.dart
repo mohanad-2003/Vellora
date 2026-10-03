@@ -77,11 +77,14 @@ import '../../features/home/domain/usecases/get_home_data_usecase.dart'
 import '../../features/home/presentation/bloc/home_bloc.dart' as _i202;
 import '../../features/language_select/presentation/cubit/language_select_cubit.dart'
     as _i258;
+import '../../features/notifications/data/notifications_remote_datasource.dart'
+    as _i31;
 import '../../features/notifications/presentation/cubit/notifications_cubit.dart'
     as _i405;
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart'
     as _i807;
 import '../../features/orders/data/mock_orders_store.dart' as _i52;
+import '../../features/orders/data/orders_remote_datasource.dart' as _i158;
 import '../../features/orders/presentation/cubit/orders_cubit.dart' as _i1028;
 import '../../features/product/data/datasources/favorites_local_datasource.dart'
     as _i10;
@@ -127,6 +130,9 @@ import '../network/network_info.dart' as _i932;
 import '../theme/theme_cubit.dart' as _i611;
 import 'register_modules.dart' as _i8;
 
+const String _mock = 'mock';
+const String _api = 'api';
+
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
   Future<_i174.GetIt> init({
@@ -139,7 +145,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.prefs,
       preResolve: true,
     );
-    gh.factory<_i405.NotificationsCubit>(() => _i405.NotificationsCubit());
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => registerModule.secureStorage,
     );
@@ -147,42 +152,56 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.internetConnection,
     );
     gh.lazySingleton<_i52.MockOrdersStore>(() => _i52.MockOrdersStore());
-    gh.lazySingleton<_i963.ProductRemoteDataSource>(
-      () => _i963.ProductRemoteDataSourceImpl(),
+    gh.lazySingleton<_i31.NotificationsRemoteDataSource>(
+      () => _i31.MockNotificationsRemoteDataSource(),
+      registerFor: {_mock},
     );
     await gh.factoryAsync<_i979.Box<dynamic>>(
       () => registerModule.userBox,
       instanceName: 'user_box',
       preResolve: true,
     );
-    gh.lazySingleton<_i905.PromoDataSource>(() => _i905.PromoDataSourceImpl());
+    gh.lazySingleton<_i905.PromoDataSource>(
+      () => _i905.MockPromoDataSource(),
+      registerFor: {_mock},
+    );
     await gh.factoryAsync<_i979.Box<dynamic>>(
       () => registerModule.favoritesBox,
       instanceName: 'favorites_box',
       preResolve: true,
     );
+    gh.lazySingleton<_i963.ProductRemoteDataSource>(
+      () => _i963.MockProductRemoteDataSource(),
+      registerFor: {_mock},
+    );
+    gh.lazySingleton<_i248.CatalogRemoteDataSource>(
+      () => _i248.MockCatalogRemoteDataSource(),
+      registerFor: {_mock},
+    );
+    gh.lazySingleton<_i161.AuthRemoteDataSource>(
+      () => _i161.MockAuthRemoteDataSource(),
+      registerFor: {_mock},
+    );
     gh.lazySingleton<_i745.AuthInterceptor>(
       () => _i745.AuthInterceptor(gh<_i558.FlutterSecureStorage>()),
     );
-    gh.lazySingleton<_i161.AuthRemoteDataSource>(
-      () => _i161.AuthRemoteDataSourceImpl(),
-    );
-    gh.lazySingleton<_i667.DioClient>(
-      () => _i667.DioClient(gh<_i745.AuthInterceptor>()),
+    gh.lazySingleton<_i158.OrdersRemoteDataSource>(
+      () => _i158.MockOrdersRemoteDataSource(gh<_i52.MockOrdersStore>()),
+      registerFor: {_mock},
     );
     gh.lazySingleton<_i278.HomeRemoteDataSource>(
-      () => _i278.HomeRemoteDataSourceImpl(),
+      () => _i278.MockHomeRemoteDataSource(),
+      registerFor: {_mock},
+    );
+    gh.lazySingleton<_i10.FavoritesLocalDataSource>(
+      () => _i10.FavoritesLocalDataSourceImpl(
+        gh<_i979.Box<dynamic>>(instanceName: 'favorites_box'),
+      ),
     );
     await gh.factoryAsync<_i979.Box<dynamic>>(
       () => registerModule.cartBox,
       instanceName: 'cart_box',
       preResolve: true,
-    );
-    gh.lazySingleton<_i248.CatalogRemoteDataSource>(
-      () => _i248.CatalogRemoteDataSourceImpl(),
-    );
-    gh.lazySingleton<_i932.NetworkInfo>(
-      () => _i932.NetworkInfoImpl(gh<_i161.InternetConnection>()),
     );
     gh.lazySingleton<_i864.UserSessionCubit>(
       () => _i864.UserSessionCubit(
@@ -204,9 +223,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i778.RecentSearchesStore>(
       () => _i778.RecentSearchesStore(gh<_i460.SharedPreferences>()),
     );
-    gh.lazySingleton<_i1018.CatalogRepository>(
-      () => _i428.CatalogRepositoryImpl(gh<_i248.CatalogRemoteDataSource>()),
-    );
     gh.lazySingleton<_i992.AuthLocalDataSource>(
       () => _i992.AuthLocalDataSourceImpl(
         gh<_i979.Box<dynamic>>(instanceName: 'user_box'),
@@ -218,11 +234,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i979.Box<dynamic>>(instanceName: 'cart_box'),
       ),
     );
-    gh.factory<_i1028.OrdersCubit>(
-      () => _i1028.OrdersCubit(gh<_i52.MockOrdersStore>()),
-    );
-    gh.factory<_i1028.OrderDetailCubit>(
-      () => _i1028.OrderDetailCubit(gh<_i52.MockOrdersStore>()),
+    gh.lazySingleton<_i667.DioClient>(
+      () => _i667.DioClient(gh<_i745.AuthInterceptor>()),
     );
     gh.lazySingleton<_i875.CartBadgeCubit>(
       () => _i875.CartBadgeCubit(
@@ -235,22 +248,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i979.Box<dynamic>>(instanceName: 'user_box'),
       ),
     );
-    gh.factory<_i296.GetCatalogProductsUseCase>(
-      () => _i296.GetCatalogProductsUseCase(gh<_i1018.CatalogRepository>()),
+    gh.lazySingleton<_i932.NetworkInfo>(
+      () => _i932.NetworkInfoImpl(gh<_i161.InternetConnection>()),
     );
     gh.lazySingleton<_i361.Dio>(
       () => registerModule.dio(gh<_i667.DioClient>()),
-    );
-    gh.lazySingleton<_i10.FavoritesLocalDataSource>(
-      () => _i10.FavoritesLocalDataSourceImpl(
-        gh<_i979.Box<dynamic>>(instanceName: 'favorites_box'),
-      ),
-    );
-    gh.lazySingleton<_i787.AuthRepository>(
-      () => _i153.AuthRepositoryImpl(
-        gh<_i161.AuthRemoteDataSource>(),
-        gh<_i992.AuthLocalDataSource>(),
-      ),
     );
     gh.factory<_i258.LanguageSelectCubit>(
       () => _i258.LanguageSelectCubit(
@@ -261,26 +263,26 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i843.FavoritesRepository>(
       () => _i981.FavoritesRepositoryImpl(gh<_i10.FavoritesLocalDataSource>()),
     );
-    gh.lazySingleton<_i322.CartRepository>(
-      () => _i642.CartRepositoryImpl(
-        gh<_i339.CartLocalDataSource>(),
-        gh<_i905.PromoDataSource>(),
-      ),
+    gh.lazySingleton<_i278.HomeRemoteDataSource>(
+      () => _i278.ApiHomeRemoteDataSource(gh<_i361.Dio>()),
+      registerFor: {_api},
     );
-    gh.lazySingleton<_i4.WishlistRepository>(
-      () => _i919.WishlistRepositoryImpl(gh<_i843.FavoritesRepository>()),
+    gh.lazySingleton<_i905.PromoDataSource>(
+      () => _i905.ApiPromoDataSource(gh<_i361.Dio>()),
+      registerFor: {_api},
     );
-    gh.lazySingleton<_i39.ProductRepository>(
-      () => _i1040.ProductRepositoryImpl(
-        gh<_i963.ProductRemoteDataSource>(),
+    gh.lazySingleton<_i0.HomeRepository>(
+      () => _i76.HomeRepositoryImpl(
+        gh<_i278.HomeRemoteDataSource>(),
         gh<_i843.FavoritesRepository>(),
       ),
     );
-    gh.factory<_i133.GetProductDetailsUseCase>(
-      () => _i133.GetProductDetailsUseCase(gh<_i39.ProductRepository>()),
+    gh.lazySingleton<_i161.AuthRemoteDataSource>(
+      () => _i161.ApiAuthRemoteDataSource(gh<_i361.Dio>()),
+      registerFor: {_api},
     );
-    gh.factory<_i511.GetRelatedProductsUseCase>(
-      () => _i511.GetRelatedProductsUseCase(gh<_i39.ProductRepository>()),
+    gh.factory<_i1033.GetHomeDataUseCase>(
+      () => _i1033.GetHomeDataUseCase(gh<_i0.HomeRepository>()),
     );
     gh.factory<_i946.GetFavoriteIdsUseCase>(
       () => _i946.GetFavoriteIdsUseCase(gh<_i843.FavoritesRepository>()),
@@ -288,20 +290,77 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i714.ToggleFavoriteUseCase>(
       () => _i714.ToggleFavoriteUseCase(gh<_i843.FavoritesRepository>()),
     );
-    gh.factory<_i659.AddToCartUseCase>(
-      () => _i659.AddToCartUseCase(gh<_i322.CartRepository>()),
+    gh.lazySingleton<_i158.OrdersRemoteDataSource>(
+      () => _i158.ApiOrdersRemoteDataSource(gh<_i361.Dio>()),
+      registerFor: {_api},
     );
-    gh.factory<_i759.ApplyPromoUseCase>(
-      () => _i759.ApplyPromoUseCase(gh<_i322.CartRepository>()),
+    gh.lazySingleton<_i248.CatalogRemoteDataSource>(
+      () => _i248.ApiCatalogRemoteDataSource(gh<_i361.Dio>()),
+      registerFor: {_api},
     );
-    gh.factory<_i179.GetCartUseCase>(
-      () => _i179.GetCartUseCase(gh<_i322.CartRepository>()),
+    gh.lazySingleton<_i963.ProductRemoteDataSource>(
+      () => _i963.ApiProductRemoteDataSource(gh<_i361.Dio>()),
+      registerFor: {_api},
     );
-    gh.factory<_i355.RemoveFromCartUseCase>(
-      () => _i355.RemoveFromCartUseCase(gh<_i322.CartRepository>()),
+    gh.lazySingleton<_i31.NotificationsRemoteDataSource>(
+      () => _i31.ApiNotificationsRemoteDataSource(gh<_i361.Dio>()),
+      registerFor: {_api},
     );
-    gh.factory<_i107.UpdateQuantityUseCase>(
-      () => _i107.UpdateQuantityUseCase(gh<_i322.CartRepository>()),
+    gh.lazySingleton<_i322.CartRepository>(
+      () => _i642.CartRepositoryImpl(
+        gh<_i339.CartLocalDataSource>(),
+        gh<_i905.PromoDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i1018.CatalogRepository>(
+      () => _i428.CatalogRepositoryImpl(gh<_i248.CatalogRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i405.UnreadNotificationsCubit>(
+      () => _i405.UnreadNotificationsCubit(
+        gh<_i31.NotificationsRemoteDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i4.WishlistRepository>(
+      () => _i919.WishlistRepositoryImpl(
+        gh<_i843.FavoritesRepository>(),
+        gh<_i1018.CatalogRepository>(),
+      ),
+    );
+    gh.factory<_i296.GetCatalogProductsUseCase>(
+      () => _i296.GetCatalogProductsUseCase(gh<_i1018.CatalogRepository>()),
+    );
+    gh.lazySingleton<_i39.ProductRepository>(
+      () => _i1040.ProductRepositoryImpl(
+        gh<_i963.ProductRemoteDataSource>(),
+        gh<_i843.FavoritesRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i787.AuthRepository>(
+      () => _i153.AuthRepositoryImpl(
+        gh<_i161.AuthRemoteDataSource>(),
+        gh<_i992.AuthLocalDataSource>(),
+      ),
+    );
+    gh.factory<_i487.ExploreCubit>(
+      () => _i487.ExploreCubit(gh<_i1033.GetHomeDataUseCase>()),
+    );
+    gh.factory<_i133.GetProductDetailsUseCase>(
+      () => _i133.GetProductDetailsUseCase(gh<_i39.ProductRepository>()),
+    );
+    gh.factory<_i511.GetRelatedProductsUseCase>(
+      () => _i511.GetRelatedProductsUseCase(gh<_i39.ProductRepository>()),
+    );
+    gh.factory<_i709.GetWishlistProductsUseCase>(
+      () => _i709.GetWishlistProductsUseCase(gh<_i4.WishlistRepository>()),
+    );
+    gh.factory<_i120.RemoveFromWishlistUseCase>(
+      () => _i120.RemoveFromWishlistUseCase(gh<_i4.WishlistRepository>()),
+    );
+    gh.factory<_i1028.OrdersCubit>(
+      () => _i1028.OrdersCubit(gh<_i158.OrdersRemoteDataSource>()),
+    );
+    gh.factory<_i1028.OrderDetailCubit>(
+      () => _i1028.OrderDetailCubit(gh<_i158.OrdersRemoteDataSource>()),
     );
     gh.factory<_i560.ForgotPasswordUseCase>(
       () => _i560.ForgotPasswordUseCase(gh<_i787.AuthRepository>()),
@@ -327,24 +386,36 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i503.VerifyOtpUseCase>(
       () => _i503.VerifyOtpUseCase(gh<_i787.AuthRepository>()),
     );
-    gh.lazySingleton<_i0.HomeRepository>(
-      () => _i76.HomeRepositoryImpl(
-        gh<_i278.HomeRemoteDataSource>(),
-        gh<_i843.FavoritesRepository>(),
-      ),
+    gh.factory<_i659.AddToCartUseCase>(
+      () => _i659.AddToCartUseCase(gh<_i322.CartRepository>()),
+    );
+    gh.factory<_i759.ApplyPromoUseCase>(
+      () => _i759.ApplyPromoUseCase(gh<_i322.CartRepository>()),
+    );
+    gh.factory<_i179.GetCartUseCase>(
+      () => _i179.GetCartUseCase(gh<_i322.CartRepository>()),
+    );
+    gh.factory<_i355.RemoveFromCartUseCase>(
+      () => _i355.RemoveFromCartUseCase(gh<_i322.CartRepository>()),
+    );
+    gh.factory<_i107.UpdateQuantityUseCase>(
+      () => _i107.UpdateQuantityUseCase(gh<_i322.CartRepository>()),
     );
     gh.factory<_i645.CheckoutCubit>(
       () => _i645.CheckoutCubit(
         gh<_i179.GetCartUseCase>(),
         gh<_i355.RemoveFromCartUseCase>(),
-        gh<_i52.MockOrdersStore>(),
+        gh<_i158.OrdersRemoteDataSource>(),
       ),
     );
-    gh.factory<_i709.GetWishlistProductsUseCase>(
-      () => _i709.GetWishlistProductsUseCase(gh<_i4.WishlistRepository>()),
+    gh.factory<_i86.WishlistBloc>(
+      () => _i86.WishlistBloc(
+        gh<_i709.GetWishlistProductsUseCase>(),
+        gh<_i120.RemoveFromWishlistUseCase>(),
+      ),
     );
-    gh.factory<_i120.RemoveFromWishlistUseCase>(
-      () => _i120.RemoveFromWishlistUseCase(gh<_i4.WishlistRepository>()),
+    gh.factory<_i990.EditProfileCubit>(
+      () => _i990.EditProfileCubit(gh<_i798.UpdateProfileUseCase>()),
     );
     gh.factory<_i797.AuthBloc>(
       () => _i797.AuthBloc(
@@ -357,23 +428,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i48.LogoutUseCase>(),
       ),
     );
-    gh.factory<_i36.ProfileCubit>(
-      () => _i36.ProfileCubit(
-        gh<_i389.GetCachedUserUseCase>(),
-        gh<_i48.LogoutUseCase>(),
-      ),
-    );
-    gh.factory<_i686.CatalogCubit>(
-      () => _i686.CatalogCubit(
-        gh<_i296.GetCatalogProductsUseCase>(),
-        gh<_i946.GetFavoriteIdsUseCase>(),
-        gh<_i714.ToggleFavoriteUseCase>(),
-        gh<_i659.AddToCartUseCase>(),
-      ),
-    );
-    gh.factory<_i1033.GetHomeDataUseCase>(
-      () => _i1033.GetHomeDataUseCase(gh<_i0.HomeRepository>()),
-    );
     gh.factory<_i202.HomeBloc>(
       () => _i202.HomeBloc(
         gh<_i1033.GetHomeDataUseCase>(),
@@ -382,15 +436,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i946.GetFavoriteIdsUseCase>(),
       ),
     );
-    gh.factory<_i990.EditProfileCubit>(
-      () => _i990.EditProfileCubit(gh<_i798.UpdateProfileUseCase>()),
+    gh.factory<_i405.NotificationsCubit>(
+      () => _i405.NotificationsCubit(
+        gh<_i31.NotificationsRemoteDataSource>(),
+        gh<_i405.UnreadNotificationsCubit>(),
+      ),
     );
-    gh.factory<_i517.CartBloc>(
-      () => _i517.CartBloc(
-        gh<_i179.GetCartUseCase>(),
-        gh<_i107.UpdateQuantityUseCase>(),
-        gh<_i355.RemoveFromCartUseCase>(),
-        gh<_i759.ApplyPromoUseCase>(),
+    gh.factory<_i686.CatalogCubit>(
+      () => _i686.CatalogCubit(
+        gh<_i296.GetCatalogProductsUseCase>(),
+        gh<_i946.GetFavoriteIdsUseCase>(),
+        gh<_i714.ToggleFavoriteUseCase>(),
         gh<_i659.AddToCartUseCase>(),
       ),
     );
@@ -402,14 +458,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i659.AddToCartUseCase>(),
       ),
     );
-    gh.factory<_i86.WishlistBloc>(
-      () => _i86.WishlistBloc(
-        gh<_i709.GetWishlistProductsUseCase>(),
-        gh<_i120.RemoveFromWishlistUseCase>(),
+    gh.factory<_i517.CartBloc>(
+      () => _i517.CartBloc(
+        gh<_i179.GetCartUseCase>(),
+        gh<_i107.UpdateQuantityUseCase>(),
+        gh<_i355.RemoveFromCartUseCase>(),
+        gh<_i759.ApplyPromoUseCase>(),
+        gh<_i659.AddToCartUseCase>(),
       ),
     );
-    gh.factory<_i487.ExploreCubit>(
-      () => _i487.ExploreCubit(gh<_i1033.GetHomeDataUseCase>()),
+    gh.factory<_i36.ProfileCubit>(
+      () => _i36.ProfileCubit(
+        gh<_i389.GetCachedUserUseCase>(),
+        gh<_i48.LogoutUseCase>(),
+      ),
     );
     return this;
   }

@@ -1196,4 +1196,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get goHome => 'العودة إلى الرئيسية';
+
+  @override
+  String get invalidCredentials =>
+      'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+
+  @override
+  String get emailTaken => 'يوجد حساب بهذا البريد الإلكتروني بالفعل.';
+
+  @override
+  String get pleaseLogin => 'يرجى تسجيل الدخول للمتابعة.';
 }

@@ -30,7 +30,10 @@ class ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final packshot = AssetPaths.packshots.contains(path);
+    // Bundled photos are listed in AssetPaths; the API tags its own with
+    // `?packshot=1`.
+    final packshot =
+        AssetPaths.packshots.contains(path) || path.contains('packshot=1');
     final effectiveFit = fit ?? (packshot ? BoxFit.contain : BoxFit.cover);
     final backdrop = packshot
         ? const Color(0xFFF1F2F6)

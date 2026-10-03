@@ -109,6 +109,13 @@ class AuthRepositoryImpl implements AuthRepository {
           existing ?? const UserModel(id: 'local', name: '', email: '');
       final updated = base.copyWith(name: name, email: email, phone: phone);
       await _local.cacheUser(updated);
+      // Email and phone are device-only for now; the name is saved on the
+      // server too. A signed-out or offline user keeps the local edit.
+      if (existing?.token != null) {
+        try {
+          await _remote.updateName(name: name);
+        } catch (_) {}
+      }
       return Right(updated.toEntity());
     } catch (e) {
       return Left(mapExceptionToFailure(e));

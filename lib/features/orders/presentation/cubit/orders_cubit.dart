@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../data/mock_orders_store.dart';
+import '../../data/orders_remote_datasource.dart';
 import '../../domain/order_entity.dart';
 
 enum OrdersStatus { loading, loaded, error }
@@ -26,14 +26,14 @@ class OrdersState extends Equatable {
 
 @injectable
 class OrdersCubit extends Cubit<OrdersState> {
-  OrdersCubit(this._store) : super(const OrdersState());
+  OrdersCubit(this._remote) : super(const OrdersState());
 
-  final MockOrdersStore _store;
+  final OrdersRemoteDataSource _remote;
 
   Future<void> load() async {
     emit(const OrdersState());
     try {
-      final orders = await _store.getOrders();
+      final orders = await _remote.getOrders();
       emit(OrdersState(status: OrdersStatus.loaded, orders: orders));
     } catch (_) {
       emit(const OrdersState(status: OrdersStatus.error));
@@ -59,17 +59,17 @@ class OrderDetailState extends Equatable {
 
 @injectable
 class OrderDetailCubit extends Cubit<OrderDetailState> {
-  OrderDetailCubit(this._store) : super(const OrderDetailState());
+  OrderDetailCubit(this._remote) : super(const OrderDetailState());
 
-  final MockOrdersStore _store;
+  final OrdersRemoteDataSource _remote;
 
   Future<void> load(String id) async {
     emit(const OrderDetailState());
-    final order = await _store.getOrder(id);
-    emit(
-      order == null
-          ? const OrderDetailState(status: OrderDetailStatus.notFound)
-          : OrderDetailState(status: OrderDetailStatus.loaded, order: order),
-    );
+    try {
+      final order = await _remote.getOrder(id);
+      emit(OrderDetailState(status: OrderDetailStatus.loaded, order: order));
+    } catch (_) {
+      emit(const OrderDetailState(status: OrderDetailStatus.notFound));
+    }
   }
 }

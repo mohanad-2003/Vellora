@@ -11,6 +11,6 @@ class GetWishlistProductsUseCase {
 
   final WishlistRepository _repository;
 
-  Either<Failure, List<ProductEntity>> call() =>
+  Future<Either<Failure, List<ProductEntity>>> call() =>
       _repository.getWishlistProducts();
 }

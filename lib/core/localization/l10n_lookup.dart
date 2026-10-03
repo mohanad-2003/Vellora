@@ -23,6 +23,12 @@ String _lookup(AppLocalizations l, String key) {
       return l.nameTooShort;
     case 'invalidOtp':
       return l.invalidOtp;
+    case 'invalidCredentials':
+      return l.invalidCredentials;
+    case 'emailTaken':
+      return l.emailTaken;
+    case 'pleaseLogin':
+      return l.pleaseLogin;
     case 'mustAcceptTerms':
       return l.mustAcceptTerms;
     // Failures.

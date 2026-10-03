@@ -11,6 +11,7 @@ import 'core/theme/app_theme.dart';
 import 'core/theme/theme_cubit.dart';
 import 'features/auth/presentation/bloc/user_session_cubit.dart';
 import 'features/cart/presentation/bloc/cart_badge_cubit.dart';
+import 'features/notifications/presentation/cubit/notifications_cubit.dart';
 
 class VelloraApp extends StatelessWidget {
   const VelloraApp({super.key});
@@ -27,42 +28,48 @@ class VelloraApp extends StatelessWidget {
         BlocProvider.value(value: sl<LocaleCubit>()),
         BlocProvider.value(value: sl<CartBadgeCubit>()),
         BlocProvider.value(value: sl<UserSessionCubit>()),
+        BlocProvider.value(value: sl<UnreadNotificationsCubit>()..refresh()),
       ],
-      child: BlocBuilder<ThemeCubit, ThemeMode>(
-        builder: (context, themeMode) {
-          return BlocBuilder<LocaleCubit, Locale>(
-            builder: (context, locale) {
-              return MaterialApp.router(
-                debugShowCheckedModeBanner: false,
-                title: AppConstants.appName,
-                theme: AppTheme.forLocale(Brightness.light, locale),
-                darkTheme: AppTheme.forLocale(Brightness.dark, locale),
-                themeMode: themeMode,
-                locale: locale,
-                supportedLocales: LocaleCubit.supportedLocales,
-                localizationsDelegates: const [
-                  AppLocalizations.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                builder: (context, child) {
-                  final mq = MediaQuery.of(context);
-                  return MediaQuery(
-                    data: mq.copyWith(
-                      textScaler: mq.textScaler.clamp(
-                        minScaleFactor: 1,
-                        maxScaleFactor: maxTextScale,
+      // A different user (or a log out) means a different notification feed.
+      child: BlocListener<UserSessionCubit, SessionUser?>(
+        listener: (context, _) =>
+            context.read<UnreadNotificationsCubit>().refresh(),
+        child: BlocBuilder<ThemeCubit, ThemeMode>(
+          builder: (context, themeMode) {
+            return BlocBuilder<LocaleCubit, Locale>(
+              builder: (context, locale) {
+                return MaterialApp.router(
+                  debugShowCheckedModeBanner: false,
+                  title: AppConstants.appName,
+                  theme: AppTheme.forLocale(Brightness.light, locale),
+                  darkTheme: AppTheme.forLocale(Brightness.dark, locale),
+                  themeMode: themeMode,
+                  locale: locale,
+                  supportedLocales: LocaleCubit.supportedLocales,
+                  localizationsDelegates: const [
+                    AppLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  builder: (context, child) {
+                    final mq = MediaQuery.of(context);
+                    return MediaQuery(
+                      data: mq.copyWith(
+                        textScaler: mq.textScaler.clamp(
+                          minScaleFactor: 1,
+                          maxScaleFactor: maxTextScale,
+                        ),
                       ),
-                    ),
-                    child: child ?? const SizedBox.shrink(),
-                  );
-                },
-                routerConfig: AppRouter.router,
-              );
-            },
-          );
-        },
+                      child: child ?? const SizedBox.shrink(),
+                    );
+                  },
+                  routerConfig: AppRouter.router,
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

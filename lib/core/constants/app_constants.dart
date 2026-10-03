@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// App-wide constants that are not tied to a specific feature.
 class AppConstants {
   AppConstants._();
@@ -9,9 +11,19 @@ class AppConstants {
 
   static const String supportEmail = 'support@vellora.com';
 
-  /// Placeholder base url — unused by the Phase 1 mocks but wired so a real
-  /// API is a drop-in swap later.
-  static const String baseUrl = 'https://api.vellora.example.com/v1';
+  /// Vellora API root. Override at build time:
+  /// `flutter run --dart-define=API_BASE_URL=https://api.example.com`.
+  ///
+  /// The default targets a backend running on the development machine: the
+  /// Android emulator reaches the host as `10.0.2.2`; everything else
+  /// (iOS simulator, desktop, web) can use `localhost`.
+  static String get baseUrl {
+    const configured = String.fromEnvironment('API_BASE_URL');
+    if (configured.isNotEmpty) return configured;
+    final androidEmulator =
+        !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+    return androidEmulator ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+  }
 
   /// Placeholder public site used for shareable links. Replace with the real
   /// domain when the web presence exists.

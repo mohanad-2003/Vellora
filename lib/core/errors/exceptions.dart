@@ -21,11 +21,16 @@ class NetworkException extends AppException {
 }
 
 class ValidationException extends AppException {
-  const ValidationException([super.message = 'Validation error']);
+  const ValidationException([super.message = 'Validation error', this.code]);
+
+  /// Stable server error code (e.g. `invalid_credentials`), when known.
+  final String? code;
 }
 
 class UnauthorizedException extends AppException {
-  const UnauthorizedException([super.message = 'Unauthorized']);
+  const UnauthorizedException([super.message = 'Unauthorized', this.code]);
+
+  final String? code;
 }
 
 class NotFoundException extends AppException {

@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
+import 'environments.dart';
 import 'injection.config.dart';
 
 /// Global service locator.
@@ -13,4 +14,7 @@ final GetIt sl = GetIt.instance;
   preferRelativeImports: true,
   asExtension: true,
 )
-Future<void> configureDependencies() async => sl.init();
+Future<void> configureDependencies({String? environment}) async {
+  const useMocks = bool.fromEnvironment('USE_MOCKS');
+  await sl.init(environment: environment ?? (useMocks ? mockEnv : apiEnv));
+}

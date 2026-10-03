@@ -1,0 +1,31 @@
+# Render Blueprint: one web service (the API) + one PostgreSQL database.
+# Render dashboard -> New -> Blueprint -> pick this repository.
+services:
+  - type: web
+    name: vellora-api
+    runtime: node
+    rootDir: backend            # the API lives in ui_kit/backend
+    plan: free                  # see "Free plan limits" in backend/README.md
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true     # Render creates a long random secret
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vellora-db
+          property: connectionString
+      # Optional: uncomment and set to enable PATCH /admin/orders/:id/status
+      # - key: ADMIN_API_KEY
+      #   sync: false
+
+databases:
+  - name: vellora-db
+    plan: free
+    databaseName: vellora
+    user: vellora

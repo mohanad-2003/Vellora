@@ -10,6 +10,7 @@ import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_bar_widget.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
+import '../../../../core/widgets/error_state_widget.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../domain/notification_entity.dart';
 import '../cubit/notifications_cubit.dart';
@@ -50,6 +51,10 @@ class _NotificationsView extends StatelessWidget {
             top: false,
             child: switch (state.status) {
               NotificationsStatus.loading => const ListSkeleton(thumb: 48),
+              NotificationsStatus.error => ErrorStateWidget(
+                  message: l10n.somethingWentWrong,
+                  onRetry: () => context.read<NotificationsCubit>().load(),
+                ),
               NotificationsStatus.loaded => state.items.isEmpty
                   ? EmptyStateWidget(
                       icon: Icons.notifications_none_rounded,
@@ -156,8 +161,8 @@ class _NotificationTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = context.textTheme;
     final colors = context.colors;
-    final title = tr(context, item.titleKey);
-    final body = tr(context, item.bodyKey);
+    final title = item.resolveTitle((k) => tr(context, k));
+    final body = item.resolveBody((k) => tr(context, k));
 
     return Dismissible(
       key: ValueKey(item.id),

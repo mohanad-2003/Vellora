@@ -1,6 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/di/environments.dart';
+import '../../../../core/network/api_endpoints.dart';
+import '../../../../core/network/api_mappers.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/mock/mock_catalog.dart';
 import '../../../home/domain/entities/product_entity.dart';
@@ -16,8 +20,9 @@ abstract class ProductRemoteDataSource {
   Future<List<ProductEntity>> getRelatedProducts(String id);
 }
 
+@mockOnly
 @LazySingleton(as: ProductRemoteDataSource)
-class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
+class MockProductRemoteDataSource implements ProductRemoteDataSource {
   @override
   Future<ProductDetailEntity> getProductDetails(String id) async {
     await Future<void>.delayed(AppConstants.mockDelay);
@@ -107,5 +112,43 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
         timeAgo: '3 weeks ago',
       ),
     ];
+  }
+}
+
+@apiOnly
+@LazySingleton(as: ProductRemoteDataSource)
+class ApiProductRemoteDataSource implements ProductRemoteDataSource {
+  ApiProductRemoteDataSource(this._dio);
+
+  final Dio _dio;
+
+  @override
+  Future<ProductDetailEntity> getProductDetails(String id) async {
+    final res = await _dio.get<Map<String, dynamic>>(
+      ApiEndpoints.productDetails(id),
+    );
+    final j = res.data!;
+    final variant = j['variant'] as Map<String, dynamic>;
+    return ProductDetailEntity(
+      product: ApiMappers.product(j['product'] as Map<String, dynamic>),
+      gallery: [for (final g in j['gallery'] as List) g as String],
+      description: j['description'] as String,
+      variant: ProductVariantEntity(
+        colors: [for (final c in variant['colors'] as List) c as String],
+        sizes: [for (final s in variant['sizes'] as List) s as String],
+      ),
+      reviews: [
+        for (final r in j['reviews'] as List)
+          ApiMappers.review(r as Map<String, dynamic>),
+      ],
+      inStock: (j['product'] as Map<String, dynamic>)['inStock'] as bool? ??
+          true,
+    );
+  }
+
+  @override
+  Future<List<ProductEntity>> getRelatedProducts(String id) async {
+    final res = await _dio.get<List<dynamic>>(ApiEndpoints.relatedProducts(id));
+    return ApiMappers.products(res.data);
   }
 }

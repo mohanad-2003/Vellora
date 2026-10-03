@@ -1184,4 +1184,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goHome => 'Go to Home';
+
+  @override
+  String get invalidCredentials => 'Incorrect email or password.';
+
+  @override
+  String get emailTaken => 'An account with this email already exists.';
+
+  @override
+  String get pleaseLogin => 'Please log in to continue.';
 }

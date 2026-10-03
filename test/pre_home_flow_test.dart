@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vellora/app.dart';
+import 'package:vellora/core/di/environments.dart';
 import 'package:vellora/core/di/injection.dart';
 import 'package:vellora/features/auth/presentation/pages/create_new_password_page.dart';
 import 'package:vellora/features/auth/presentation/pages/login_page.dart';
@@ -56,7 +57,7 @@ void main() {
     Hive.init(hiveDir.path);
     // Fresh install: no language chosen → starts at Language Select.
     SharedPreferences.setMockInitialValues({});
-    await configureDependencies();
+    await configureDependencies(environment: mockEnv);
   });
 
   tearDownAll(() async {

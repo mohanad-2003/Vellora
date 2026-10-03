@@ -490,5 +490,8 @@
   "helpBody": "Questions about an order or your account? Our team is happy to help.",
   "pageNotFoundTitle": "Page not found",
   "pageNotFoundBody": "The page you are looking for does not exist or has moved.",
-  "goHome": "Go to Home"
+  "goHome": "Go to Home",
+  "invalidCredentials": "Incorrect email or password.",
+  "emailTaken": "An account with this email already exists.",
+  "pleaseLogin": "Please log in to continue."
 }

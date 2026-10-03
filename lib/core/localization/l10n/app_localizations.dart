@@ -2215,6 +2215,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go to Home'**
   String get goHome;
+
+  /// No description provided for @invalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect email or password.'**
+  String get invalidCredentials;
+
+  /// No description provided for @emailTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'An account with this email already exists.'**
+  String get emailTaken;
+
+  /// No description provided for @pleaseLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to continue.'**
+  String get pleaseLogin;
 }
 
 class _AppLocalizationsDelegate

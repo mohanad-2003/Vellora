@@ -28,4 +28,15 @@ class CatalogRepositoryImpl implements CatalogRepository {
       return Left(mapExceptionToFailure(e));
     }
   }
+
+  @override
+  Future<Either<Failure, List<ProductEntity>>> getProductsByIds(
+    List<String> ids,
+  ) async {
+    try {
+      return Right(await _remote.getProductsByIds(ids));
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
 }

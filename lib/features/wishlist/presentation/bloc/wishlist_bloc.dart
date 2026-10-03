@@ -21,8 +21,8 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
   final GetWishlistProductsUseCase _getProducts;
   final RemoveFromWishlistUseCase _removeItem;
 
-  void _load(Emitter<WishlistState> emit) {
-    final result = _getProducts();
+  Future<void> _load(Emitter<WishlistState> emit) async {
+    final result = await _getProducts();
     result.match(
       (failure) => emit(state.copyWith(
         status: WishlistStatus.error,
@@ -42,7 +42,7 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
     Emitter<WishlistState> emit,
   ) async {
     emit(state.copyWith(status: WishlistStatus.loading));
-    _load(emit);
+    await _load(emit);
   }
 
   Future<void> _onItemRemoved(
@@ -50,6 +50,6 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
     Emitter<WishlistState> emit,
   ) async {
     await _removeItem(event.productId);
-    _load(emit);
+    await _load(emit);
   }
 }

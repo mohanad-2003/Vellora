@@ -9,7 +9,7 @@ import '../../../../core/widgets/app_icon_button.dart';
 import '../../../../core/widgets/count_badge.dart';
 import '../../../auth/presentation/bloc/user_session_cubit.dart';
 import '../../../cart/presentation/bloc/cart_badge_cubit.dart';
-import '../../../notifications/data/mock_notifications.dart';
+import '../../../notifications/presentation/cubit/notifications_cubit.dart';
 
 /// Time-of-day buckets for the greeting.
 enum DayPeriod { morning, afternoon, evening }
@@ -69,7 +69,7 @@ class HomeHeader extends StatelessWidget {
               icon: Icons.notifications_none_rounded,
               semanticLabel: l10n.notifications,
               onPressed: () => context.pushNamed(RouteNames.nNotifications),
-              badge: MockNotifications.unreadCount > 0
+              badge: context.watch<UnreadNotificationsCubit>().state > 0
                   ? const _Dot()
                   : null,
             ),

@@ -25,10 +25,11 @@ It ships with full **English & Arabic** support (true RTL mirroring), **light an
 themes**, responsive layouts, accessibility semantics, and skeleton / empty / error
 states throughout.
 
-> **There is no backend yet.** Data comes from in-memory mocks
-> ([`lib/core/mock/mock_catalog.dart`](lib/core/mock/mock_catalog.dart)) and local
-> storage (Hive, SharedPreferences, secure storage). The data layer is built so a real
-> API can replace the mocks without touching the UI.
+> **Backend:** a Node.js API lives in [`backend/`](backend/) (Express + PostgreSQL, JWT auth,
+> orders, wishlist, notifications) — see [`backend/README.md`](backend/README.md).
+> The app talks to it by default; start it first (see *Getting Started*). For an offline
+> demo without the server, run with `--dart-define=USE_MOCKS=true` to use the built-in
+> in-memory data instead.
 
 ---
 
@@ -44,8 +45,8 @@ states throughout.
 | 📦 **Product details** | Gallery, size / colour variants, reviews, related products |
 | ❤️ **Wishlist** | Favourite products synced across every screen |
 | 🛒 **Cart & Checkout** | Quantity control, live totals, delivery methods, order success |
-| 🧾 **Orders** | Order history and details (mock store) |
-| 🔔 **Notifications** | Notification centre (mock) |
+| 🧾 **Orders** | Place orders, order history and details (server-side totals) |
+| 🔔 **Notifications** | Notification centre (server feed, unread dot on Home) |
 | ⚙️ **Settings & Profile** | Language, theme, account sections |
 | 🎨 **Design system** | Colour tokens, Inter / Cairo typography, spacing and radius scales |
 | ♿ **Accessibility** | Semantics labels, 48dp touch targets, text scale up to 1.6×, reduced-motion support |
@@ -78,7 +79,7 @@ lib/
 │   ├── constants/            # App constants, asset paths
 │   ├── di/                   # get_it + injectable
 │   ├── localization/l10n/    # ARB files & generated localizations
-│   ├── mock/                 # Mock catalogue data
+│   ├── mock/                 # Offline sample data (tests, USE_MOCKS)
 │   ├── responsive/           # Breakpoints, grid columns, page gutters
 │   ├── routing/              # go_router config, shell, route names
 │   ├── theme/                # Colours, typography, spacing, radius, themes
@@ -102,7 +103,7 @@ lib/
 | **Dependency injection** | `get_it`, `injectable` |
 | **Code generation** | `freezed`, `json_serializable`, `build_runner` |
 | **Local storage** | `hive`, `shared_preferences`, `flutter_secure_storage` |
-| **Networking (ready, unused by mocks)** | `dio`, `retrofit`, `pretty_dio_logger` |
+| **Networking** | `dio`, `retrofit`, `pretty_dio_logger` |
 | **Functional errors** | `fpdart` |
 | **UI** | `cached_network_image`, `flutter_svg`, `lottie`, `shimmer`, `responsive_framework` |
 | **Testing** | `bloc_test`, `mocktail`, `flutter_test` |
@@ -148,11 +149,30 @@ Application id / bundle id is still `com.example.vellora`; change it before publ
 git clone <your-repo-url>
 cd ui_kit
 
+# 1. Backend (needs Node 22.5+)
+cd backend && npm install && npm start      # http://localhost:3000
+cd ..
+
+# 2. App
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs   # DI, freezed, json
 flutter gen-l10n                                           # localizations
 flutter run
 ```
+
+The API address defaults to `http://10.0.2.2:3000` on the Android emulator and
+`http://localhost:3000` elsewhere. For a real phone or a deployed server:
+
+```bash
+flutter run --dart-define=API_BASE_URL=http://192.168.1.20:3000
+flutter run --dart-define=USE_MOCKS=true       # no server: built-in sample data
+```
+
+Deploying the API to Render: see [`backend/README.md`](backend/README.md#deploy-on-render).
+
+Debug and profile Android builds allow plain HTTP for local development; release builds
+need an HTTPS `API_BASE_URL`. Without an email provider, the password-reset code is
+printed in the backend log (and in the app's debug console).
 
 ### Localization
 
@@ -190,9 +210,10 @@ flutter test
 - [x] Design system, branding, light / dark and RTL
 - [x] Onboarding, authentication, storefront, search & filters
 - [x] Cart, checkout, orders, notifications, settings
-- [ ] Backend API integration (currently mock-driven)
+- [x] Node.js backend (`backend/`)
+- [x] Flutter app connected to the backend (home, catalogue, product, auth, promo, orders, notifications)
 - [ ] Payment gateway
-- [ ] Localized mock content (orders, notifications and product copy are English-only)
+- [ ] Localized product and notification text (the API returns English only)
 - [ ] iOS and tablet / landscape verification on real devices
 
 ---

@@ -1,7 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/asset_paths.dart';
+import '../../../../core/di/environments.dart';
+import '../../../../core/network/api_endpoints.dart';
+import '../../../../core/network/api_mappers.dart';
 import '../../../../core/mock/mock_catalog.dart';
 import '../../domain/entities/banner_entity.dart';
 import '../../domain/entities/category_entity.dart';
@@ -14,8 +18,9 @@ abstract class HomeRemoteDataSource {
   Future<HomeDataEntity> getHomeData();
 }
 
+@mockOnly
 @LazySingleton(as: HomeRemoteDataSource)
-class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
+class MockHomeRemoteDataSource implements HomeRemoteDataSource {
   @override
   Future<HomeDataEntity> getHomeData() async {
     await Future<void>.delayed(AppConstants.mockDelay);
@@ -116,4 +121,33 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
       imagePath: AssetPaths.bannerShoppingWoman,
     ),
   ];
+}
+
+@apiOnly
+@LazySingleton(as: HomeRemoteDataSource)
+class ApiHomeRemoteDataSource implements HomeRemoteDataSource {
+  ApiHomeRemoteDataSource(this._dio);
+
+  final Dio _dio;
+
+  @override
+  Future<HomeDataEntity> getHomeData() async {
+    final res = await _dio.get<Map<String, dynamic>>(ApiEndpoints.home);
+    final j = res.data!;
+    return HomeDataEntity(
+      banners: [
+        for (final b in j['banners'] as List)
+          ApiMappers.banner(b as Map<String, dynamic>),
+      ],
+      categories: [
+        for (final c in j['categories'] as List)
+          ApiMappers.category(c as Map<String, dynamic>),
+      ],
+      featured: ApiMappers.products(j['featured']),
+      flashSale: ApiMappers.products(j['flashSale']),
+      newArrivals: ApiMappers.products(j['newArrivals']),
+      bestSellers: ApiMappers.products(j['bestSellers']),
+      recommended: ApiMappers.products(j['recommended']),
+    );
+  }
 }

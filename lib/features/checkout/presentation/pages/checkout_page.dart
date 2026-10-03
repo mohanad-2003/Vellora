@@ -6,6 +6,7 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/num_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
+import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/responsive/responsive.dart';
 import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -52,6 +53,10 @@ class _CheckoutView extends StatelessWidget {
               RouteNames.nOrderSuccess,
               extra: state.order,
             );
+          } else if (state.status == CheckoutStatus.ready &&
+              state.failureKey != null) {
+            // Placing the order failed; the cart is untouched.
+            AppSnackbar.error(context, tr(context, state.failureKey!));
           }
         },
         builder: (context, state) {

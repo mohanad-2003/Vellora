@@ -11,8 +11,10 @@ sealed class Failure with _$Failure {
   const factory Failure.server({required String message}) = ServerFailure;
   const factory Failure.cache({required String message}) = CacheFailure;
   const factory Failure.network({required String message}) = NetworkFailure;
-  const factory Failure.validation({required String message}) =
+  const factory Failure.validation({required String message, String? code}) =
       ValidationFailure;
+  const factory Failure.unauthorized({required String message}) =
+      UnauthorizedFailure;
   const factory Failure.unexpected({required String message}) =
       UnexpectedFailure;
 
@@ -22,7 +24,13 @@ sealed class Failure with _$Failure {
         ServerFailure() => 'serverError',
         CacheFailure() => 'cacheError',
         NetworkFailure() => 'noConnection',
-        ValidationFailure() => 'somethingWentWrong',
+        ValidationFailure(:final code) => switch (code) {
+            'invalid_credentials' => 'invalidCredentials',
+            'conflict' => 'emailTaken',
+            'invalid_code' => 'invalidOtp',
+            _ => 'somethingWentWrong',
+          },
+        UnauthorizedFailure() => 'pleaseLogin',
         UnexpectedFailure() => 'unexpectedError',
       };
 }

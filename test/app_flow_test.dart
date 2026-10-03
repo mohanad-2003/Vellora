@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vellora/app.dart';
 import 'package:vellora/core/constants/app_constants.dart';
+import 'package:vellora/core/di/environments.dart';
 import 'package:vellora/core/di/injection.dart';
 import 'package:vellora/core/widgets/vellora_logo.dart';
 
@@ -58,7 +59,7 @@ void main() {
       AppConstants.prefOnboardingSeen: true,
     });
 
-    await configureDependencies();
+    await configureDependencies(environment: mockEnv);
   });
 
   tearDownAll(() async {

@@ -27,10 +27,19 @@ class ErrorInterceptor extends Interceptor {
         return const NetworkException();
       case DioExceptionType.badResponse:
         final status = err.response?.statusCode ?? 0;
-        if (status == 401) return const UnauthorizedException();
-        if (status == 404) return const NotFoundException();
+        final body = err.response?.data;
+        final error = body is Map ? body['error'] : null;
+        final code = error is Map ? error['code'] as String? : null;
+        final message = (error is Map ? error['message'] as String? : null);
+        if (status == 401) {
+          return UnauthorizedException(message ?? 'Unauthorized', code);
+        }
+        if (status == 404) return NotFoundException(message ?? 'Not found');
         if (status >= 500) return const ServerException();
-        return ServerException('Request failed with status $status');
+        if (status == 400 || status == 409 || status == 422) {
+          return ValidationException(message ?? 'Validation error', code);
+        }
+        return ServerException(message ?? 'Request failed with status $status');
       case DioExceptionType.cancel:
         return const AppException('Request cancelled');
       case DioExceptionType.badCertificate:

@@ -9,4 +9,8 @@ abstract class CatalogRepository {
     String? categoryId,
     String? query,
   });
+
+  Future<Either<Failure, List<ProductEntity>>> getProductsByIds(
+    List<String> ids,
+  );
 }

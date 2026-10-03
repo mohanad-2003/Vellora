@@ -2,21 +2,23 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/errors/exception_mapper.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../cart/domain/entities/cart_item_entity.dart';
 import '../../../cart/domain/entities/cart_summary_entity.dart';
 import '../../../cart/domain/entities/promo_code_entity.dart';
 import '../../../cart/domain/usecases/get_cart_usecase.dart';
 import '../../../cart/domain/usecases/remove_from_cart_usecase.dart';
-import '../../../orders/data/mock_orders_store.dart';
+import '../../../orders/data/orders_remote_datasource.dart';
 import '../../../orders/domain/order_entity.dart';
+import '../../../orders/domain/place_order_request.dart';
 import '../models/checkout_models.dart';
 
 part 'checkout_state.dart';
 
 /// Drives the checkout screen: loads the cart, tracks the chosen address,
 /// delivery method and payment method, then simulates placing the order —
-/// recording it in the (mock) order history and emptying the bag.
+/// sending it to the orders API and emptying the bag.
 @injectable
 class CheckoutCubit extends Cubit<CheckoutState> {
   CheckoutCubit(this._getCart, this._removeItem, this._orders)
@@ -24,7 +26,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
   final GetCartUseCase _getCart;
   final RemoveFromCartUseCase _removeItem;
-  final MockOrdersStore _orders;
+  final OrdersRemoteDataSource _orders;
 
   PromoCodeEntity? _promo;
 
@@ -101,11 +103,17 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     if (state.status != CheckoutStatus.ready) return;
     emit(state.copyWith(status: CheckoutStatus.placing));
 
-    // Simulate payment authorization / order creation latency.
-    await Future<void>.delayed(const Duration(milliseconds: 1800));
-
-    final order = _buildOrder();
-    _orders.add(order);
+    final OrderEntity order;
+    try {
+      order = await _orders.placeOrder(_buildRequest());
+    } catch (e) {
+      // Back to the form with the cart intact so the user can retry.
+      emit(state.copyWith(
+        status: CheckoutStatus.ready,
+        failureKey: mapExceptionToFailure(e).l10nKey,
+      ));
+      return;
+    }
 
     // Empty the bag now that the order is confirmed.
     for (final item in state.items) {
@@ -113,6 +121,31 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     }
 
     emit(state.copyWith(status: CheckoutStatus.success, order: order));
+  }
+
+  PlaceOrderRequest _buildRequest() {
+    final address = state.selectedAddress!;
+    final preview = _buildOrder();
+    return PlaceOrderRequest(
+      items: [
+        for (final i in state.items)
+          PlaceOrderItem(
+            productId: i.productId,
+            quantity: i.quantity,
+            color: i.color,
+            size: i.size,
+          ),
+      ],
+      express: state.selectedDelivery?.kind == DeliveryKind.express,
+      promoCode: _promo?.code,
+      recipient: address.recipient,
+      phone: address.phone,
+      addressLine: address.line,
+      city: address.city,
+      paymentKind: preview.paymentKind,
+      paymentDetail: preview.paymentDetail,
+      preview: preview,
+    );
   }
 
   OrderEntity _buildOrder() {
