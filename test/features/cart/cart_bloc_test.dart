@@ -35,7 +35,7 @@ void main() {
     id: 'p1__M',
     productId: 'p1',
     name: 'Tee',
-    imagePath: 'assets/images/products/product_hoodie_black.png',
+    imagePath: '',
     price: 20,
     quantity: 2,
   );

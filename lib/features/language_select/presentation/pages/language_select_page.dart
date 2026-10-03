@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/di/injection.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/responsive/responsive.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/utils/haptics.dart';
-import '../../../../core/widgets/vellora_logo.dart';
-import '../cubit/language_select_cubit.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_colors.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/utils/haptics.dart';
+import 'package:vellora/core/widgets/vellora_logo.dart';
+import 'package:vellora/features/language_select/presentation/cubit/language_select_cubit.dart';
 
 class LanguageSelectPage extends StatelessWidget {
   const LanguageSelectPage({super.key});
@@ -80,17 +79,16 @@ class _LanguageSelectView extends StatelessWidget {
                                 child: Text(
                                   l10n.selectLanguage,
                                   textAlign: TextAlign.center,
-                                  style: text.displaySmall
-                                      ?.copyWith(color: Colors.white),
+                                  style: text.displaySmall?.copyWith(
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: AppSpacing.sm),
                               // Always bilingual so nobody is stranded on a
                               // language they cannot read.
                               Text(
-                                isArabic
-                                    ? 'Choose your language'
-                                    : 'اختر لغتك',
+                                isArabic ? 'Choose your language' : 'اختر لغتك',
                                 textAlign: TextAlign.center,
                                 style: text.titleMedium?.copyWith(
                                   color: kBrandGold,

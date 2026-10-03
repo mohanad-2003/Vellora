@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/asset_paths.dart';
 import '../../../../core/di/environments.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/api_mappers.dart';
@@ -59,43 +58,43 @@ class MockHomeRemoteDataSource implements HomeRemoteDataSource {
       CategoryEntity(
         id: 'men',
         name: 'Men',
-        imagePath: AssetPaths.hoodieBlack,
+        imagePath: '',
         productCount: count('men'),
       ),
       CategoryEntity(
         id: 'women',
         name: 'Women',
-        imagePath: AssetPaths.dressBlackTrench,
+        imagePath: '',
         productCount: count('women'),
       ),
       CategoryEntity(
         id: 'shoes',
         name: 'Shoes',
-        imagePath: AssetPaths.sneakersHighTopMono,
+        imagePath: '',
         productCount: count('shoes'),
       ),
       CategoryEntity(
         id: 'accessories',
         name: 'Accessories',
-        imagePath: AssetPaths.watchAviator,
+        imagePath: '',
         productCount: count('accessories'),
       ),
       CategoryEntity(
         id: 'beauty',
         name: 'Beauty',
-        imagePath: AssetPaths.lipstickRed,
+        imagePath: '',
         productCount: count('beauty'),
       ),
       CategoryEntity(
         id: 'electronics',
         name: 'Electronics',
-        imagePath: AssetPaths.cameraDslr,
+        imagePath: '',
         productCount: count('electronics'),
       ),
       CategoryEntity(
         id: 'grocery',
         name: 'Grocery',
-        imagePath: AssetPaths.hotChocolate,
+        imagePath: '',
         productCount: count('grocery'),
       ),
     ];
@@ -106,19 +105,19 @@ class MockHomeRemoteDataSource implements HomeRemoteDataSource {
       id: 'summer',
       title: 'Summer Collection',
       subtitle: 'Up to 50% off selected styles',
-      imagePath: AssetPaths.dressBlackTrench,
+      imagePath: '',
     ),
     BannerEntity(
       id: 'flash',
       title: 'Flash Sale',
       subtitle: 'Ends soon — grab it fast',
-      imagePath: AssetPaths.sneakersStreetOrange,
+      imagePath: '',
     ),
     BannerEntity(
       id: 'new',
       title: 'New Arrivals',
       subtitle: 'Fresh drops every week',
-      imagePath: AssetPaths.bannerShoppingWoman,
+      imagePath: '',
     ),
   ];
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/asset_paths.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/routing/route_names.dart';
 import '../../../../core/widgets/app_icon_button.dart';
@@ -127,13 +126,9 @@ class _Avatar extends StatelessWidget {
 
   Widget _fallback(ColorScheme colors, String? initial) {
     if (initial == null) {
-      return Image.asset(
-        AssetPaths.avatarDefault,
-        fit: BoxFit.cover,
-        errorBuilder: (_, _, _) => ColoredBox(
-          color: colors.primaryContainer,
-          child: Icon(Icons.person_rounded, color: colors.primary),
-        ),
+      return ColoredBox(
+        color: colors.primaryContainer,
+        child: Icon(Icons.person_rounded, color: colors.primary),
       );
     }
     return ColoredBox(

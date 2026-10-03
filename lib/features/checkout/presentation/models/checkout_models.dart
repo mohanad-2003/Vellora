@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../core/constants/asset_paths.dart';
-
 /// A saved shipping address. Presentation-level mock data — there is no
 /// backend in Phase 1, so these are provided by [CheckoutMockData].
 class ShippingAddress extends Equatable {
@@ -27,8 +25,7 @@ class ShippingAddress extends Equatable {
   List<Object?> get props => [id, label, recipient, line, city, phone];
 }
 
-/// Supported payment rails. [assetPath] is null for methods rendered with a
-/// Material icon instead of a brand logo (e.g. cash on delivery).
+/// Supported payment rails. Each is shown with a Material icon.
 enum PaymentKind { card, paypal, cashOnDelivery }
 
 class PaymentMethodOption extends Equatable {
@@ -37,17 +34,15 @@ class PaymentMethodOption extends Equatable {
     required this.kind,
     required this.title,
     required this.subtitle,
-    this.assetPath,
   });
 
   final String id;
   final PaymentKind kind;
   final String title;
   final String subtitle;
-  final String? assetPath;
 
   @override
-  List<Object?> get props => [id, kind, title, subtitle, assetPath];
+  List<Object?> get props => [id, kind, title, subtitle];
 }
 
 /// How the order is delivered.
@@ -120,14 +115,12 @@ class CheckoutMockData {
       kind: PaymentKind.card,
       title: 'Visa •••• 4242',
       subtitle: 'Expires 08/28',
-      assetPath: AssetPaths.payVisa,
     ),
     PaymentMethodOption(
       id: 'pay_paypal',
       kind: PaymentKind.paypal,
       title: 'PayPal',
       subtitle: 'alex.johnson@email.com',
-      assetPath: AssetPaths.payPaypal,
     ),
     PaymentMethodOption(
       id: 'pay_cod',

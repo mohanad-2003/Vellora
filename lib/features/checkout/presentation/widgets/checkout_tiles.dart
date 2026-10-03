@@ -178,7 +178,7 @@ class PaymentTile extends StatelessWidget {
         ? l10n.payOnArrival
         : method.subtitle;
 
-    final fallback = switch (method.kind) {
+    final icon = switch (method.kind) {
       PaymentKind.cashOnDelivery => Icons.payments_outlined,
       PaymentKind.paypal => Icons.account_balance_wallet_outlined,
       PaymentKind.card => Icons.credit_card_rounded,
@@ -189,20 +189,7 @@ class PaymentTile extends StatelessWidget {
       onTap: onTap,
       title: title,
       subtitle: subtitle,
-      leading: TileIcon(
-        icon: fallback,
-        child: method.assetPath == null
-            ? null
-            : Padding(
-                padding: const EdgeInsets.all(6),
-                child: Image.asset(
-                  method.assetPath!,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, _, _) =>
-                      Icon(fallback, color: context.colors.primary),
-                ),
-              ),
-      ),
+      leading: TileIcon(icon: icon),
     );
   }
 }

@@ -73,14 +73,8 @@ flutter:
 
   assets:
     - assets/branding/
-    - assets/images/products/
-    - assets/images/banners/
     - assets/images/onboarding/
-    - assets/images/categories/
     - assets/images/social/
-    - assets/images/payment/
-    - assets/images/avatars/
-    - assets/images/icons/
 
   fonts:
     - family: Inter

@@ -118,8 +118,9 @@ class _ZoomViewerState extends State<_ZoomViewer> {
 
   @override
   Widget build(BuildContext context) {
+    // Product shots are on a plain, light background: show them on one.
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: context.vellora.imageBackdrop,
       body: Stack(
         children: [
           PageView.builder(
@@ -129,12 +130,15 @@ class _ZoomViewerState extends State<_ZoomViewer> {
               minScale: 1,
               maxScale: 4,
               child: Center(
-                child: Image.asset(
+                child: Image.network(
                   widget.images[i],
                   fit: BoxFit.contain,
-                  errorBuilder: (_, _, _) => const Icon(
+                  loadingBuilder: (_, child, progress) => progress == null
+                      ? child
+                      : const Center(child: CircularProgressIndicator()),
+                  errorBuilder: (_, _, _) => Icon(
                     Icons.image_not_supported_outlined,
-                    color: Colors.white54,
+                    color: context.colors.outline,
                     size: 48,
                   ),
                 ),

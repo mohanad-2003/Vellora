@@ -28,9 +28,10 @@ states throughout.
 > **Backend:** the Node.js API (Express + PostgreSQL, JWT auth, orders, wishlist,
 > notifications) lives in its own repository,
 > [`mohanad-2003/vellora-api`](https://github.com/mohanad-2003/vellora-api).
-> The app talks to it by default; start it first (see *Getting Started*). For an offline
-> demo without the server, run with `--dart-define=USE_MOCKS=true` to use the built-in
-> in-memory data instead.
+> The app talks to it by default; start it first (see *Getting Started*). Products, reviews
+> and **all product, category and banner photos** are real data from the public
+> [DummyJSON](https://dummyjson.com) API, served through the Vellora API. The app bundles
+> only the logo, the onboarding / welcome pictures and the social-login icons.
 
 ---
 
@@ -80,7 +81,7 @@ lib/
 │   ├── constants/            # App constants, asset paths
 │   ├── di/                   # get_it + injectable
 │   ├── localization/l10n/    # ARB files & generated localizations
-│   ├── mock/                 # Offline sample data (tests, USE_MOCKS)
+│   ├── mock/                 # Tiny fixtures for the test suite only
 │   ├── responsive/           # Breakpoints, grid columns, page gutters
 │   ├── routing/              # go_router config, shell, route names
 │   ├── theme/                # Colours, typography, spacing, radius, themes
@@ -167,7 +168,6 @@ The API address defaults to `http://10.0.2.2:3000` on the Android emulator and
 
 ```bash
 flutter run --dart-define=API_BASE_URL=http://192.168.1.20:3000
-flutter run --dart-define=USE_MOCKS=true       # no server: built-in sample data
 ```
 
 Deploying the API to Render: see the [API repository](https://github.com/mohanad-2003/vellora-api#deploy-on-render).

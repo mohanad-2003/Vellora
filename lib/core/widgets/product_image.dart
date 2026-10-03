@@ -1,13 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../constants/asset_paths.dart';
 import '../extensions/context_extensions.dart';
 
 /// Product photography on a neutral backdrop.
 ///
-/// * Local assets (`assets/...`) and network images (`http...`) share one API,
-///   so the card never changes when the backend arrives.
+/// * Photos are network images (`http...`) served by the Vellora API.
 /// * Lifestyle shots fill the frame (`cover`); plain-background packshots are
 ///   shown whole (`contain`) and blended into the backdrop so nothing is
 ///   cropped. Override with [fit].
@@ -30,10 +28,8 @@ class ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Bundled photos are listed in AssetPaths; the API tags its own with
-    // `?packshot=1`.
-    final packshot =
-        AssetPaths.packshots.contains(path) || path.contains('packshot=1');
+    // The API tags plain-background product shots with `?packshot=1`.
+    final packshot = path.contains('packshot=1');
     final effectiveFit = fit ?? (packshot ? BoxFit.contain : BoxFit.cover);
     final backdrop = packshot
         ? const Color(0xFFF1F2F6)
@@ -48,15 +44,7 @@ class ProductImage extends StatelessWidget {
             placeholder: (_, _) => ColoredBox(color: backdrop),
             errorWidget: (_, _, _) => _Fallback(color: backdrop),
           )
-        : Image.asset(
-            path,
-            fit: effectiveFit,
-            filterQuality: FilterQuality.medium,
-            // Multiply drops the white photo background into the backdrop.
-            color: packshot ? backdrop : null,
-            colorBlendMode: packshot ? BlendMode.multiply : null,
-            errorBuilder: (_, _, _) => _Fallback(color: backdrop),
-          );
+        : _Fallback(color: backdrop);
 
     return Semantics(
       image: true,
