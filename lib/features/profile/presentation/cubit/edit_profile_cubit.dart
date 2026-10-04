@@ -14,14 +14,10 @@ class EditProfileCubit extends Cubit<EditProfileState> with SafeEmit<EditProfile
 
   final UpdateProfileUseCase _updateProfile;
 
-  Future<void> save({
-    required String name,
-    required String email,
-    String? phone,
-  }) async {
+  Future<void> save({required String name, String? phone}) async {
     emit(state.copyWith(status: EditProfileStatus.saving));
     final result = await _updateProfile(
-      UpdateProfileParams(name: name, email: email, phone: phone),
+      UpdateProfileParams(name: name, phone: phone),
     );
     result.match(
       (failure) => emit(

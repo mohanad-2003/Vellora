@@ -31,11 +31,12 @@ abstract class AuthRepository {
 
   Future<Either<Failure, UserEntity?>> getCachedUser();
 
-  /// Updates the cached user's editable profile fields and returns the merged
-  /// user.
+  /// Updates the signed-in user's name (saved on the server too) and phone
+  /// (kept on this device) and returns the merged user. The email belongs to the
+  /// account and cannot be changed here. Fails with `unauthorized` when nobody
+  /// is signed in.
   Future<Either<Failure, UserEntity>> updateProfile({
     required String name,
-    required String email,
     String? phone,
   });
 

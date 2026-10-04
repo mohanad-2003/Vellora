@@ -55,11 +55,22 @@ class CartLocalDataSourceImpl implements CartLocalDataSource {
       if (existingRaw is String) {
         final existing = CartItemModel.fromJson(
             jsonDecode(existingRaw) as Map<String, dynamic>);
-        final merged =
-            existing.copyWith(quantity: existing.quantity + item.quantity);
+        final merged = existing.copyWith(
+          quantity: (existing.quantity + item.quantity)
+              .clamp(1, AppConstants.maxLineQuantity),
+        );
         await _box.put(item.id, jsonEncode(merged.toJson()));
       } else {
-        await _box.put(item.id, jsonEncode(item.toJson()));
+        await _box.put(
+          item.id,
+          jsonEncode(
+            item
+                .copyWith(
+                  quantity: item.quantity.clamp(1, AppConstants.maxLineQuantity),
+                )
+                .toJson(),
+          ),
+        );
       }
     } catch (_) {
       throw const CacheException('Failed to add item to cart');
@@ -76,7 +87,8 @@ class CartLocalDataSourceImpl implements CartLocalDataSource {
       if (quantity <= 0) {
         await _box.delete(itemId);
       } else {
-        await _box.put(itemId, jsonEncode(item.copyWith(quantity: quantity).toJson()));
+        final capped = quantity.clamp(1, AppConstants.maxLineQuantity);
+        await _box.put(itemId, jsonEncode(item.copyWith(quantity: capped).toJson()));
       }
     } catch (_) {
       throw const CacheException('Failed to update quantity');
@@ -95,10 +107,17 @@ class CartLocalDataSourceImpl implements CartLocalDataSource {
   @override
   Future<void> replaceAll(List<CartItemModel> items) async {
     try {
-      await _box.clear();
-      for (final item in items) {
-        await _box.put(item.id, jsonEncode(item.toJson()));
-      }
+      // Only what differs is written or deleted. Clearing the box first would
+      // make every listener (cart badge, cart screen) see an empty bag for a
+      // moment.
+      final next = {for (final i in items) i.id: jsonEncode(i.toJson())};
+      final stale = _box.keys.where((k) => !next.containsKey(k)).toList();
+      if (stale.isNotEmpty) await _box.deleteAll(stale);
+      final changed = {
+        for (final e in next.entries)
+          if (_box.get(e.key) != e.value) e.key: e.value,
+      };
+      if (changed.isNotEmpty) await _box.putAll(changed);
     } catch (_) {
       throw const CacheException('Failed to save cart');
     }

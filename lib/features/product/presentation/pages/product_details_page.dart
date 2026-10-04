@@ -9,7 +9,6 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/num_extensions.dart';
-import '../../../../core/localization/l10n_lookup.dart';
 import '../../../../core/responsive/responsive.dart';
 import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_radius.dart';
@@ -20,7 +19,6 @@ import '../../../../core/widgets/app_icon_button.dart';
 import '../../../../core/widgets/count_badge.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
-import '../../../../core/widgets/error_state_widget.dart';
 import '../../../../core/widgets/favorite_button.dart';
 import '../../../../core/widgets/price_widget.dart';
 import '../../../../core/widgets/quantity_selector.dart';
@@ -36,6 +34,8 @@ import '../widgets/rating_summary.dart';
 import '../widgets/related_products_list.dart';
 import '../widgets/variant_selector.dart';
 import '../widgets/write_review_sheet.dart';
+import '../../../../core/widgets/failure_state_view.dart';
+import '../../../../core/widgets/slow_load_hint.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   const ProductDetailsPage({super.key, required this.productId, this.heroTag});
@@ -93,10 +93,8 @@ class _ProductDetailView extends StatelessWidget {
               children: [
                 AppBarWidget(title: l10n.productDetails),
                 Expanded(
-                  child: ErrorStateWidget(
-                    message: state.failureKey != null
-                        ? tr(context, state.failureKey!)
-                        : l10n.somethingWentWrong,
+                  child: FailureStateView(
+                    failureKey: state.failureKey,
                     onRetry: () => context.read<ProductDetailBloc>().add(
                       ProductDetailRequested(productId),
                     ),
@@ -125,6 +123,7 @@ class _DetailSkeleton extends StatelessWidget {
     return Column(
       children: [
         AppBarWidget(title: context.l10n.productDetails),
+        const SlowLoadHint(),
         Expanded(
           child: SingleChildScrollView(
             physics: const NeverScrollableScrollPhysics(),
@@ -496,6 +495,7 @@ class _InfoSection extends StatelessWidget {
           children: [
             Expanded(child: Text(l10n.quantity, style: text.titleMedium)),
             QuantitySelector(
+              max: AppConstants.maxLineQuantity,
               quantity: state.quantity,
               onChanged: (q) => bloc.add(ProductQuantityChanged(q)),
             ),

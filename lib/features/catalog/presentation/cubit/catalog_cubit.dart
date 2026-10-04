@@ -1,15 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../cart/domain/entities/cart_item_entity.dart';
-import '../../../cart/domain/usecases/add_to_cart_usecase.dart';
-import '../../../home/domain/entities/product_entity.dart';
-import '../../../product/domain/usecases/get_favorite_ids_usecase.dart';
-import '../../../product/domain/usecases/toggle_favorite_usecase.dart';
-import '../../domain/catalog_filter.dart';
-import '../../domain/usecases/get_catalog_products_usecase.dart';
-import '../../../../core/utils/safe_emit.dart';
+import 'package:vellora/core/utils/safe_emit.dart';
+import 'package:vellora/features/cart/domain/entities/cart_item_entity.dart';
+import 'package:vellora/features/cart/domain/usecases/add_to_cart_usecase.dart';
+import 'package:vellora/features/catalog/domain/catalog_filter.dart';
+import 'package:vellora/features/catalog/domain/usecases/get_catalog_products_usecase.dart';
+import 'package:vellora/features/home/domain/entities/product_entity.dart';
+import 'package:vellora/features/product/domain/usecases/get_favorite_ids_usecase.dart';
+import 'package:vellora/features/product/domain/usecases/toggle_favorite_usecase.dart';
 
 part 'catalog_state.dart';
 
@@ -33,6 +32,10 @@ class CatalogCubit extends Cubit<CatalogState> with SafeEmit<CatalogState> {
   String? _categoryId;
   CatalogCollection? _collection;
 
+  /// Number of the latest load. A slower, older request that finishes after a
+  /// newer one (or after [reset]) is ignored instead of overwriting it.
+  int _loads = 0;
+
   Future<void> addToCart(ProductEntity p) => _addToCart(
     CartItemEntity(
       id: '${p.id}__',
@@ -51,12 +54,14 @@ class CatalogCubit extends Cubit<CatalogState> with SafeEmit<CatalogState> {
   }) async {
     _categoryId = categoryId;
     _collection = collection ?? _collection;
+    final load = ++_loads;
     emit(state.copyWith(status: CatalogStatus.loading, query: query ?? ''));
     final result = await _getProducts(
       CatalogQuery(categoryId: categoryId, query: query),
     );
-    // The user may have left the screen while the request was in flight.
-    if (isClosed) return;
+    // The user may have left the screen, or searched again, while the request
+    // was in flight.
+    if (isClosed || load != _loads) return;
     final favIds = _getFavoriteIds().getOrElse((_) => <String>{});
     result.match(
       (failure) => emit(
@@ -81,6 +86,7 @@ class CatalogCubit extends Cubit<CatalogState> with SafeEmit<CatalogState> {
 
   /// Clears results back to the initial (suggestions) state, keeping nothing.
   void reset() {
+    _loads++; // whatever is still loading no longer matters
     _collection = null;
     emit(const CatalogState());
   }

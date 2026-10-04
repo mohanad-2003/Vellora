@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/di/environments.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../models/cart_item_model.dart';
@@ -54,7 +55,7 @@ class ApiCartRemoteDataSource implements CartRemoteDataSource {
           for (final i in items)
             {
               'productId': i.productId,
-              'quantity': i.quantity.clamp(1, 20),
+              'quantity': i.quantity.clamp(1, AppConstants.maxLineQuantity),
               if (i.color != null) 'color': i.color,
               if (i.size != null) 'size': i.size,
             },

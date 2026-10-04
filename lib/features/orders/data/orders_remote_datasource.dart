@@ -91,6 +91,7 @@ class ApiOrdersRemoteDataSource implements OrdersRemoteDataSource {
   Future<OrderEntity> placeOrder(PlaceOrderRequest r) async {
     final res = await _dio.post<Map<String, dynamic>>(
       ApiEndpoints.orders,
+      options: Options(headers: {'Idempotency-Key': r.idempotencyKey}),
       data: {
         'items': [
           for (final i in r.items)

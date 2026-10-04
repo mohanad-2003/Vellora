@@ -1269,4 +1269,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get yourReview => 'مراجعتك';
+
+  @override
+  String get cardExpired => 'انتهت صلاحية هذه البطاقة.';
+
+  @override
+  String get serverWaking =>
+      'ما زلنا نتصل… قد يكون الخادم يستيقظ، وقد يستغرق ذلك دقيقة.';
+
+  @override
+  String get signInRequiredTitle => 'سجّل الدخول للمتابعة';
+
+  @override
+  String get signInRequiredBody =>
+      'تحتاج إلى حساب لهذا الإجراء. سجّل الدخول أو أنشئ حسابًا وستنتقل سلتك ومفضلتك معك.';
 }

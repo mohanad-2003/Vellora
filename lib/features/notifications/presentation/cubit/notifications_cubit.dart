@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import '../../data/notifications_remote_datasource.dart';
 import '../../domain/notification_entity.dart';
 import '../../../../core/utils/safe_emit.dart';
+import '../../../../core/errors/exception_mapper.dart';
 
 enum NotificationsStatus { loading, loaded, error }
 
@@ -12,15 +13,19 @@ class NotificationsState extends Equatable {
   const NotificationsState({
     this.status = NotificationsStatus.loading,
     this.items = const [],
+    this.failureKey,
   });
 
   final NotificationsStatus status;
   final List<NotificationEntity> items;
 
+  /// Why loading failed (an l10n key), when [status] is error.
+  final String? failureKey;
+
   bool get hasUnread => items.any((n) => n.isUnread);
 
   @override
-  List<Object?> get props => [status, items];
+  List<Object?> get props => [status, items, failureKey];
 }
 
 /// Number of unread notifications, for the dot on Home's bell. Kept in sync by
@@ -63,8 +68,13 @@ class NotificationsCubit extends Cubit<NotificationsState> with SafeEmit<Notific
         items: items,
       ));
       _unread.set(items.where((n) => n.isUnread).length);
-    } catch (_) {
-      emit(const NotificationsState(status: NotificationsStatus.error));
+    } catch (e) {
+      emit(
+        NotificationsState(
+          status: NotificationsStatus.error,
+          failureKey: mapExceptionToFailure(e).l10nKey,
+        ),
+      );
     }
   }
 

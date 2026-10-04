@@ -6,6 +6,7 @@ import '../theme/app_radius.dart';
 import '../theme/app_spacing.dart';
 import 'product_card.dart';
 import 'product_grid.dart';
+import 'slow_load_hint.dart';
 
 /// Wraps skeleton blocks in a themed shimmer sweep.
 class AppShimmer extends StatelessWidget {
@@ -164,12 +165,21 @@ class ListSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(AppSpacing.screenH),
-      itemCount: itemCount,
-      separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.xl),
-      itemBuilder: (_, _) => ListRowSkeleton(thumb: thumb),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        ListView.separated(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(AppSpacing.screenH),
+          itemCount: itemCount,
+          separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.xl),
+          itemBuilder: (_, _) => ListRowSkeleton(thumb: thumb),
+        ),
+        const Align(
+          alignment: Alignment.bottomCenter,
+          child: SlowLoadHint(),
+        ),
+      ],
     );
   }
 }

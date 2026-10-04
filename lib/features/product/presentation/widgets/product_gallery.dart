@@ -3,6 +3,7 @@ import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/theme/app_radius.dart';
 import 'package:vellora/core/widgets/app_icon_button.dart';
 import 'package:vellora/core/widgets/product_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 /// Swipeable product photo gallery with a page indicator and tap-to-zoom.
 /// The first photo carries the [heroTag] shared with the card it came from.
@@ -130,13 +131,12 @@ class _ZoomViewerState extends State<_ZoomViewer> {
               minScale: 1,
               maxScale: 4,
               child: Center(
-                child: Image.network(
-                  widget.images[i],
+                child: CachedNetworkImage(
+                  imageUrl: widget.images[i],
                   fit: BoxFit.contain,
-                  loadingBuilder: (_, child, progress) => progress == null
-                      ? child
-                      : const Center(child: CircularProgressIndicator()),
-                  errorBuilder: (_, _, _) => Icon(
+                  placeholder: (_, _) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (_, _, _) => Icon(
                     Icons.image_not_supported_outlined,
                     color: context.colors.outline,
                     size: 48,

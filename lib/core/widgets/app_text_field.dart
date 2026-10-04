@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Reusable form field with label, optional prefix/suffix and password toggle.
 class AppTextField extends StatefulWidget {
@@ -19,6 +20,7 @@ class AppTextField extends StatefulWidget {
     this.autofillHints,
     this.textCapitalization = TextCapitalization.none,
     this.autocorrect = true,
+    this.inputFormatters,
     this.focusNode,
     this.maxLines = 1,
   });
@@ -41,6 +43,7 @@ class AppTextField extends StatefulWidget {
   final Iterable<String>? autofillHints;
   final TextCapitalization textCapitalization;
   final bool autocorrect;
+  final List<TextInputFormatter>? inputFormatters;
   final FocusNode? focusNode;
 
   @override
@@ -75,6 +78,7 @@ class _AppTextFieldState extends State<AppTextField> {
           textCapitalization: widget.textCapitalization,
           autocorrect: widget.autocorrect,
           enableSuggestions: widget.autocorrect,
+          inputFormatters: widget.inputFormatters,
           style: textTheme.bodyLarge,
           decoration: InputDecoration(
             hintText: widget.hint,

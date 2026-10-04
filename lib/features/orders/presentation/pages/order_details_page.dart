@@ -19,6 +19,7 @@ import '../../domain/order_entity.dart';
 import '../cubit/orders_cubit.dart';
 import '../widgets/order_timeline.dart';
 import '../widgets/order_widgets.dart';
+import '../../../../core/widgets/failure_state_view.dart';
 
 class OrderDetailsPage extends StatelessWidget {
   const OrderDetailsPage({super.key, required this.orderId});
@@ -29,13 +30,15 @@ class OrderDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<OrderDetailCubit>()..load(orderId),
-      child: const _OrderDetailsView(),
+      child: _OrderDetailsView(orderId: orderId),
     );
   }
 }
 
 class _OrderDetailsView extends StatelessWidget {
-  const _OrderDetailsView();
+  const _OrderDetailsView({required this.orderId});
+
+  final String orderId;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +54,10 @@ class _OrderDetailsView extends StatelessWidget {
               icon: Icons.receipt_long_outlined,
               title: l10n.orderNotFoundTitle,
               message: l10n.orderNotFoundBody,
+            ),
+            OrderDetailStatus.error => FailureStateView(
+              failureKey: state.failureKey,
+              onRetry: () => context.read<OrderDetailCubit>().load(orderId),
             ),
             OrderDetailStatus.loaded => _Details(
               order: state.order!,

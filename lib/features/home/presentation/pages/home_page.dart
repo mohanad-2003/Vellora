@@ -9,7 +9,6 @@ import '../../../../core/responsive/responsive.dart';
 import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
-import '../../../../core/widgets/error_state_widget.dart';
 import '../../../../core/widgets/favorites_listener.dart';
 import '../../../../core/widgets/section_header.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
@@ -25,6 +24,8 @@ import '../widgets/home_header.dart';
 import '../widgets/home_sections.dart';
 import '../widgets/promo_banner_carousel.dart';
 import '../widgets/search_bar_entry.dart';
+import '../../../../core/widgets/failure_state_view.dart';
+import '../../../../core/widgets/slow_load_hint.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -58,7 +59,6 @@ class _HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     final gutter = context.pageGutter;
 
     return Scaffold(
@@ -94,10 +94,8 @@ class _HomeView extends StatelessWidget {
                     if (state.status == HomeStatus.error)
                       SliverFillRemaining(
                         hasScrollBody: false,
-                        child: ErrorStateWidget(
-                          message: state.failureKey != null
-                              ? tr(context, state.failureKey!)
-                              : l10n.somethingWentWrong,
+                        child: FailureStateView(
+                          failureKey: state.failureKey,
                           onRetry: () => context
                               .read<HomeBloc>()
                               .add(const HomeStarted()),
@@ -107,7 +105,14 @@ class _HomeView extends StatelessWidget {
                         state.data != null)
                       ..._content(context, state.data!)
                     else
-                      const SliverToBoxAdapter(child: _HomeLoading()),
+                      const SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            Center(child: SlowLoadHint()),
+                            _HomeLoading(),
+                          ],
+                        ),
+                      ),
                     const SliverToBoxAdapter(
                       child: SizedBox(height: AppSpacing.xxl),
                     ),

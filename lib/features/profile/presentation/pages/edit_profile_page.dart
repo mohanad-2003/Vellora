@@ -63,7 +63,6 @@ class _EditProfileViewState extends State<_EditProfileView> {
     if (!_formKey.currentState!.validate()) return;
     context.read<EditProfileCubit>().save(
       name: _name.text.trim(),
-      email: _email.text.trim(),
       phone: _phone.text.trim().isEmpty ? null : _phone.text.trim(),
     );
   }
@@ -125,12 +124,9 @@ class _EditProfileViewState extends State<_EditProfileView> {
                           label: l10n.email,
                           hint: l10n.email,
                           prefixIcon: Icons.mail_outline_rounded,
+                          // The email is the account's login: shown, not editable.
+                          enabled: false,
                           keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          validator: (v) {
-                            final key = InputValidators.email(v);
-                            return key == null ? null : tr(context, key);
-                          },
                         ),
                         SizedBox(height: AppSpacing.vLg),
                         AppTextField(

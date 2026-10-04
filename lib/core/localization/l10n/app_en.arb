@@ -514,5 +514,9 @@
   "keepOrder": "Keep order",
   "orderCancelled": "Your order was cancelled.",
   "orderNotCancellable": "This order can no longer be cancelled.",
-  "yourReview": "Your review"
+  "yourReview": "Your review",
+  "cardExpired": "This card has expired.",
+  "serverWaking": "Still connecting… the server may be waking up, this can take a minute.",
+  "signInRequiredTitle": "Sign in to continue",
+  "signInRequiredBody": "You need an account for this. Sign in or create one, and your bag and favourites come with you."
 }

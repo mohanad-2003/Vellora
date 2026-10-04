@@ -208,10 +208,7 @@ void main() {
 
     test('4. a guest editing the profile does not become a "local" user',
         () async {
-      final result = await repo.updateProfile(
-        name: 'Guest',
-        email: 'g@test.com',
-      );
+      final result = await repo.updateProfile(name: 'Guest');
 
       expect(result.isLeft(), isTrue);
       result.match(
@@ -228,11 +225,13 @@ void main() {
       when(() => remote.updateName(name: any(named: 'name')))
           .thenAnswer((_) async {});
 
-      final result =
-          await repo.updateProfile(name: 'Sara B', email: 'sara@test.com');
+      final result = await repo.updateProfile(name: 'Sara B', phone: '+200');
 
       expect(result.isRight(), isTrue);
-      expect((await local.getCachedUser())?.name, 'Sara B');
+      final saved = await local.getCachedUser();
+      expect(saved?.name, 'Sara B');
+      expect(saved?.phone, '+200');
+      expect(saved?.email, 'sara@test.com', reason: 'the account email cannot be edited');
       expect(hiveDump(), isNot(contains(_token)));
     });
 

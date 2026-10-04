@@ -1257,4 +1257,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yourReview => 'Your review';
+
+  @override
+  String get cardExpired => 'This card has expired.';
+
+  @override
+  String get serverWaking =>
+      'Still connecting… the server may be waking up, this can take a minute.';
+
+  @override
+  String get signInRequiredTitle => 'Sign in to continue';
+
+  @override
+  String get signInRequiredBody =>
+      'You need an account for this. Sign in or create one, and your bag and favourites come with you.';
 }

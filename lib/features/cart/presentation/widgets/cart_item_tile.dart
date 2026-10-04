@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/num_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
@@ -138,6 +139,7 @@ class CartItemTile extends StatelessWidget {
                       ),
                       QuantitySelector(
                         compact: true,
+                        max: AppConstants.maxLineQuantity,
                         quantity: item.quantity,
                         onChanged: onQuantityChanged,
                       ),

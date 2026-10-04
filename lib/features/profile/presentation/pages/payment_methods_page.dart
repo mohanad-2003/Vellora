@@ -12,11 +12,12 @@ import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
-import '../../../../core/widgets/error_state_widget.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../../checkout/presentation/widgets/checkout_tiles.dart';
 import '../../data/wallet_remote_datasource.dart';
 import '../cubit/payment_methods_cubit.dart';
+import '../../../../core/widgets/failure_state_view.dart';
+import '../../../../core/utils/card_input.dart';
 
 class PaymentMethodsPage extends StatelessWidget {
   const PaymentMethodsPage({super.key});
@@ -45,8 +46,8 @@ class _PaymentMethodsView extends StatelessWidget {
               return const ListSkeleton(itemCount: 3);
             }
             if (state.status == PaymentMethodsStatus.error) {
-              return ErrorStateWidget(
-                message: tr(context, state.failureKey ?? 'somethingWentWrong'),
+              return FailureStateView(
+                failureKey: state.failureKey,
                 onRetry: () => context.read<PaymentMethodsCubit>().load(),
               );
             }
@@ -130,7 +131,7 @@ class _PaymentMethodsView extends StatelessWidget {
     final cubit = context.read<PaymentMethodsCubit>();
     AppBottomSheet.show(
       context,
-      child: _CardForm(
+      child: CardForm(
         onSubmit: (card) async {
           final failure = await cubit.add(card);
           if (!context.mounted) return;
@@ -189,16 +190,17 @@ class _CardMenu extends StatelessWidget {
   }
 }
 
-class _CardForm extends StatefulWidget {
-  const _CardForm({required this.onSubmit});
+@visibleForTesting
+class CardForm extends StatefulWidget {
+  const CardForm({super.key, required this.onSubmit});
 
   final ValueChanged<NewCard> onSubmit;
 
   @override
-  State<_CardForm> createState() => _CardFormState();
+  State<CardForm> createState() => _CardFormState();
 }
 
-class _CardFormState extends State<_CardForm> {
+class _CardFormState extends State<CardForm> {
   final _formKey = GlobalKey<FormState>();
   final _number = TextEditingController();
   final _holder = TextEditingController();
@@ -219,7 +221,7 @@ class _CardFormState extends State<_CardForm> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    final digits = _number.text.replaceAll(RegExp(r'\D'), '');
+    final digits = CardInput.digitsOnly(_number.text);
     // Only the brand, the last four digits and the expiry leave the form: the
     // card number is never stored or sent anywhere.
     widget.onSubmit(
@@ -252,13 +254,12 @@ class _CardFormState extends State<_CardForm> {
             hint: '1234 5678 9012 3456',
             prefixIcon: Icons.credit_card_rounded,
             keyboardType: TextInputType.number,
-            validator: (v) {
-              final digits = (v ?? '').replaceAll(RegExp(r'\D'), '');
-              if (digits.length < 12 || digits.length > 19) {
-                return tr(context, 'invalidCardNumber');
-              }
-              return null;
-            },
+            // The keyboard must not learn or suggest card numbers.
+            autocorrect: false,
+            inputFormatters: [CardNumberFormatter()],
+            validator: (v) => CardInput.isPlausibleNumber(v ?? '')
+                ? null
+                : tr(context, 'invalidCardNumber'),
           ),
           SizedBox(height: AppSpacing.vMd),
           AppTextField(
@@ -273,11 +274,16 @@ class _CardFormState extends State<_CardForm> {
             label: l10n.expiryDate,
             hint: 'MM/YY',
             prefixIcon: Icons.calendar_today_outlined,
-            keyboardType: TextInputType.datetime,
-            validator: (v) =>
-                RegExp(r'^(0[1-9]|1[0-2])/\d{2}$').hasMatch((v ?? '').trim())
-                ? null
-                : tr(context, 'invalidExpiry'),
+            keyboardType: TextInputType.number,
+            autocorrect: false,
+            inputFormatters: [ExpiryFormatter()],
+            validator: (v) {
+              final value = (v ?? '').trim();
+              if (!CardInput.isValidExpiryFormat(value)) {
+                return tr(context, 'invalidExpiry');
+              }
+              return CardInput.isExpired(value) ? l10n.cardExpired : null;
+            },
           ),
           SizedBox(height: AppSpacing.vXl),
           AppButton(

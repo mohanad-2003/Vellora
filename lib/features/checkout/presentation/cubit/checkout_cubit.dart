@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -41,9 +43,28 @@ class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
 
   PromoCodeEntity? _promo;
 
+  /// Identifies the current attempt to place this order. It stays the same
+  /// while the user retries (after a timeout, say), so the API can recognise the
+  /// retry and not create a second order. Anything that changes what would be
+  /// ordered starts a new attempt.
+  String? _attemptKey;
+
+  String get _idempotencyKey => _attemptKey ??= _newKey();
+
+  void _startNewAttempt() => _attemptKey = null;
+
+  static String _newKey() {
+    final random = Random.secure();
+    return List.generate(
+      16,
+      (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
+    ).join();
+  }
+
   /// [promo] is forwarded from the cart so any applied discount carries over.
   Future<void> load(PromoCodeEntity? promo) async {
     _promo = promo;
+    _startNewAttempt();
     emit(state.copyWith(status: CheckoutStatus.loading));
 
     final result = await _getCart(const NoParams());
@@ -103,6 +124,7 @@ class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
   /// screen, keeping the current choice when it still exists.
   Future<void> refreshWallet() async {
     if (state.status != CheckoutStatus.ready) return;
+    _startNewAttempt();
     try {
       final book = await _wallet.getAddresses();
       final wallet = await _wallet.getWallet();
@@ -152,11 +174,18 @@ class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
     );
   }
 
-  void selectAddress(String id) => emit(state.copyWith(selectedAddressId: id));
+  void selectAddress(String id) {
+    _startNewAttempt();
+    emit(state.copyWith(selectedAddressId: id));
+  }
 
-  void selectPayment(String id) => emit(state.copyWith(selectedPaymentId: id));
+  void selectPayment(String id) {
+    _startNewAttempt();
+    emit(state.copyWith(selectedPaymentId: id));
+  }
 
   void selectDelivery(String id) {
+    _startNewAttempt();
     final option = state.deliveryOptions.firstWhere(
       (d) => d.id == id,
       orElse: () => state.deliveryOptions.first,
@@ -228,6 +257,7 @@ class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
       paymentKind: preview.paymentKind,
       paymentDetail: preview.paymentDetail,
       preview: preview,
+      idempotencyKey: _idempotencyKey,
     );
   }
 

@@ -14,17 +14,21 @@ class OrdersState extends Equatable {
   const OrdersState({
     this.status = OrdersStatus.loading,
     this.orders = const [],
+    this.failureKey,
   });
 
   final OrdersStatus status;
   final List<OrderEntity> orders;
+
+  /// Why loading failed (an l10n key), when [status] is error.
+  final String? failureKey;
 
   List<OrderEntity> withStatus(OrderStatus? status) => status == null
       ? orders
       : orders.where((o) => o.status == status).toList(growable: false);
 
   @override
-  List<Object?> get props => [status, orders];
+  List<Object?> get props => [status, orders, failureKey];
 }
 
 @injectable
@@ -49,23 +53,35 @@ class OrdersCubit extends Cubit<OrdersState> with SafeEmit<OrdersState> {
     try {
       final orders = await _remote.getOrders();
       emit(OrdersState(status: OrdersStatus.loaded, orders: orders));
-    } catch (_) {
-      emit(const OrdersState(status: OrdersStatus.error));
+    } catch (e) {
+      emit(
+        OrdersState(
+          status: OrdersStatus.error,
+          failureKey: mapExceptionToFailure(e).l10nKey,
+        ),
+      );
     }
   }
 }
 
 /// Loads a single order for the details screen.
-enum OrderDetailStatus { loading, loaded, notFound }
+enum OrderDetailStatus { loading, loaded, notFound, error }
 
 class OrderDetailState extends Equatable {
-  const OrderDetailState({this.status = OrderDetailStatus.loading, this.order});
+  const OrderDetailState({
+    this.status = OrderDetailStatus.loading,
+    this.order,
+    this.failureKey,
+  });
 
   final OrderDetailStatus status;
   final OrderEntity? order;
 
+  /// Why loading failed (an l10n key), when [status] is error.
+  final String? failureKey;
+
   @override
-  List<Object?> get props => [status, order];
+  List<Object?> get props => [status, order, failureKey];
 }
 
 @injectable
@@ -97,8 +113,16 @@ class OrderDetailCubit extends Cubit<OrderDetailState> with SafeEmit<OrderDetail
     try {
       final order = await _remote.getOrder(id);
       emit(OrderDetailState(status: OrderDetailStatus.loaded, order: order));
-    } catch (_) {
+    } on NotFoundException {
       emit(const OrderDetailState(status: OrderDetailStatus.notFound));
+    } catch (e) {
+      // Offline, a slow server or a signed-out user is not "order not found".
+      emit(
+        OrderDetailState(
+          status: OrderDetailStatus.error,
+          failureKey: mapExceptionToFailure(e).l10nKey,
+        ),
+      );
     }
   }
 }

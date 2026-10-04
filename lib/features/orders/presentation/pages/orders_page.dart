@@ -9,11 +9,11 @@ import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_bar_widget.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
-import '../../../../core/widgets/error_state_widget.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../domain/order_entity.dart';
 import '../cubit/orders_cubit.dart';
 import '../widgets/order_widgets.dart';
+import '../../../../core/widgets/failure_state_view.dart';
 
 class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
@@ -65,8 +65,8 @@ class _OrdersView extends StatelessWidget {
                 case OrdersStatus.loading:
                   return const ListSkeleton(thumb: 64);
                 case OrdersStatus.error:
-                  return ErrorStateWidget(
-                    message: l10n.somethingWentWrong,
+                  return FailureStateView(
+                    failureKey: state.failureKey,
                     onRetry: () => context.read<OrdersCubit>().load(),
                   );
                 case OrdersStatus.loaded:

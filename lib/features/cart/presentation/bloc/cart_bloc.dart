@@ -39,6 +39,19 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   final ApplyPromoUseCase _applyPromo;
   final AddToCartUseCase _addToCart;
 
+  /// Changes are written one after another, in the order the user made them,
+  /// so quick taps cannot overtake each other on the way to storage.
+  Future<void> _writes = Future<void>.value();
+
+  Future<void> _persist(Future<void> Function() write) {
+    final done = _writes.then((_) => write());
+    _writes = done.catchError((Object _) {});
+    return done;
+  }
+
+  /// A reload that started before a newer one must not overwrite its result.
+  int _reloads = 0;
+
   Future<void> _refresh(
     Emitter<CartState> emit, {
     bool showLoader = false,
@@ -46,7 +59,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     bool clearPromo = false,
   }) async {
     if (showLoader) emit(state.copyWith(status: CartStatus.loading));
+    final reload = ++_reloads;
     final result = await _getCart(const NoParams());
+    if (reload != _reloads) return;
     result.match(
       (failure) => emit(state.copyWith(
         status: CartStatus.error,
@@ -89,8 +104,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         summary: CartSummaryEntity.from(updated, state.promo),
       ));
     }
-    await _updateQuantity(
-      UpdateQuantityParams(itemId: event.itemId, quantity: event.quantity),
+    await _persist(
+      () => _updateQuantity(
+        UpdateQuantityParams(itemId: event.itemId, quantity: event.quantity),
+      ),
     );
     await _refresh(emit);
   }
@@ -99,7 +116,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     CartItemRemoved event,
     Emitter<CartState> emit,
   ) async {
-    await _removeItem(event.itemId);
+    await _persist(() => _removeItem(event.itemId));
     await _refresh(emit);
   }
 
@@ -126,7 +143,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     CartItemRestored event,
     Emitter<CartState> emit,
   ) async {
-    await _addToCart(event.item);
+    await _persist(() => _addToCart(event.item));
     await _refresh(emit);
   }
 

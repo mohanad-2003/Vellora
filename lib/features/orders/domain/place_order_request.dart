@@ -33,6 +33,7 @@ class PlaceOrderRequest extends Equatable {
     required this.city,
     required this.paymentKind,
     required this.preview,
+    required this.idempotencyKey,
     this.promoCode,
     this.phone,
     this.paymentDetail = '',
@@ -49,6 +50,11 @@ class PlaceOrderRequest extends Equatable {
   final String paymentDetail;
   final OrderEntity preview;
 
+  /// Identifies this attempt to place the order. Sent to the API so that a retry
+  /// after a timeout returns the order that was already created instead of
+  /// creating a second one.
+  final String idempotencyKey;
+
   @override
   List<Object?> get props => [
     items,
@@ -61,5 +67,6 @@ class PlaceOrderRequest extends Equatable {
     paymentKind,
     paymentDetail,
     preview,
+    idempotencyKey,
   ];
 }

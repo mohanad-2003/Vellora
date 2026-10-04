@@ -12,11 +12,11 @@ import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
-import '../../../../core/widgets/error_state_widget.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../../../core/localization/l10n_lookup.dart';
 import '../../../checkout/presentation/models/checkout_models.dart';
 import '../cubit/addresses_cubit.dart';
+import '../../../../core/widgets/failure_state_view.dart';
 
 class SavedAddressesPage extends StatelessWidget {
   const SavedAddressesPage({super.key});
@@ -45,8 +45,8 @@ class _SavedAddressesView extends StatelessWidget {
               return const ListSkeleton(itemCount: 3);
             }
             if (state.status == AddressesStatus.error) {
-              return ErrorStateWidget(
-                message: tr(context, state.failureKey ?? 'somethingWentWrong'),
+              return FailureStateView(
+                failureKey: state.failureKey,
                 onRetry: () => context.read<AddressesCubit>().load(),
               );
             }

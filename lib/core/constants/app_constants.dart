@@ -43,6 +43,10 @@ class AppConstants {
   static const Duration connectTimeout = Duration(seconds: 60);
   static const Duration receiveTimeout = Duration(seconds: 60);
 
+  /// Most units of one product (and variant) in the bag. Must match the API,
+  /// which rejects more in an order.
+  static const int maxLineQuantity = 20;
+
   /// Digits in the password-reset code (must match the API).
   static const int otpLength = 6;
 

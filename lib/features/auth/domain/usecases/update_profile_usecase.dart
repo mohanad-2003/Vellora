@@ -17,22 +17,16 @@ class UpdateProfileUseCase implements UseCase<UserEntity, UpdateProfileParams> {
   Future<Either<Failure, UserEntity>> call(UpdateProfileParams params) =>
       _repository.updateProfile(
         name: params.name,
-        email: params.email,
         phone: params.phone,
       );
 }
 
 class UpdateProfileParams extends Equatable {
-  const UpdateProfileParams({
-    required this.name,
-    required this.email,
-    this.phone,
-  });
+  const UpdateProfileParams({required this.name, this.phone});
 
   final String name;
-  final String email;
   final String? phone;
 
   @override
-  List<Object?> get props => [name, email, phone];
+  List<Object?> get props => [name, phone];
 }

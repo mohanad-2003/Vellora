@@ -11,12 +11,14 @@ import 'package:vellora/core/routing/route_names.dart';
 import 'package:vellora/core/theme/app_spacing.dart';
 import 'package:vellora/core/usecases/usecase.dart';
 import 'package:vellora/core/widgets/category_card.dart';
-import 'package:vellora/core/widgets/error_state_widget.dart';
 import 'package:vellora/core/widgets/shimmer_widgets.dart';
 import 'package:vellora/features/catalog/presentation/pages/catalog_page.dart';
 import 'package:vellora/features/home/domain/entities/category_entity.dart';
 import 'package:vellora/features/home/domain/usecases/get_home_data_usecase.dart';
 import 'package:vellora/features/home/presentation/widgets/search_bar_entry.dart';
+import '../../../../core/utils/safe_emit.dart';
+import '../../../../core/widgets/failure_state_view.dart';
+import '../../../../core/widgets/slow_load_hint.dart';
 
 enum ExploreStatus { loading, loaded, error }
 
@@ -37,7 +39,7 @@ class ExploreState extends Equatable {
 
 /// Loads the category list for the Explore tab.
 @injectable
-class ExploreCubit extends Cubit<ExploreState> {
+class ExploreCubit extends Cubit<ExploreState> with SafeEmit<ExploreState> {
   ExploreCubit(this._getHomeData) : super(const ExploreState());
 
   final GetHomeDataUseCase _getHomeData;
@@ -113,25 +115,32 @@ class _ExploreView extends StatelessWidget {
                     ),
                   ),
                   switch (state.status) {
-                    ExploreStatus.loading => SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: gutter),
-                      sliver: SliverGrid.count(
-                        crossAxisCount: context.isTablet ? 3 : 2,
-                        mainAxisSpacing: AppSpacing.md,
-                        crossAxisSpacing: AppSpacing.md,
-                        childAspectRatio: 1.15,
-                        children: List.generate(
-                          6,
-                          (_) => const AppShimmer(
-                            child: ShimmerBox(width: double.infinity),
+                    ExploreStatus.loading => SliverMainAxisGroup(
+                      slivers: [
+                        const SliverToBoxAdapter(
+                          child: Center(child: SlowLoadHint()),
+                        ),
+                        SliverPadding(
+                          padding: EdgeInsets.symmetric(horizontal: gutter),
+                          sliver: SliverGrid.count(
+                            crossAxisCount: context.isTablet ? 3 : 2,
+                            mainAxisSpacing: AppSpacing.md,
+                            crossAxisSpacing: AppSpacing.md,
+                            childAspectRatio: 1.15,
+                            children: List.generate(
+                              6,
+                              (_) => const AppShimmer(
+                                child: ShimmerBox(width: double.infinity),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                     ExploreStatus.error => SliverFillRemaining(
                       hasScrollBody: false,
-                      child: ErrorStateWidget(
-                        message: l10n.somethingWentWrong,
+                      child: FailureStateView(
+                        failureKey: state.failureKey,
                         onRetry: () => context.read<ExploreCubit>().load(),
                       ),
                     ),

@@ -115,7 +115,6 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity>> updateProfile({
     required String name,
-    required String email,
     String? phone,
   }) async {
     try {
@@ -127,14 +126,11 @@ class AuthRepositoryImpl implements AuthRepository {
           Failure.unauthorized(message: 'Sign in to edit your profile'),
         );
       }
-      final updated = existing.copyWith(
-        name: name,
-        email: email,
-        phone: phone,
-      );
+      // The email is the account's: only the name and phone can change.
+      final updated = existing.copyWith(name: name, phone: phone);
       await _local.cacheUser(updated);
-      // Email and phone are device-only for now; the name is saved on the
-      // server too. An offline user keeps the local edit.
+      // The phone is kept on this device; the name is saved on the server too.
+      // An offline user keeps the local edit.
       try {
         await _remote.updateName(name: name);
       } catch (_) {}

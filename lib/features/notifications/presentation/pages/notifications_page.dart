@@ -10,10 +10,10 @@ import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_bar_widget.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
-import '../../../../core/widgets/error_state_widget.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../domain/notification_entity.dart';
 import '../cubit/notifications_cubit.dart';
+import '../../../../core/widgets/failure_state_view.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
@@ -51,8 +51,8 @@ class _NotificationsView extends StatelessWidget {
             top: false,
             child: switch (state.status) {
               NotificationsStatus.loading => const ListSkeleton(thumb: 48),
-              NotificationsStatus.error => ErrorStateWidget(
-                  message: l10n.somethingWentWrong,
+              NotificationsStatus.error => FailureStateView(
+                  failureKey: state.failureKey,
                   onRetry: () => context.read<NotificationsCubit>().load(),
                 ),
               NotificationsStatus.loaded => state.items.isEmpty

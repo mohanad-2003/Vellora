@@ -14,12 +14,12 @@ import '../../../../core/utils/haptics.dart';
 import '../../../../core/widgets/app_bar_widget.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
-import '../../../../core/widgets/error_state_widget.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../../cart/domain/entities/promo_code_entity.dart';
 import '../../../cart/presentation/widgets/price_summary_card.dart';
 import '../cubit/checkout_cubit.dart';
 import '../widgets/checkout_tiles.dart';
+import '../../../../core/widgets/failure_state_view.dart';
 
 class CheckoutPage extends StatelessWidget {
   const CheckoutPage({super.key, this.promo});
@@ -62,10 +62,8 @@ class _CheckoutView extends StatelessWidget {
         builder: (context, state) {
           return switch (state.status) {
             CheckoutStatus.loading => const ListSkeleton(),
-            CheckoutStatus.error => ErrorStateWidget(
-              message: state.failureKey != null
-                  ? tr(context, state.failureKey!)
-                  : l10n.somethingWentWrong,
+            CheckoutStatus.error => FailureStateView(
+              failureKey: state.failureKey,
               onRetry: () => context.read<CheckoutCubit>().load(null),
             ),
             _ => _CheckoutBody(state: state),

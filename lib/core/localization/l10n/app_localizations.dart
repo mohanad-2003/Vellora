@@ -2359,6 +2359,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your review'**
   String get yourReview;
+
+  /// No description provided for @cardExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This card has expired.'**
+  String get cardExpired;
+
+  /// No description provided for @serverWaking.
+  ///
+  /// In en, this message translates to:
+  /// **'Still connecting… the server may be waking up, this can take a minute.'**
+  String get serverWaking;
+
+  /// No description provided for @signInRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue'**
+  String get signInRequiredTitle;
+
+  /// No description provided for @signInRequiredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You need an account for this. Sign in or create one, and your bag and favourites come with you.'**
+  String get signInRequiredBody;
 }
 
 class _AppLocalizationsDelegate
