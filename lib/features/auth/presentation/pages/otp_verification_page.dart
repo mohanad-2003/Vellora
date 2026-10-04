@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vellora/core/constants/app_constants.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/responsive/responsive.dart';
 import 'package:vellora/core/routing/route_names.dart';
@@ -64,7 +65,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
   void _verify(BuildContext context) {
     context.hideKeyboard();
-    if (_code.length < 4) return;
+    if (_code.length < AppConstants.otpLength) return;
     setState(() {
       _hasError = false;
       _bannerVisible = false;

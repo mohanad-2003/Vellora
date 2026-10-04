@@ -21,11 +21,22 @@ class AuthInterceptor extends Interceptor {
 
   static const _userKey = 'current_user';
 
+  /// Request option (`Options(extra: {skipAuthErrorKey: true})`) for calls that
+  /// carry their own credentials and are not about the current session, such as
+  /// the best-effort server sign-out of a token that was already cleared
+  /// locally. A 401 for such a call must not end whatever session is active now.
+  static const skipAuthErrorKey = 'skipAuthErrorHandling';
+
   @override
   Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    // An explicit Authorization header is left alone, not replaced by whatever
+    // token happens to be stored when the request is sent.
+    if (options.headers.containsKey('Authorization')) {
+      return handler.next(options);
+    }
     final token = await _storage.read(key: AppConstants.secureAuthToken);
     if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
@@ -38,9 +49,10 @@ class AuthInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
+    final skip = err.requestOptions.extra[skipAuthErrorKey] == true;
     final sentToken =
         err.requestOptions.headers.containsKey('Authorization');
-    if (err.response?.statusCode == 401 && sentToken) {
+    if (err.response?.statusCode == 401 && sentToken && !skip) {
       await _storage.delete(key: AppConstants.secureAuthToken);
       await _userBox.delete(_userKey);
     }

@@ -147,7 +147,7 @@ class _LoginViewState extends State<_LoginView> {
                               textInputAction: TextInputAction.done,
                               onSubmitted: (_) => _submit(),
                               validator: (v) {
-                                final key = InputValidators.password(v);
+                                final key = InputValidators.loginPassword(v);
                                 return key == null ? null : tr(context, key);
                               },
                             ),

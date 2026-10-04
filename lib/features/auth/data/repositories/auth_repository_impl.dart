@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:vellora/core/errors/exception_mapper.dart';
@@ -118,17 +120,24 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       final existing = await _local.getCachedUser();
-      final base =
-          existing ?? const UserModel(id: 'local', name: '', email: '');
-      final updated = base.copyWith(name: name, email: email, phone: phone);
+      // No session, no profile to edit: a signed-out visitor must not end up
+      // with a made-up local user that the app would treat as signed in.
+      if (existing == null) {
+        return const Left(
+          Failure.unauthorized(message: 'Sign in to edit your profile'),
+        );
+      }
+      final updated = existing.copyWith(
+        name: name,
+        email: email,
+        phone: phone,
+      );
       await _local.cacheUser(updated);
       // Email and phone are device-only for now; the name is saved on the
-      // server too. A signed-out or offline user keeps the local edit.
-      if (existing?.token != null) {
-        try {
-          await _remote.updateName(name: name);
-        } catch (_) {}
-      }
+      // server too. An offline user keeps the local edit.
+      try {
+        await _remote.updateName(name: name);
+      } catch (_) {}
       return Right(updated.toEntity());
     } catch (e) {
       return Left(mapExceptionToFailure(e));
@@ -141,10 +150,13 @@ class AuthRepositoryImpl implements AuthRepository {
     required String newPassword,
   }) async {
     try {
-      await _remote.changePassword(
+      final freshToken = await _remote.changePassword(
         currentPassword: currentPassword,
         newPassword: newPassword,
       );
+      // The server signed every session out, this device included; keep this
+      // one going with the token it issued for it.
+      if (freshToken != null) await _local.saveToken(freshToken);
       return const Right(unit);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
@@ -169,9 +181,23 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, Unit>> logout() async {
     try {
+      // End the session on the server too, otherwise a copy of the token would
+      // stay valid. The token is read first because clearing removes it; the
+      // request is best effort so signing out works offline.
+      String? token;
+      try {
+        token = (await _local.getCachedUser())?.token;
+      } catch (_) {}
       await _local.clear();
       await _favorites.clear();
       await _cart.clearLocal();
+      if (token != null) {
+        unawaited(
+          Future<void>.sync(
+            () => _remote.logout(token: token!),
+          ).catchError((Object _) {}),
+        );
+      }
       return const Right(unit);
     } catch (e) {
       return Left(mapExceptionToFailure(e));

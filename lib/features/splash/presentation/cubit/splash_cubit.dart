@@ -1,31 +1,27 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/network/api_endpoints.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../../../../core/utils/safe_emit.dart';
+import '../../../auth/domain/usecases/get_cached_user_usecase.dart';
 
 /// Where the splash screen should route to once its checks complete.
 enum SplashDestination { languageSelect, onboarding, login, home }
 
 /// Resolves the initial destination: onboarding (first launch) → login
-/// (returning, signed out) → home (cached user present). Home is browsable in
-/// Phase 1, so auth is not strictly guarded.
+/// (returning, signed out) → home (valid session). Home is browsable as a
+/// guest, so a missing session is not an error, but a session only counts when
+/// the access token is in secure storage and the server still accepts it.
 @injectable
-class SplashCubit extends Cubit<SplashDestination?> {
-  SplashCubit(
-    this._prefs,
-    @Named(AppConstants.userBox) this._userBox,
-    this._storage,
-    this._dio,
-  ) : super(null);
+class SplashCubit extends Cubit<SplashDestination?> with SafeEmit<SplashDestination?> {
+  SplashCubit(this._prefs, this._getCachedUser, this._dio) : super(null);
 
   final SharedPreferences _prefs;
-  final Box _userBox;
-  final FlutterSecureStorage _storage;
+  final GetCachedUserUseCase _getCachedUser;
   final Dio _dio;
 
   Future<void> decide() async {
@@ -45,20 +41,22 @@ class SplashCubit extends Cubit<SplashDestination?> {
       return;
     }
 
-    final hasCachedUser = _userBox.isNotEmpty;
-    if (hasCachedUser && !await _sessionStillValid()) {
+    // Signed in means a token in secure storage, not just a profile in Hive:
+    // the use case returns null (and drops a stray profile) without one.
+    final result = await _getCachedUser(const NoParams());
+    final signedIn = result.fold((_) => false, (user) => user != null);
+    if (!signedIn || !await _sessionStillValid()) {
       emit(SplashDestination.login);
       return;
     }
-    emit(hasCachedUser ? SplashDestination.home : SplashDestination.login);
+    emit(SplashDestination.home);
   }
 
   /// Asks the server whether the saved token is still accepted. Only an
-  /// explicit 401 counts as expired; being offline or a slow server must not
-  /// sign the user out, so every other outcome keeps the cached session.
+  /// explicit 401 counts as expired (the auth interceptor has then already
+  /// cleared the session); being offline or a slow server must not sign the
+  /// user out, so every other outcome keeps the session.
   Future<bool> _sessionStillValid() async {
-    final token = await _storage.read(key: AppConstants.secureAuthToken);
-    if (token == null || token.isEmpty) return true;
     try {
       await _dio.get<void>(
         ApiEndpoints.me,

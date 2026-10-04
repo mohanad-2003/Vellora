@@ -131,7 +131,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
     expect(find.byType(OtpVerificationPage), findsOneWidget);
 
-    // Enter the deterministic OTP 1234 → auto-verify → Create New Password.
+    // Enter the deterministic OTP 123456 → auto-verify → Create New Password.
     final otpBoxes = find.descendant(
       of: find.byType(OtpVerificationPage),
       matching: find.byType(TextField),
@@ -140,6 +140,8 @@ void main() {
     await tester.enterText(otpBoxes.at(1), '2');
     await tester.enterText(otpBoxes.at(2), '3');
     await tester.enterText(otpBoxes.at(3), '4');
+    await tester.enterText(otpBoxes.at(4), '5');
+    await tester.enterText(otpBoxes.at(5), '6');
     await tester.pump();
     await tester.pump(const Duration(seconds: 2)); // otp verify delay
     await tester.pump(const Duration(milliseconds: 500));

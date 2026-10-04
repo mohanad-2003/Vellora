@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../constants/app_constants.dart';
 import '../extensions/context_extensions.dart';
 import '../theme/app_radius.dart';
 import '../theme/app_spacing.dart';
@@ -11,7 +12,7 @@ import '../theme/app_spacing.dart';
 class OtpInputField extends StatefulWidget {
   const OtpInputField({
     super.key,
-    this.length = 4,
+    this.length = AppConstants.otpLength,
     this.onChanged,
     this.onCompleted,
     this.hasError = false,
@@ -98,64 +99,76 @@ class _OtpInputFieldState extends State<OtpInputField> {
     // Digits always run left to right, even in an RTL layout.
     return Directionality(
       textDirection: TextDirection.ltr,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(widget.length, (index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-            child: SizedBox(
-              width: 60,
-              height: 64,
-              child: Focus(
-                onKeyEvent: (_, event) => _onKey(index, event),
-                child: ListenableBuilder(
-                  listenable: _controllers[index],
-                  builder: (context, _) {
-                    final filled = _controllers[index].text.isNotEmpty;
-                    final borderColor = widget.hasError
-                        ? colors.error
-                        : filled
-                        ? colors.primary
-                        : colors.outline;
-                    return TextField(
-                      controller: _controllers[index],
-                      autofocus: index == 0,
-                      focusNode: _focusNodes[index],
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      maxLength: 1,
-                      style: context.textTheme.headlineMedium,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: InputDecoration(
-                        counterText: '',
-                        contentPadding: EdgeInsets.zero,
-                        filled: true,
-                        fillColor: filled
-                            ? colors.primaryContainer
-                            : colors.surfaceContainerHighest,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: AppRadius.rMd,
-                          borderSide: BorderSide(
-                            color: borderColor,
-                            width: filled || widget.hasError ? 1.6 : 1,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Six boxes must fit narrow screens: shrink them (never beyond 60) to
+          // the width available.
+          final gap = AppSpacing.sm * 2;
+          final boxWidth =
+              ((constraints.maxWidth - gap * widget.length) / widget.length)
+                  .clamp(36.0, 60.0);
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(widget.length, (index) {
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                child: SizedBox(
+                  width: boxWidth,
+                  height: 64,
+                  child: Focus(
+                    onKeyEvent: (_, event) => _onKey(index, event),
+                    child: ListenableBuilder(
+                      listenable: _controllers[index],
+                      builder: (context, _) {
+                        final filled = _controllers[index].text.isNotEmpty;
+                        final borderColor = widget.hasError
+                            ? colors.error
+                            : filled
+                            ? colors.primary
+                            : colors.outline;
+                        return TextField(
+                          controller: _controllers[index],
+                          autofocus: index == 0,
+                          focusNode: _focusNodes[index],
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          maxLength: 1,
+                          style: context.textTheme.headlineMedium,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          decoration: InputDecoration(
+                            counterText: '',
+                            contentPadding: EdgeInsets.zero,
+                            filled: true,
+                            fillColor: filled
+                                ? colors.primaryContainer
+                                : colors.surfaceContainerHighest,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: AppRadius.rMd,
+                              borderSide: BorderSide(
+                                color: borderColor,
+                                width: filled || widget.hasError ? 1.6 : 1,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: AppRadius.rMd,
+                              borderSide: BorderSide(
+                                color: context.colors.primary,
+                                width: 2,
+                              ),
+                            ),
                           ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: AppRadius.rMd,
-                          borderSide: BorderSide(
-                            color: context.colors.primary,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      onChanged: (value) => _onChanged(index, value),
-                    );
-                  },
+                          onChanged: (value) => _onChanged(index, value),
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
           );
-        }),
+        },
       ),
     );
   }

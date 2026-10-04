@@ -15,7 +15,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String get id; String get name; String get email; String? get phone; String? get avatarUrl; String? get token;
+ String get id; String get name; String get email; String? get phone; String? get avatarUrl;/// In memory only: never written to JSON (so never to Hive). The access
+/// token lives in secure storage and is attached when the user is read.
+@JsonKey(includeFromJson: false, includeToJson: false) String? get token;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +50,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String email, String? phone, String? avatarUrl, String? token
+ String id, String name, String email, String? phone, String? avatarUrl,@JsonKey(includeFromJson: false, includeToJson: false) String? token
 });
 
 
@@ -158,7 +160,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String email,  String? phone,  String? avatarUrl,  String? token)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String email,  String? phone,  String? avatarUrl, @JsonKey(includeFromJson: false, includeToJson: false)  String? token)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.name,_that.email,_that.phone,_that.avatarUrl,_that.token);case _:
@@ -179,7 +181,7 @@ return $default(_that.id,_that.name,_that.email,_that.phone,_that.avatarUrl,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String email,  String? phone,  String? avatarUrl,  String? token)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String email,  String? phone,  String? avatarUrl, @JsonKey(includeFromJson: false, includeToJson: false)  String? token)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
 return $default(_that.id,_that.name,_that.email,_that.phone,_that.avatarUrl,_that.token);case _:
@@ -199,7 +201,7 @@ return $default(_that.id,_that.name,_that.email,_that.phone,_that.avatarUrl,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String email,  String? phone,  String? avatarUrl,  String? token)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String email,  String? phone,  String? avatarUrl, @JsonKey(includeFromJson: false, includeToJson: false)  String? token)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.name,_that.email,_that.phone,_that.avatarUrl,_that.token);case _:
@@ -214,7 +216,7 @@ return $default(_that.id,_that.name,_that.email,_that.phone,_that.avatarUrl,_tha
 @JsonSerializable()
 
 class _UserModel extends UserModel {
-  const _UserModel({required this.id, required this.name, required this.email, this.phone, this.avatarUrl, this.token}): super._();
+  const _UserModel({required this.id, required this.name, required this.email, this.phone, this.avatarUrl, @JsonKey(includeFromJson: false, includeToJson: false) this.token}): super._();
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  String id;
@@ -222,7 +224,9 @@ class _UserModel extends UserModel {
 @override final  String email;
 @override final  String? phone;
 @override final  String? avatarUrl;
-@override final  String? token;
+/// In memory only: never written to JSON (so never to Hive). The access
+/// token lives in secure storage and is attached when the user is read.
+@override@JsonKey(includeFromJson: false, includeToJson: false) final  String? token;
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
@@ -257,7 +261,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String email, String? phone, String? avatarUrl, String? token
+ String id, String name, String email, String? phone, String? avatarUrl,@JsonKey(includeFromJson: false, includeToJson: false) String? token
 });
 
 

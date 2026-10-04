@@ -43,6 +43,13 @@ class AppConstants {
   static const Duration connectTimeout = Duration(seconds: 60);
   static const Duration receiveTimeout = Duration(seconds: 60);
 
+  /// Digits in the password-reset code (must match the API).
+  static const int otpLength = 6;
+
+  /// Shortest password accepted when creating or changing one (must match the
+  /// API). Signing in never enforces it, so older accounts keep working.
+  static const int minPasswordLength = 8;
+
   // Hive box names.
   static const String cartBox = 'cart_box';
   static const String favoritesBox = 'favorites_box';
@@ -68,6 +75,6 @@ class AppConstants {
   static const String unknownProductId = 'unknown';
 
   /// OTP code that deterministically verifies in the mock reset flow. Any other
-  /// 4-digit code fails with a validation failure so error UI is reachable.
-  static const String reservedOtpCode = '1234';
+  /// 6-digit code fails with a validation failure so error UI is reachable.
+  static const String reservedOtpCode = '123456';
 }

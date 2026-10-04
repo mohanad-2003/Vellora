@@ -126,7 +126,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get otpTitle => 'رمز التحقّق';
 
   @override
-  String get otpSubtitle => 'أدخل الرمز المكوّن من 4 أرقام الذي أرسلناه إلى';
+  String get otpSubtitle => 'أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى';
 
   @override
   String get verify => 'تحقّق';
@@ -229,7 +229,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalidEmail => 'الرجاء إدخال بريد إلكتروني صحيح';
 
   @override
-  String get passwordTooShort => 'يجب ألا تقل كلمة المرور عن 6 أحرف';
+  String get passwordTooShort => 'يجب ألا تقل كلمة المرور عن 8 أحرف';
 
   @override
   String get passwordsDoNotMatch => 'كلمتا المرور غير متطابقتين';

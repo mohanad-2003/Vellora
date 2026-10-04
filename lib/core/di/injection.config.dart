@@ -294,14 +294,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i905.ApiPromoDataSource(gh<_i361.Dio>()),
       registerFor: {_api},
     );
-    gh.factory<_i125.SplashCubit>(
-      () => _i125.SplashCubit(
-        gh<_i460.SharedPreferences>(),
-        gh<_i979.Box<dynamic>>(instanceName: 'user_box'),
-        gh<_i558.FlutterSecureStorage>(),
-        gh<_i361.Dio>(),
-      ),
-    );
     gh.lazySingleton<_i161.AuthRemoteDataSource>(
       () => _i161.ApiAuthRemoteDataSource(gh<_i361.Dio>()),
       registerFor: {_api},
@@ -523,6 +515,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i714.ToggleFavoriteUseCase>(),
         gh<_i659.AddToCartUseCase>(),
         gh<_i946.GetFavoriteIdsUseCase>(),
+      ),
+    );
+    gh.factory<_i125.SplashCubit>(
+      () => _i125.SplashCubit(
+        gh<_i460.SharedPreferences>(),
+        gh<_i389.GetCachedUserUseCase>(),
+        gh<_i361.Dio>(),
       ),
     );
     gh.factory<_i527.SecurityCubit>(

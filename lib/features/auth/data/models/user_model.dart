@@ -15,7 +15,10 @@ abstract class UserModel with _$UserModel {
     required String email,
     String? phone,
     String? avatarUrl,
-    String? token,
+
+    /// In memory only: never written to JSON (so never to Hive). The access
+    /// token lives in secure storage and is attached when the user is read.
+    @JsonKey(includeFromJson: false, includeToJson: false) String? token,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

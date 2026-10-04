@@ -233,7 +233,7 @@ abstract class AppLocalizations {
   /// No description provided for @forgotPasswordSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Enter your email and we\'ll send you a 4-digit code to reset your password.'**
+  /// **'Enter your email and we\'ll send you a 6-digit code to reset your password.'**
   String get forgotPasswordSubtitle;
 
   /// No description provided for @sendResetLink.
@@ -323,7 +323,7 @@ abstract class AppLocalizations {
   /// No description provided for @otpSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Enter the 4-digit code we sent to'**
+  /// **'Enter the 6-digit code we sent to'**
   String get otpSubtitle;
 
   /// No description provided for @verify.
@@ -509,7 +509,7 @@ abstract class AppLocalizations {
   /// No description provided for @passwordTooShort.
   ///
   /// In en, this message translates to:
-  /// **'Password must be at least 6 characters'**
+  /// **'Password must be at least 8 characters'**
   String get passwordTooShort;
 
   /// No description provided for @passwordsDoNotMatch.

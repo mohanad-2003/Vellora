@@ -115,7 +115,7 @@ class _SecurityView extends StatelessWidget {
     final cubit = context.read<SecurityCubit>();
     AppBottomSheet.show(
       context,
-      child: _ChangePasswordForm(
+      child: ChangePasswordForm(
         onSubmit: cubit.changePassword,
         onDone: () {
           Navigator.of(context).pop();
@@ -249,18 +249,23 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
   }
 }
 
-class _ChangePasswordForm extends StatefulWidget {
-  const _ChangePasswordForm({required this.onSubmit, required this.onDone});
+@visibleForTesting
+class ChangePasswordForm extends StatefulWidget {
+  const ChangePasswordForm({
+    super.key,
+    required this.onSubmit,
+    required this.onDone,
+  });
 
   /// Returns a failure key, or null once the password was changed.
   final Future<String?> Function(String current, String next) onSubmit;
   final VoidCallback onDone;
 
   @override
-  State<_ChangePasswordForm> createState() => _ChangePasswordFormState();
+  State<ChangePasswordForm> createState() => _ChangePasswordFormState();
 }
 
-class _ChangePasswordFormState extends State<_ChangePasswordForm> {
+class _ChangePasswordFormState extends State<ChangePasswordForm> {
   final _formKey = GlobalKey<FormState>();
   final _current = TextEditingController();
   final _next = TextEditingController();
@@ -321,8 +326,10 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
             label: l10n.currentPassword,
             prefixIcon: Icons.lock_outline_rounded,
             obscureText: true,
+            // Only required: the account may predate the 8-character rule, and
+            // the server is what checks that the password is the right one.
             validator: (v) {
-              final key = InputValidators.password(v);
+              final key = InputValidators.loginPassword(v);
               return key == null ? null : tr(context, key);
             },
           ),

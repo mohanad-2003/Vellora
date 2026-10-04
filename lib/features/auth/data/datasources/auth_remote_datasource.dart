@@ -1,17 +1,17 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/di/environments.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/network/api_endpoints.dart';
+import '../../../../core/network/interceptors/auth_interceptor.dart';
 import '../models/user_model.dart';
 
 /// Auth backend contract. [ApiAuthRemoteDataSource] talks to the Vellora API;
 /// [MockAuthRemoteDataSource] (tests / offline demo) simulates latency and fails deterministically so
 /// error/retry UI is reachable without a real API:
-///   * login  → wrong password (< 6 chars) throws [ValidationException];
+///   * login  → wrong password (< 8 chars) throws [ValidationException];
 ///              reserved fail email throws [ServerException].
 ///   * register → reserved existing email throws [ValidationException].
 abstract class AuthRemoteDataSource {
@@ -31,10 +31,16 @@ abstract class AuthRemoteDataSource {
   /// Saves the display name on the server for the signed-in user.
   Future<void> updateName({required String name});
 
-  Future<void> changePassword({
+  /// Changes the password. The server signs every session out and returns a
+  /// fresh token for this device (null when there is nothing to replace).
+  Future<String?> changePassword({
     required String currentPassword,
     required String newPassword,
   });
+
+  /// Tells the server to end the session behind [token] (and all others), so a
+  /// copy of the token stops working. Best effort: the caller ignores failures.
+  Future<void> logout({required String token});
 
   /// Permanently deletes the signed-in account (password confirms it).
   Future<void> deleteAccount({required String password});
@@ -55,7 +61,7 @@ class MockAuthRemoteDataSource implements AuthRemoteDataSource {
     if (email.trim().toLowerCase() == AppConstants.reservedFailEmail) {
       throw const ServerException('Login service is temporarily unavailable');
     }
-    if (password.length < 6) {
+    if (password.length < AppConstants.minPasswordLength) {
       throw const ValidationException('Invalid email or password');
     }
 
@@ -123,10 +129,13 @@ class MockAuthRemoteDataSource implements AuthRemoteDataSource {
   Future<void> updateName({required String name}) async {}
 
   @override
-  Future<void> changePassword({
+  Future<String?> changePassword({
     required String currentPassword,
     required String newPassword,
-  }) async {}
+  }) async => null;
+
+  @override
+  Future<void> logout({required String token}) async {}
 
   @override
   Future<void> deleteAccount({required String password}) async {}
@@ -182,15 +191,10 @@ class ApiAuthRemoteDataSource implements AuthRemoteDataSource {
 
   @override
   Future<void> forgotPassword({required String email}) async {
-    final res = await _dio.post<Map<String, dynamic>>(
+    await _dio.post<void>(
       ApiEndpoints.forgotPassword,
       data: {'email': email.trim()},
     );
-    // The development server returns the code (no email provider yet).
-    final devCode = res.data?['devCode'];
-    if (kDebugMode && devCode != null) {
-      debugPrint('[dev] password reset code: $devCode');
-    }
   }
 
   @override
@@ -222,13 +226,31 @@ class ApiAuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> changePassword({
+  Future<String?> changePassword({
     required String currentPassword,
     required String newPassword,
   }) async {
-    await _dio.post<void>(
+    final res = await _dio.post<Map<String, dynamic>>(
       ApiEndpoints.changePassword,
       data: {'currentPassword': currentPassword, 'newPassword': newPassword},
+    );
+    return res.data?['token'] as String?;
+  }
+
+  @override
+  Future<void> logout({required String token}) async {
+    // The token is passed explicitly: by the time this runs the local session
+    // (and the interceptor's copy of the token) has already been cleared.
+    await _dio.post<void>(
+      ApiEndpoints.logout,
+      options: Options(
+        headers: {'Authorization': 'Bearer $token'},
+        // A 401 here only means this old token is already dead; it must not
+        // clear a session the user may have started since.
+        extra: {AuthInterceptor.skipAuthErrorKey: true},
+        sendTimeout: const Duration(seconds: 8),
+        receiveTimeout: const Duration(seconds: 8),
+      ),
     );
   }
 

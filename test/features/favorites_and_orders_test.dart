@@ -42,6 +42,9 @@ class _Session implements AuthLocalDataSource {
   Future<void> cacheUser(UserModel user) async {}
 
   @override
+  Future<void> saveToken(String token) async {}
+
+  @override
   Future<void> clear() async {}
 }
 
