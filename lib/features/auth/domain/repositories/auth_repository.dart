@@ -1,7 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-
-import '../../../../core/errors/failures.dart';
-import '../entities/user_entity.dart';
+import 'package:vellora/core/errors/failures.dart';
+import 'package:vellora/features/auth/domain/entities/user_entity.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, UserEntity>> login({

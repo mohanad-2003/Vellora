@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/di/injection.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/extensions/num_extensions.dart';
-import '../../../../core/localization/l10n_lookup.dart';
-import '../../../../core/responsive/responsive.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/custom_snackbar.dart';
-import '../../../../core/widgets/empty_state_widget.dart';
-import '../../../../core/widgets/error_state_widget.dart';
-import '../../../../core/widgets/shimmer_widgets.dart';
-import '../bloc/cart_badge_cubit.dart';
-import '../bloc/cart_bloc.dart';
-import '../../domain/entities/cart_item_entity.dart';
-import '../widgets/cart_item_tile.dart';
-import '../widgets/free_shipping_progress.dart';
-import '../widgets/price_summary_card.dart';
-import '../widgets/promo_code_input.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/widgets/shimmer_widgets.dart';
+import 'package:vellora/features/cart/presentation/bloc/cart_badge_cubit.dart';
+import 'package:vellora/features/cart/presentation/bloc/cart_bloc.dart';
+import 'package:vellora/core/extensions/num_extensions.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/app_button.dart';
+import 'package:vellora/core/widgets/custom_snackbar.dart';
+import 'package:vellora/core/widgets/empty_state_widget.dart';
+import 'package:vellora/core/widgets/error_state_widget.dart';
+import 'package:vellora/features/cart/domain/entities/cart_item_entity.dart';
+import 'package:vellora/features/cart/presentation/widgets/cart_item_tile.dart';
+import 'package:vellora/features/cart/presentation/widgets/free_shipping_progress.dart';
+import 'package:vellora/features/cart/presentation/widgets/price_summary_card.dart';
+import 'package:vellora/features/cart/presentation/widgets/promo_code_input.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -59,19 +58,19 @@ class _CartView extends StatelessWidget {
               final Widget body = switch (state.status) {
                 CartStatus.loading => const ListSkeleton(),
                 CartStatus.error => ErrorStateWidget(
-                    message: state.failureKey != null
-                        ? tr(context, state.failureKey!)
-                        : l10n.somethingWentWrong,
-                    onRetry: () =>
-                        context.read<CartBloc>().add(const CartStarted()),
-                  ),
+                  message: state.failureKey != null
+                      ? tr(context, state.failureKey!)
+                      : l10n.somethingWentWrong,
+                  onRetry: () =>
+                      context.read<CartBloc>().add(const CartStarted()),
+                ),
                 CartStatus.empty => EmptyStateWidget(
-                    title: l10n.emptyCartTitle,
-                    message: l10n.emptyCartBody,
-                    icon: Icons.shopping_bag_outlined,
-                    actionLabel: l10n.startShopping,
-                    onAction: () => context.goNamed(RouteNames.nExplore),
-                  ),
+                  title: l10n.emptyCartTitle,
+                  message: l10n.emptyCartBody,
+                  icon: Icons.shopping_bag_outlined,
+                  actionLabel: l10n.startShopping,
+                  onAction: () => context.goNamed(RouteNames.nExplore),
+                ),
                 CartStatus.loaded => _LoadedCart(state: state),
               };
 
@@ -183,10 +182,8 @@ class _LoadedCart extends StatelessWidget {
         ),
         _CheckoutBar(
           total: summary?.total ?? 0,
-          onCheckout: () => context.pushNamed(
-            RouteNames.nCheckout,
-            extra: state.promo,
-          ),
+          onCheckout: () =>
+              context.pushNamed(RouteNames.nCheckout, extra: state.promo),
         ),
       ],
     );

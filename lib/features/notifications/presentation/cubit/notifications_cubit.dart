@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../data/notifications_remote_datasource.dart';
 import '../../domain/notification_entity.dart';
+import '../../../../core/utils/safe_emit.dart';
 
 enum NotificationsStatus { loading, loaded, error }
 
@@ -25,7 +26,7 @@ class NotificationsState extends Equatable {
 /// Number of unread notifications, for the dot on Home's bell. Kept in sync by
 /// [NotificationsCubit] and refreshed by Home.
 @lazySingleton
-class UnreadNotificationsCubit extends Cubit<int> {
+class UnreadNotificationsCubit extends Cubit<int> with SafeEmit<int> {
   UnreadNotificationsCubit(this._remote) : super(0);
 
   final NotificationsRemoteDataSource _remote;
@@ -46,7 +47,7 @@ class UnreadNotificationsCubit extends Cubit<int> {
 /// Drives the Notifications screen. Read / dismiss changes are applied
 /// immediately and sent to the server in the background.
 @injectable
-class NotificationsCubit extends Cubit<NotificationsState> {
+class NotificationsCubit extends Cubit<NotificationsState> with SafeEmit<NotificationsState> {
   NotificationsCubit(this._remote, this._unread)
       : super(const NotificationsState());
 

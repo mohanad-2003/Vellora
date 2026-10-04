@@ -11,9 +11,16 @@ import '../models/cart_item_model.dart';
 /// wrapped in [Future] so the UI can show shimmer while "loading".
 abstract class CartLocalDataSource {
   Future<List<CartItemModel>> getItems();
+
+  /// Same as [getItems] without the loading-skeleton delay (for syncing).
+  Future<List<CartItemModel>> readAll();
   Future<void> addItem(CartItemModel item);
   Future<void> updateQuantity(String itemId, int quantity);
   Future<void> removeItem(String itemId);
+
+  /// Overwrites the whole cart (used after syncing with the account).
+  Future<void> replaceAll(List<CartItemModel> items);
+  Future<void> clear();
 }
 
 @LazySingleton(as: CartLocalDataSource)
@@ -26,6 +33,11 @@ class CartLocalDataSourceImpl implements CartLocalDataSource {
   Future<List<CartItemModel>> getItems() async {
     // Local storage is instant; the brief delay only lets the skeleton show.
     await Future<void>.delayed(const Duration(milliseconds: 250));
+    return readAll();
+  }
+
+  @override
+  Future<List<CartItemModel>> readAll() async {
     try {
       return _box.values
           .map((raw) =>
@@ -77,6 +89,27 @@ class CartLocalDataSourceImpl implements CartLocalDataSource {
       await _box.delete(itemId);
     } catch (_) {
       throw const CacheException('Failed to remove item');
+    }
+  }
+
+  @override
+  Future<void> replaceAll(List<CartItemModel> items) async {
+    try {
+      await _box.clear();
+      for (final item in items) {
+        await _box.put(item.id, jsonEncode(item.toJson()));
+      }
+    } catch (_) {
+      throw const CacheException('Failed to save cart');
+    }
+  }
+
+  @override
+  Future<void> clear() async {
+    try {
+      await _box.clear();
+    } catch (_) {
+      throw const CacheException('Failed to clear cart');
     }
   }
 }

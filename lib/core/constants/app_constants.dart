@@ -39,8 +39,9 @@ class AppConstants {
 
   static String productUrl(String id) => '$webBaseUrl/product/$id';
 
-  static const Duration connectTimeout = Duration(seconds: 20);
-  static const Duration receiveTimeout = Duration(seconds: 20);
+  // Generous: Render's free tier sleeps and can take ~50s to wake up.
+  static const Duration connectTimeout = Duration(seconds: 60);
+  static const Duration receiveTimeout = Duration(seconds: 60);
 
   // Hive box names.
   static const String cartBox = 'cart_box';

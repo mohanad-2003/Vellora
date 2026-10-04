@@ -13,7 +13,9 @@ import '../../../orders/data/orders_remote_datasource.dart';
 import '../../../orders/domain/order_entity.dart';
 import '../../../orders/domain/place_order_request.dart';
 import '../../../profile/data/wallet_remote_datasource.dart';
+import '../../data/delivery_remote_datasource.dart';
 import '../models/checkout_models.dart';
+import '../../../../core/utils/safe_emit.dart';
 
 part 'checkout_state.dart';
 
@@ -22,14 +24,20 @@ part 'checkout_state.dart';
 /// orders API and empties the bag. Addresses and saved cards come from the
 /// signed-in user's account.
 @injectable
-class CheckoutCubit extends Cubit<CheckoutState> {
-  CheckoutCubit(this._getCart, this._removeItem, this._orders, this._wallet)
-    : super(const CheckoutState());
+class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
+  CheckoutCubit(
+    this._getCart,
+    this._removeItem,
+    this._orders,
+    this._wallet,
+    this._deliveryOptions,
+  ) : super(const CheckoutState());
 
   final GetCartUseCase _getCart;
   final RemoveFromCartUseCase _removeItem;
   final OrdersRemoteDataSource _orders;
   final WalletRemoteDataSource _wallet;
+  final DeliveryRemoteDataSource _deliveryOptions;
 
   PromoCodeEntity? _promo;
 
@@ -53,7 +61,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     try {
       final book = await _wallet.getAddresses();
       final wallet = await _wallet.getWallet();
-      const delivery = CheckoutMockData.deliveryOptions;
+      final delivery = await _loadDeliveryOptions();
       final methods = [...wallet.methods, PaymentMethodOption.cashOnDelivery];
       emit(
         state.copyWith(
@@ -80,6 +88,15 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         ),
       );
     }
+  }
+
+  /// The server's delivery speeds; the built-in ones if it cannot be asked.
+  Future<List<DeliveryOption>> _loadDeliveryOptions() async {
+    try {
+      final options = await _deliveryOptions.getOptions();
+      if (options.isNotEmpty) return options;
+    } catch (_) {}
+    return DeliveryDefaults.options;
   }
 
   /// Re-reads the addresses and saved cards after the user added one on its own

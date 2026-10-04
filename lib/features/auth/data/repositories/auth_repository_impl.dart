@@ -7,15 +7,22 @@ import 'package:vellora/features/auth/data/datasources/auth_remote_datasource.da
 import 'package:vellora/features/auth/data/models/user_model.dart';
 import 'package:vellora/features/auth/domain/entities/user_entity.dart';
 import 'package:vellora/features/auth/domain/repositories/auth_repository.dart';
+import 'package:vellora/features/cart/domain/repositories/cart_repository.dart';
 import 'package:vellora/features/product/domain/repositories/favorites_repository.dart';
 
 @LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
-  AuthRepositoryImpl(this._remote, this._local, this._favorites);
+  AuthRepositoryImpl(
+    this._remote,
+    this._local,
+    this._favorites,
+    this._cart,
+  );
 
   final AuthRemoteDataSource _remote;
   final AuthLocalDataSource _local;
   final FavoritesRepository _favorites;
+  final CartRepository _cart;
 
   @override
   Future<Either<Failure, UserEntity>> login({
@@ -26,6 +33,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final user = await _remote.login(email: email, password: password);
       await _local.cacheUser(user);
       await _favorites.sync();
+      await _cart.sync();
       return Right(user.toEntity());
     } catch (e) {
       return Left(mapExceptionToFailure(e));
@@ -46,6 +54,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
       await _local.cacheUser(user);
       await _favorites.sync();
+      await _cart.sync();
       return Right(user.toEntity());
     } catch (e) {
       return Left(mapExceptionToFailure(e));
@@ -150,6 +159,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _remote.deleteAccount(password: password);
       await _local.clear();
       await _favorites.clear();
+      await _cart.clearLocal();
       return const Right(unit);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
@@ -161,6 +171,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _local.clear();
       await _favorites.clear();
+      await _cart.clearLocal();
       return const Right(unit);
     } catch (e) {
       return Left(mapExceptionToFailure(e));

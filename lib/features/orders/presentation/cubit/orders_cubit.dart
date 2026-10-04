@@ -6,6 +6,7 @@ import '../../../../core/errors/exception_mapper.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../data/orders_remote_datasource.dart';
 import '../../domain/order_entity.dart';
+import '../../../../core/utils/safe_emit.dart';
 
 enum OrdersStatus { loading, loaded, error }
 
@@ -27,7 +28,7 @@ class OrdersState extends Equatable {
 }
 
 @injectable
-class OrdersCubit extends Cubit<OrdersState> {
+class OrdersCubit extends Cubit<OrdersState> with SafeEmit<OrdersState> {
   OrdersCubit(this._remote) : super(const OrdersState());
 
   final OrdersRemoteDataSource _remote;
@@ -68,7 +69,7 @@ class OrderDetailState extends Equatable {
 }
 
 @injectable
-class OrderDetailCubit extends Cubit<OrderDetailState> {
+class OrderDetailCubit extends Cubit<OrderDetailState> with SafeEmit<OrderDetailState> {
   OrderDetailCubit(this._remote) : super(const OrderDetailState());
 
   final OrdersRemoteDataSource _remote;

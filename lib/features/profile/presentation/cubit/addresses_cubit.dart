@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/errors/exception_mapper.dart';
 import '../../../checkout/presentation/models/checkout_models.dart';
 import '../../data/wallet_remote_datasource.dart';
+import '../../../../core/utils/safe_emit.dart';
 
 enum AddressesStatus { loading, loaded, error }
 
@@ -30,7 +31,7 @@ class AddressesState extends Equatable {
 /// server holds. Mutations return a failure key (null on success) so the page
 /// can show a message.
 @injectable
-class AddressesCubit extends Cubit<AddressesState> {
+class AddressesCubit extends Cubit<AddressesState> with SafeEmit<AddressesState> {
   AddressesCubit(this._remote) : super(const AddressesState());
 
   final WalletRemoteDataSource _remote;

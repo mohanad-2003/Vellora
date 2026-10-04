@@ -3,21 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../../core/di/injection.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/localization/l10n_lookup.dart';
-import '../../../../core/responsive/responsive.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../../../../core/widgets/category_card.dart';
-import '../../../../core/widgets/error_state_widget.dart';
-import '../../../../core/widgets/shimmer_widgets.dart';
-import '../../../catalog/presentation/pages/catalog_page.dart';
-import '../../../home/domain/entities/category_entity.dart';
-import '../../../home/domain/usecases/get_home_data_usecase.dart';
-import '../../../home/presentation/widgets/search_bar_entry.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/usecases/usecase.dart';
+import 'package:vellora/core/widgets/category_card.dart';
+import 'package:vellora/core/widgets/error_state_widget.dart';
+import 'package:vellora/core/widgets/shimmer_widgets.dart';
+import 'package:vellora/features/catalog/presentation/pages/catalog_page.dart';
+import 'package:vellora/features/home/domain/entities/category_entity.dart';
+import 'package:vellora/features/home/domain/usecases/get_home_data_usecase.dart';
+import 'package:vellora/features/home/presentation/widgets/search_bar_entry.dart';
 
 enum ExploreStatus { loading, loaded, error }
 
@@ -47,14 +46,12 @@ class ExploreCubit extends Cubit<ExploreState> {
     emit(const ExploreState());
     final result = await _getHomeData(const NoParams());
     result.match(
-      (failure) => emit(ExploreState(
-        status: ExploreStatus.error,
-        failureKey: failure.l10nKey,
-      )),
-      (data) => emit(ExploreState(
-        status: ExploreStatus.loaded,
-        categories: data.categories,
-      )),
+      (failure) => emit(
+        ExploreState(status: ExploreStatus.error, failureKey: failure.l10nKey),
+      ),
+      (data) => emit(
+        ExploreState(status: ExploreStatus.loaded, categories: data.categories),
+      ),
     );
   }
 }
@@ -117,75 +114,74 @@ class _ExploreView extends StatelessWidget {
                   ),
                   switch (state.status) {
                     ExploreStatus.loading => SliverPadding(
-                        padding: EdgeInsets.symmetric(horizontal: gutter),
-                        sliver: SliverGrid.count(
-                          crossAxisCount: context.isTablet ? 3 : 2,
-                          mainAxisSpacing: AppSpacing.md,
-                          crossAxisSpacing: AppSpacing.md,
-                          childAspectRatio: 1.15,
-                          children: List.generate(
-                            6,
-                            (_) => const AppShimmer(
-                              child: ShimmerBox(width: double.infinity),
-                            ),
+                      padding: EdgeInsets.symmetric(horizontal: gutter),
+                      sliver: SliverGrid.count(
+                        crossAxisCount: context.isTablet ? 3 : 2,
+                        mainAxisSpacing: AppSpacing.md,
+                        crossAxisSpacing: AppSpacing.md,
+                        childAspectRatio: 1.15,
+                        children: List.generate(
+                          6,
+                          (_) => const AppShimmer(
+                            child: ShimmerBox(width: double.infinity),
                           ),
                         ),
                       ),
+                    ),
                     ExploreStatus.error => SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: ErrorStateWidget(
-                          message: l10n.somethingWentWrong,
-                          onRetry: () => context.read<ExploreCubit>().load(),
-                        ),
+                      hasScrollBody: false,
+                      child: ErrorStateWidget(
+                        message: l10n.somethingWentWrong,
+                        onRetry: () => context.read<ExploreCubit>().load(),
                       ),
+                    ),
                     ExploreStatus.loaded => SliverPadding(
-                        padding: EdgeInsets.fromLTRB(
-                          gutter,
-                          0,
-                          gutter,
-                          AppSpacing.xxl,
-                        ),
-                        sliver: SliverLayoutBuilder(
-                          builder: (context, c) {
-                            final columns = c.crossAxisExtent >= 840
-                                ? 4
-                                : c.crossAxisExtent >= 560
-                                    ? 3
-                                    : 2;
-                            return SliverGrid.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: columns,
-                                mainAxisSpacing: AppSpacing.md,
-                                crossAxisSpacing: AppSpacing.md,
-                                childAspectRatio: 1.15,
-                              ),
-                              itemCount: state.categories.length,
-                              itemBuilder: (context, i) {
-                                final c = state.categories[i];
-                                final label = categoryLabel(
-                                  context,
-                                  c.id,
-                                  fallback: c.name,
-                                );
-                                return CategoryTile(
-                                  label: label,
-                                  caption:
-                                      l10n.productsCount(c.productCount),
-                                  imagePath: c.imagePath,
-                                  onTap: () => context.pushNamed(
-                                    RouteNames.nCatalog,
-                                    extra: CatalogArgs(
-                                      title: label,
-                                      categoryId: c.id,
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
+                      padding: EdgeInsets.fromLTRB(
+                        gutter,
+                        0,
+                        gutter,
+                        AppSpacing.xxl,
                       ),
+                      sliver: SliverLayoutBuilder(
+                        builder: (context, c) {
+                          final columns = c.crossAxisExtent >= 840
+                              ? 4
+                              : c.crossAxisExtent >= 560
+                              ? 3
+                              : 2;
+                          return SliverGrid.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: columns,
+                                  mainAxisSpacing: AppSpacing.md,
+                                  crossAxisSpacing: AppSpacing.md,
+                                  childAspectRatio: 1.15,
+                                ),
+                            itemCount: state.categories.length,
+                            itemBuilder: (context, i) {
+                              final c = state.categories[i];
+                              final label = categoryLabel(
+                                context,
+                                c.id,
+                                fallback: c.name,
+                              );
+                              return CategoryTile(
+                                label: label,
+                                caption: l10n.productsCount(c.productCount),
+                                imagePath: c.imagePath,
+                                onTap: () => context.pushNamed(
+                                  RouteNames.nCatalog,
+                                  extra: CatalogArgs(
+                                    title: label,
+                                    categoryId: c.id,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
                   },
                 ],
               );

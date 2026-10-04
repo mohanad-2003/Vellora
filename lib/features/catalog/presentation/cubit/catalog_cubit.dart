@@ -9,6 +9,7 @@ import '../../../product/domain/usecases/get_favorite_ids_usecase.dart';
 import '../../../product/domain/usecases/toggle_favorite_usecase.dart';
 import '../../domain/catalog_filter.dart';
 import '../../domain/usecases/get_catalog_products_usecase.dart';
+import '../../../../core/utils/safe_emit.dart';
 
 part 'catalog_state.dart';
 
@@ -16,7 +17,7 @@ part 'catalog_state.dart';
 /// favourites set so hearts stay in sync with the rest of the app, and applies
 /// the user's filter and sort on top of the fetched list.
 @injectable
-class CatalogCubit extends Cubit<CatalogState> {
+class CatalogCubit extends Cubit<CatalogState> with SafeEmit<CatalogState> {
   CatalogCubit(
     this._getProducts,
     this._getFavoriteIds,
@@ -32,14 +33,16 @@ class CatalogCubit extends Cubit<CatalogState> {
   String? _categoryId;
   CatalogCollection? _collection;
 
-  Future<void> addToCart(ProductEntity p) => _addToCart(CartItemEntity(
-        id: p.id,
-        productId: p.id,
-        name: p.name,
-        imagePath: p.imagePath,
-        price: p.price,
-        quantity: 1,
-      ));
+  Future<void> addToCart(ProductEntity p) => _addToCart(
+    CartItemEntity(
+      id: '${p.id}__',
+      productId: p.id,
+      name: p.name,
+      imagePath: p.imagePath,
+      price: p.price,
+      quantity: 1,
+    ),
+  );
 
   Future<void> load({
     String? categoryId,
@@ -49,14 +52,19 @@ class CatalogCubit extends Cubit<CatalogState> {
     _categoryId = categoryId;
     _collection = collection ?? _collection;
     emit(state.copyWith(status: CatalogStatus.loading, query: query ?? ''));
-    final result =
-        await _getProducts(CatalogQuery(categoryId: categoryId, query: query));
+    final result = await _getProducts(
+      CatalogQuery(categoryId: categoryId, query: query),
+    );
+    // The user may have left the screen while the request was in flight.
+    if (isClosed) return;
     final favIds = _getFavoriteIds().getOrElse((_) => <String>{});
     result.match(
-      (failure) => emit(state.copyWith(
-        status: CatalogStatus.error,
-        failureKey: failure.l10nKey,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: CatalogStatus.error,
+          failureKey: failure.l10nKey,
+        ),
+      ),
       (products) {
         var base = products
             .map((p) => p.copyWith(isFavorite: favIds.contains(p.id)))
@@ -93,13 +101,15 @@ class CatalogCubit extends Cubit<CatalogState> {
     final f = filter ?? state.filter;
     final s = sort ?? state.sort;
     final shown = s.apply(f.apply(base));
-    emit(state.copyWith(
-      status: shown.isEmpty ? CatalogStatus.empty : CatalogStatus.loaded,
-      baseProducts: base,
-      products: shown,
-      filter: f,
-      sort: s,
-    ));
+    emit(
+      state.copyWith(
+        status: shown.isEmpty ? CatalogStatus.empty : CatalogStatus.loaded,
+        baseProducts: base,
+        products: shown,
+        filter: f,
+        sort: s,
+      ),
+    );
   }
 
   /// Re-marks hearts after another screen changed the favourites.
@@ -107,24 +117,26 @@ class CatalogCubit extends Cubit<CatalogState> {
     final ids = _getFavoriteIds().getOrElse((_) => <String>{});
     ProductEntity mark(ProductEntity p) =>
         p.copyWith(isFavorite: ids.contains(p.id));
-    emit(state.copyWith(
-      products: state.products.map(mark).toList(growable: false),
-      baseProducts: state.baseProducts.map(mark).toList(growable: false),
-    ));
+    emit(
+      state.copyWith(
+        products: state.products.map(mark).toList(growable: false),
+        baseProducts: state.baseProducts.map(mark).toList(growable: false),
+      ),
+    );
   }
 
   Future<void> toggleFavorite(String productId) async {
     final result = await _toggleFavorite(productId);
-    result.match(
-      (_) {},
-      (isNowFavorite) {
-        ProductEntity mark(ProductEntity p) =>
-            p.id == productId ? p.copyWith(isFavorite: isNowFavorite) : p;
-        emit(state.copyWith(
+    if (isClosed) return;
+    result.match((_) {}, (isNowFavorite) {
+      ProductEntity mark(ProductEntity p) =>
+          p.id == productId ? p.copyWith(isFavorite: isNowFavorite) : p;
+      emit(
+        state.copyWith(
           products: state.products.map(mark).toList(growable: false),
           baseProducts: state.baseProducts.map(mark).toList(growable: false),
-        ));
-      },
-    );
+        ),
+      );
+    });
   }
 }

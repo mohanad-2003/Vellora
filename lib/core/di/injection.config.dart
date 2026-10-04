@@ -41,6 +41,8 @@ import '../../features/auth/presentation/bloc/auth_bloc.dart' as _i797;
 import '../../features/auth/presentation/bloc/user_session_cubit.dart' as _i864;
 import '../../features/cart/data/datasources/cart_local_datasource.dart'
     as _i339;
+import '../../features/cart/data/datasources/cart_remote_datasource.dart'
+    as _i15;
 import '../../features/cart/data/datasources/promo_datasource.dart' as _i905;
 import '../../features/cart/data/repositories/cart_repository_impl.dart'
     as _i642;
@@ -64,6 +66,7 @@ import '../../features/catalog/domain/repositories/catalog_repository.dart'
 import '../../features/catalog/domain/usecases/get_catalog_products_usecase.dart'
     as _i296;
 import '../../features/catalog/presentation/cubit/catalog_cubit.dart' as _i686;
+import '../../features/checkout/data/delivery_remote_datasource.dart' as _i442;
 import '../../features/checkout/presentation/cubit/checkout_cubit.dart'
     as _i645;
 import '../../features/explore/presentation/pages/explore_page.dart' as _i487;
@@ -184,6 +187,10 @@ extension GetItInjectableX on _i174.GetIt {
       instanceName: 'favorites_box',
       preResolve: true,
     );
+    gh.lazySingleton<_i15.CartRemoteDataSource>(
+      () => _i15.MockCartRemoteDataSource(),
+      registerFor: {_mock},
+    );
     gh.lazySingleton<_i963.ProductRemoteDataSource>(
       () => _i963.MockProductRemoteDataSource(),
       registerFor: {_mock},
@@ -195,9 +202,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i161.AuthRemoteDataSource>(
       () => _i161.MockAuthRemoteDataSource(),
       registerFor: {_mock},
-    );
-    gh.lazySingleton<_i745.AuthInterceptor>(
-      () => _i745.AuthInterceptor(gh<_i558.FlutterSecureStorage>()),
     );
     gh.lazySingleton<_i158.OrdersRemoteDataSource>(
       () => _i158.MockOrdersRemoteDataSource(gh<_i52.MockOrdersStore>()),
@@ -220,6 +224,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.cartBox,
       instanceName: 'cart_box',
       preResolve: true,
+    );
+    gh.lazySingleton<_i442.DeliveryRemoteDataSource>(
+      () => _i442.MockDeliveryRemoteDataSource(),
+      registerFor: {_mock},
     );
     gh.lazySingleton<_i864.UserSessionCubit>(
       () => _i864.UserSessionCubit(
@@ -252,31 +260,31 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i979.Box<dynamic>>(instanceName: 'cart_box'),
       ),
     );
-    gh.lazySingleton<_i667.DioClient>(
-      () => _i667.DioClient(gh<_i745.AuthInterceptor>()),
-    );
     gh.lazySingleton<_i875.CartBadgeCubit>(
       () => _i875.CartBadgeCubit(
         gh<_i979.Box<dynamic>>(instanceName: 'cart_box'),
       ),
     );
-    gh.factory<_i125.SplashCubit>(
-      () => _i125.SplashCubit(
-        gh<_i460.SharedPreferences>(),
-        gh<_i979.Box<dynamic>>(instanceName: 'user_box'),
-      ),
-    );
     gh.lazySingleton<_i932.NetworkInfo>(
       () => _i932.NetworkInfoImpl(gh<_i161.InternetConnection>()),
     );
-    gh.lazySingleton<_i361.Dio>(
-      () => registerModule.dio(gh<_i667.DioClient>()),
+    gh.lazySingleton<_i745.AuthInterceptor>(
+      () => _i745.AuthInterceptor(
+        gh<_i558.FlutterSecureStorage>(),
+        gh<_i979.Box<dynamic>>(instanceName: 'user_box'),
+      ),
     );
     gh.factory<_i258.LanguageSelectCubit>(
       () => _i258.LanguageSelectCubit(
         gh<_i960.LocaleCubit>(),
         gh<_i460.SharedPreferences>(),
       ),
+    );
+    gh.lazySingleton<_i667.DioClient>(
+      () => _i667.DioClient(gh<_i745.AuthInterceptor>()),
+    );
+    gh.lazySingleton<_i361.Dio>(
+      () => registerModule.dio(gh<_i667.DioClient>()),
     );
     gh.lazySingleton<_i278.HomeRemoteDataSource>(
       () => _i278.ApiHomeRemoteDataSource(gh<_i361.Dio>()),
@@ -286,8 +294,20 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i905.ApiPromoDataSource(gh<_i361.Dio>()),
       registerFor: {_api},
     );
+    gh.factory<_i125.SplashCubit>(
+      () => _i125.SplashCubit(
+        gh<_i460.SharedPreferences>(),
+        gh<_i979.Box<dynamic>>(instanceName: 'user_box'),
+        gh<_i558.FlutterSecureStorage>(),
+        gh<_i361.Dio>(),
+      ),
+    );
     gh.lazySingleton<_i161.AuthRemoteDataSource>(
       () => _i161.ApiAuthRemoteDataSource(gh<_i361.Dio>()),
+      registerFor: {_api},
+    );
+    gh.lazySingleton<_i15.CartRemoteDataSource>(
+      () => _i15.ApiCartRemoteDataSource(gh<_i361.Dio>()),
       registerFor: {_api},
     );
     gh.lazySingleton<_i158.OrdersRemoteDataSource>(
@@ -306,6 +326,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i963.ApiProductRemoteDataSource(gh<_i361.Dio>()),
       registerFor: {_api},
     );
+    gh.lazySingleton<_i442.DeliveryRemoteDataSource>(
+      () => _i442.ApiDeliveryRemoteDataSource(gh<_i361.Dio>()),
+      registerFor: {_api},
+    );
     gh.lazySingleton<_i31.NotificationsRemoteDataSource>(
       () => _i31.ApiNotificationsRemoteDataSource(gh<_i361.Dio>()),
       registerFor: {_api},
@@ -313,12 +337,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i978.WishlistRemoteDataSource>(
       () => _i978.ApiWishlistRemoteDataSource(gh<_i361.Dio>()),
       registerFor: {_api},
-    );
-    gh.lazySingleton<_i322.CartRepository>(
-      () => _i642.CartRepositoryImpl(
-        gh<_i339.CartLocalDataSource>(),
-        gh<_i905.PromoDataSource>(),
-      ),
     );
     gh.lazySingleton<_i1018.CatalogRepository>(
       () => _i428.CatalogRepositoryImpl(gh<_i248.CatalogRemoteDataSource>()),
@@ -330,6 +348,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i296.GetCatalogProductsUseCase>(
       () => _i296.GetCatalogProductsUseCase(gh<_i1018.CatalogRepository>()),
+    );
+    gh.lazySingleton<_i322.CartRepository>(
+      () => _i642.CartRepositoryImpl(
+        gh<_i339.CartLocalDataSource>(),
+        gh<_i905.PromoDataSource>(),
+        gh<_i15.CartRemoteDataSource>(),
+        gh<_i992.AuthLocalDataSource>(),
+      ),
     );
     gh.factory<_i198.AddressesCubit>(
       () => _i198.AddressesCubit(gh<_i264.WalletRemoteDataSource>()),
@@ -391,6 +417,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i355.RemoveFromCartUseCase>(),
         gh<_i158.OrdersRemoteDataSource>(),
         gh<_i264.WalletRemoteDataSource>(),
+        gh<_i442.DeliveryRemoteDataSource>(),
       ),
     );
     gh.lazySingleton<_i4.WishlistRepository>(
@@ -403,6 +430,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1040.ProductRepositoryImpl(
         gh<_i963.ProductRemoteDataSource>(),
         gh<_i843.FavoritesRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i787.AuthRepository>(
+      () => _i153.AuthRepositoryImpl(
+        gh<_i161.AuthRemoteDataSource>(),
+        gh<_i992.AuthLocalDataSource>(),
+        gh<_i843.FavoritesRepository>(),
+        gh<_i322.CartRepository>(),
       ),
     );
     gh.factory<_i585.AddReviewUseCase>(
@@ -419,13 +454,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i120.RemoveFromWishlistUseCase>(
       () => _i120.RemoveFromWishlistUseCase(gh<_i4.WishlistRepository>()),
-    );
-    gh.lazySingleton<_i787.AuthRepository>(
-      () => _i153.AuthRepositoryImpl(
-        gh<_i161.AuthRemoteDataSource>(),
-        gh<_i992.AuthLocalDataSource>(),
-        gh<_i843.FavoritesRepository>(),
-      ),
     );
     gh.lazySingleton<_i0.HomeRepository>(
       () => _i76.HomeRepositoryImpl(

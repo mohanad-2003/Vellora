@@ -6,11 +6,12 @@ import '../../../../core/usecases/usecase.dart';
 import '../../../auth/domain/entities/user_entity.dart';
 import '../../../auth/domain/usecases/get_cached_user_usecase.dart';
 import '../../../auth/domain/usecases/logout_usecase.dart';
+import '../../../../core/utils/safe_emit.dart';
 
 part 'profile_state.dart';
 
 @injectable
-class ProfileCubit extends Cubit<ProfileState> {
+class ProfileCubit extends Cubit<ProfileState> with SafeEmit<ProfileState> {
   ProfileCubit(this._getCachedUser, this._logout) : super(const ProfileState());
 
   final GetCachedUserUseCase _getCachedUser;

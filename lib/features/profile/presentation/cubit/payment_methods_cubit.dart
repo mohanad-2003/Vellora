@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/errors/exception_mapper.dart';
 import '../../../checkout/presentation/models/checkout_models.dart';
 import '../../data/wallet_remote_datasource.dart';
+import '../../../../core/utils/safe_emit.dart';
 
 enum PaymentMethodsStatus { loading, loaded, error }
 
@@ -28,7 +29,7 @@ class PaymentMethodsState extends Equatable {
 /// The signed-in user's saved cards, kept on the server (brand, last four
 /// digits and expiry only). Mutations return a failure key, null on success.
 @injectable
-class PaymentMethodsCubit extends Cubit<PaymentMethodsState> {
+class PaymentMethodsCubit extends Cubit<PaymentMethodsState> with SafeEmit<PaymentMethodsState> {
   PaymentMethodsCubit(this._remote) : super(const PaymentMethodsState());
 
   final WalletRemoteDataSource _remote;

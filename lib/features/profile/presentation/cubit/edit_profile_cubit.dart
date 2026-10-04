@@ -3,12 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../auth/domain/usecases/update_profile_usecase.dart';
+import '../../../../core/utils/safe_emit.dart';
 
 part 'edit_profile_state.dart';
 
 /// Handles saving edits to the signed-in user's profile.
 @injectable
-class EditProfileCubit extends Cubit<EditProfileState> {
+class EditProfileCubit extends Cubit<EditProfileState> with SafeEmit<EditProfileState> {
   EditProfileCubit(this._updateProfile) : super(const EditProfileState());
 
   final UpdateProfileUseCase _updateProfile;

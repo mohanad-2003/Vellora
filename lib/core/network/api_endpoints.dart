@@ -28,6 +28,10 @@ class ApiEndpoints {
   static String relatedProducts(String id) => '/products/$id/related';
   static String productReviews(String id) => '/products/$id/reviews';
 
+  // Cart and checkout.
+  static const String cart = '/cart';
+  static const String deliveryOptions = '/delivery-options';
+
   // Wishlist.
   static const String wishlist = '/wishlist';
   static String wishlistItem(String id) => '/wishlist/$id';

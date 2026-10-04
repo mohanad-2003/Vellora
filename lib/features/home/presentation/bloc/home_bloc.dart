@@ -50,7 +50,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     final p = event.product;
     await _addToCart(CartItemEntity(
-      id: p.id,
+      id: '${p.id}__',
       productId: p.id,
       name: p.name,
       imagePath: p.imagePath,

@@ -81,11 +81,12 @@ class DeliveryOption extends Equatable {
   List<Object?> get props => [id, kind, minDays, maxDays, flatFee];
 }
 
-/// Fixed checkout configuration: the delivery speeds on offer.
-class CheckoutMockData {
-  CheckoutMockData._();
+/// Delivery speeds used when the server's list is unavailable (and in the
+/// mock environment). Mirrors `GET /delivery-options`.
+class DeliveryDefaults {
+  DeliveryDefaults._();
 
-  static const List<DeliveryOption> deliveryOptions = [
+  static const List<DeliveryOption> options = [
     DeliveryOption(
       id: 'del_standard',
       kind: DeliveryKind.standard,

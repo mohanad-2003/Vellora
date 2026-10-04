@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/di/injection.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/widgets/vellora_logo.dart';
-import '../cubit/splash_cubit.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/widgets/vellora_logo.dart';
+import 'package:vellora/features/splash/presentation/cubit/splash_cubit.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
@@ -51,11 +50,15 @@ class _SplashViewState extends State<_SplashView>
   )..forward();
 
   late final Animation<double> _markFade = _interval(0.00, 0.40);
-  late final Animation<double> _markScale = Tween<double>(begin: 0.86, end: 1)
-      .animate(_interval(0.00, 0.50, Curves.easeOutBack));
+  late final Animation<double> _markScale = Tween<double>(
+    begin: 0.86,
+    end: 1,
+  ).animate(_interval(0.00, 0.50, Curves.easeOutBack));
   late final Animation<double> _nameFade = _interval(0.25, 0.60);
-  late final Animation<double> _nameSlide = Tween<double>(begin: 14, end: 0)
-      .animate(_interval(0.25, 0.65, Curves.easeOutCubic));
+  late final Animation<double> _nameSlide = Tween<double>(
+    begin: 14,
+    end: 0,
+  ).animate(_interval(0.25, 0.65, Curves.easeOutCubic));
   late final Animation<double> _taglineFade = _interval(0.50, 0.85);
   late final Animation<double> _loaderFade = _interval(0.70, 1.00);
 
@@ -63,11 +66,10 @@ class _SplashViewState extends State<_SplashView>
     double begin,
     double end, [
     Curve curve = Curves.easeOut,
-  ]) =>
-      CurvedAnimation(
-        parent: _entrance,
-        curve: Interval(begin, end, curve: curve),
-      );
+  ]) => CurvedAnimation(
+    parent: _entrance,
+    curve: Interval(begin, end, curve: curve),
+  );
 
   @override
   void dispose() {
@@ -142,8 +144,9 @@ class _SplashViewState extends State<_SplashView>
                           child: LinearProgressIndicator(
                             minHeight: 3,
                             color: Colors.white,
-                            backgroundColor:
-                                Colors.white.withValues(alpha: 0.22),
+                            backgroundColor: Colors.white.withValues(
+                              alpha: 0.22,
+                            ),
                           ),
                         ),
                       ),

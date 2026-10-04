@@ -7,8 +7,7 @@ import 'interceptors/error_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
 
 /// Configures a shared [Dio] instance with base options + the three
-/// interceptors. Inert against a real backend in Phase 1 (mocks handle data)
-/// but fully wired for a drop-in API later.
+/// interceptors, pointed at the Vellora API.
 @lazySingleton
 class DioClient {
   DioClient(this._authInterceptor) {

@@ -7,6 +7,7 @@ import 'core/di/injection.dart';
 import 'core/localization/l10n/app_localizations.dart';
 import 'core/localization/locale_cubit.dart';
 import 'core/routing/app_router.dart';
+import 'core/routing/route_names.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_cubit.dart';
 import 'features/auth/presentation/bloc/user_session_cubit.dart';
@@ -32,8 +33,13 @@ class VelloraApp extends StatelessWidget {
       ],
       // A different user (or a log out) means a different notification feed.
       child: BlocListener<UserSessionCubit, SessionUser?>(
-        listener: (context, _) =>
-            context.read<UnreadNotificationsCubit>().refresh(),
+        listener: (context, session) {
+          context.read<UnreadNotificationsCubit>().refresh();
+          // The session ended without the user asking (expired token): the
+          // auth interceptor cleared it, so send them to sign in again.
+          if (session == null) AppRouter.router.go(RouteNames.login);
+        },
+        listenWhen: (prev, curr) => prev != curr,
         child: BlocBuilder<ThemeCubit, ThemeMode>(
           builder: (context, themeMode) {
             return BlocBuilder<LocaleCubit, Locale>(
