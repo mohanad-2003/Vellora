@@ -652,16 +652,8 @@ class _QuickActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.md,
-        horizontal: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: AppRadius.rLg,
-        border: Border.all(color: colors.outlineVariant),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -720,28 +712,5 @@ class _TileGroup extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.colors.surface,
-        borderRadius: AppRadius.rLg,
-        border: Border.all(color: context.colors.outlineVariant),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          for (var i = 0; i < children.length; i++) ...[
-            if (i > 0)
-              Divider(
-                height: 1,
-                indent: AppSpacing.lg,
-                endIndent: AppSpacing.lg,
-                color: context.colors.outlineVariant,
-              ),
-            children[i],
-          ],
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => FlatTileGroup(children: children);
 }

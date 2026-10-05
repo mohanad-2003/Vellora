@@ -140,20 +140,19 @@ class _LoadedCart extends StatelessWidget {
                 FreeShippingProgress(subtotal: summary.subtotal),
                 const SizedBox(height: AppSpacing.lg),
               ],
-              for (final item in state.items)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: CartItemTile(
-                    item: item,
-                    onTap: () => context.pushNamed(
-                      RouteNames.nProduct,
-                      pathParameters: {'id': item.productId},
-                    ),
-                    onQuantityChanged: (q) =>
-                        bloc.add(CartQuantityChanged(item.id, q)),
-                    onRemoved: () => _remove(context, item),
+              for (final item in state.items) ...[
+                CartItemTile(
+                  item: item,
+                  onTap: () => context.pushNamed(
+                    RouteNames.nProduct,
+                    pathParameters: {'id': item.productId},
                   ),
+                  onQuantityChanged: (q) =>
+                      bloc.add(CartQuantityChanged(item.id, q)),
+                  onRemoved: () => _remove(context, item),
                 ),
+                Divider(height: 1, color: context.colors.outlineVariant),
+              ],
               const SizedBox(height: AppSpacing.md),
               PromoCodeInput(
                 applied: state.promo,

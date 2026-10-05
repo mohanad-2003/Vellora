@@ -47,19 +47,12 @@ class CartItemTile extends StatelessWidget {
       background: Container(
         alignment: AlignmentDirectional.centerEnd,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-        decoration: BoxDecoration(
-          color: colors.error,
-          borderRadius: AppRadius.rLg,
-        ),
+        color: colors.error,
         child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
       ),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.sm),
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: AppRadius.rLg,
-          border: Border.all(color: colors.outlineVariant),
-        ),
+      // Same colour as the page: no card, the list's dividers separate rows.
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

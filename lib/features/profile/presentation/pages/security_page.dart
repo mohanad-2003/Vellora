@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
-import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/input_validators.dart';
 import '../../../../core/widgets/app_bar_widget.dart';
@@ -298,29 +297,5 @@ class _Group extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.colors.surface,
-        borderRadius: AppRadius.rLg,
-        border: Border.all(color: context.colors.outlineVariant),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          for (var i = 0; i < children.length; i++) ...[
-            if (i > 0)
-              Divider(
-                height: 1,
-                thickness: 1,
-                indent: AppSpacing.lg,
-                endIndent: AppSpacing.lg,
-                color: context.colors.outlineVariant,
-              ),
-            children[i],
-          ],
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => FlatTileGroup(children: children);
 }

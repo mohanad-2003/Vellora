@@ -254,24 +254,7 @@ class _Group extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.colors.surface,
-        borderRadius: AppRadius.rLg,
-        border: Border.all(color: context.colors.outlineVariant),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          for (var i = 0; i < children.length; i++) ...[
-            if (i > 0) const Divider(indent: 16, endIndent: 16),
-            children[i],
-          ],
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => FlatTileGroup(children: children);
 }
 
 class ThemePicker extends StatelessWidget {

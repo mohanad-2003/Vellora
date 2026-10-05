@@ -37,14 +37,16 @@ class SettingsTile extends StatelessWidget {
         destructive ? context.colors.error : (iconColor ?? context.colors.primary);
     final titleColor = destructive ? context.colors.error : null;
 
+    final flat = _FlatScope.of(context);
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: AppRadius.rLg,
+        borderRadius: flat ? null : AppRadius.rLg,
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
+            // Flat rows line up with the page's own margin.
+            horizontal: flat ? 0 : AppSpacing.md,
             vertical: AppSpacing.vMd,
           ),
           child: Row(
@@ -99,6 +101,45 @@ class SettingsTile extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Marks its subtree as flat, so [SettingsTile]s drop their side padding.
+class _FlatScope extends InheritedWidget {
+  const _FlatScope({required super.child});
+
+  static bool of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_FlatScope>() != null;
+
+  @override
+  bool updateShouldNotify(_FlatScope oldWidget) => false;
+}
+
+/// A list of [SettingsTile]s drawn straight on the page: no card or border,
+/// just a divider between rows that starts after the icon.
+class FlatTileGroup extends StatelessWidget {
+  const FlatTileGroup({super.key, required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return _FlatScope(
+      child: Column(
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            if (i > 0)
+              Divider(
+                height: 1,
+                // Past the 40-wide icon and the gap that follows it.
+                indent: 40 + AppSpacing.lg,
+                color: context.colors.outlineVariant,
+              ),
+            children[i],
+          ],
+        ],
       ),
     );
   }
