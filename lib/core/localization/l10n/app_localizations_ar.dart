@@ -1283,4 +1283,130 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get signInRequiredBody =>
       'تحتاج إلى حساب لهذا الإجراء. سجّل الدخول أو أنشئ حسابًا وستنتقل سلتك ومفضلتك معك.';
+
+  @override
+  String get valueFreeShipping => 'شحن مجاني';
+
+  @override
+  String valueFreeShippingBody(String amount) {
+    return 'للطلبات فوق $amount';
+  }
+
+  @override
+  String get valueEasyReturns => 'إرجاع سهل';
+
+  @override
+  String get valueEasyReturnsBody => 'خلال 30 يومًا';
+
+  @override
+  String get valueSecurePayment => 'دفع آمن';
+
+  @override
+  String get valueSecurePaymentBody => 'محمي بالكامل';
+
+  @override
+  String get couponsForYou => 'كوبونات لك';
+
+  @override
+  String get couponsSubtitle => 'اضغط على الكود لنسخه';
+
+  @override
+  String couponOff(String percent) {
+    return 'خصم $percent%';
+  }
+
+  @override
+  String get couponOffShort => 'خصم';
+
+  @override
+  String get couponCaption => 'على طلبك بالكامل';
+
+  @override
+  String codeCopied(String code) {
+    return 'تم نسخ الكود $code';
+  }
+
+  @override
+  String get copyCode => 'نسخ الكود';
+
+  @override
+  String get topBrands => 'أشهر الماركات';
+
+  @override
+  String get topBrandsSubtitle => 'تسوّق من ماركاتك المفضلة';
+
+  @override
+  String get brands => 'الماركات';
+
+  @override
+  String get topRated => 'الأعلى تقييمًا';
+
+  @override
+  String get topRatedSubtitle => 'الأكثر إعجابًا لدى عملائنا';
+
+  @override
+  String budgetPicks(String price) {
+    return 'أقل من $price';
+  }
+
+  @override
+  String get budgetPicksSubtitle => 'اختيارات رائعة بأسعار بسيطة';
+
+  @override
+  String get discoverMore => 'اكتشف المزيد';
+
+  @override
+  String get discoverMoreBody =>
+      'أحدث الصيحات من ماركاتك المفضلة في مكان واحد.';
+
+  @override
+  String get browseAll => 'تصفّح الكل';
+
+  @override
+  String get quickCollections => 'المجموعات';
+
+  @override
+  String get wishlistSubtitle => 'منتجات حفظتها لوقت لاحق';
+
+  @override
+  String get cartSubtitle => 'راجع منتجاتك قبل إتمام الطلب';
+
+  @override
+  String get ordersLabel => 'الطلبات';
+
+  @override
+  String get guestCardTitle => 'مرحبًا بك في Vellora';
+
+  @override
+  String get guestCardBody =>
+      'سجّل الدخول لتتبّع طلباتك وحفظ عناوينك ومزامنة مفضلتك.';
+
+  @override
+  String get quickActions => 'إجراءات سريعة';
+
+  @override
+  String get madeWithCare => 'Vellora · أزياء راقية';
+
+  @override
+  String activeOrders(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طلب في الطريق',
+      many: '$count طلبًا في الطريق',
+      few: '$count طلبات في الطريق',
+      two: 'طلبان في الطريق',
+      one: 'طلب واحد في الطريق',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get activeOrdersBody => 'اضغط لتتبّع شحناتك';
+
+  @override
+  String get addresses => 'العناوين';
+
+  @override
+  String get payments => 'الدفع';
 }

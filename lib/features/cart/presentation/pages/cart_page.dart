@@ -6,6 +6,7 @@ import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/localization/l10n_lookup.dart';
 import 'package:vellora/core/responsive/responsive.dart';
 import 'package:vellora/core/widgets/shimmer_widgets.dart';
+import 'package:vellora/core/widgets/tab_page_header.dart';
 import 'package:vellora/features/cart/presentation/bloc/cart_badge_cubit.dart';
 import 'package:vellora/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:vellora/core/extensions/num_extensions.dart';
@@ -77,31 +78,17 @@ class _CartView extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
+                  TabPageHeader(
+                    title: l10n.myCart,
+                    subtitle: l10n.cartSubtitle,
+                    count: state.status == CartStatus.loaded
+                        ? l10n.cartItemsCount(count)
+                        : null,
                     padding: EdgeInsets.fromLTRB(
                       gutter,
                       AppSpacing.lg,
                       gutter,
                       AppSpacing.md,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          child: Semantics(
-                            header: true,
-                            child: Text(
-                              l10n.myCart,
-                              style: context.textTheme.displaySmall,
-                            ),
-                          ),
-                        ),
-                        if (state.status == CartStatus.loaded)
-                          Text(
-                            l10n.cartItemsCount(count),
-                            style: context.textTheme.bodyMedium,
-                          ),
-                      ],
                     ),
                   ),
                   Expanded(child: body),

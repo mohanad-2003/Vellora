@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/extensions/num_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
 import '../../../../core/responsive/responsive.dart';
 import '../../../../core/routing/route_names.dart';
@@ -20,6 +21,7 @@ import '../../domain/entities/home_data_entity.dart';
 import '../../domain/entities/product_entity.dart';
 import '../bloc/home_bloc.dart';
 import '../widgets/category_list.dart';
+import '../widgets/home_extras.dart';
 import '../widgets/home_header.dart';
 import '../widgets/home_sections.dart';
 import '../widgets/promo_banner_carousel.dart';
@@ -96,9 +98,8 @@ class _HomeView extends StatelessWidget {
                         hasScrollBody: false,
                         child: FailureStateView(
                           failureKey: state.failureKey,
-                          onRetry: () => context
-                              .read<HomeBloc>()
-                              .add(const HomeStarted()),
+                          onRetry: () =>
+                              context.read<HomeBloc>().add(const HomeStarted()),
                         ),
                       )
                     else if (state.status == HomeStatus.loaded &&
@@ -169,9 +170,9 @@ class _HomeView extends StatelessWidget {
     // Each block fades in slightly after the previous one.
     var step = 0;
     Widget reveal(Widget child) => StaggeredReveal(
-          delay: Duration(milliseconds: 70 * step++),
-          child: child,
-        );
+      delay: Duration(milliseconds: 70 * step++),
+      child: child,
+    );
     Widget gap([double h = AppSpacing.xxl]) =>
         SliverToBoxAdapter(child: SizedBox(height: h));
 
@@ -187,6 +188,8 @@ class _HomeView extends StatelessWidget {
           ),
         ),
       ),
+      gap(AppSpacing.xl),
+      SliverToBoxAdapter(child: reveal(const ValuePropsStrip())),
       gap(),
       SliverToBoxAdapter(
         child: reveal(
@@ -224,6 +227,10 @@ class _HomeView extends StatelessWidget {
           ),
         ),
       ),
+      if (data.offers.isNotEmpty) ...[
+        gap(),
+        SliverToBoxAdapter(child: CouponsSection(offers: data.offers)),
+      ],
       gap(),
       SliverToBoxAdapter(
         child: FeaturedSection(
@@ -233,6 +240,18 @@ class _HomeView extends StatelessWidget {
               openCollection(l10n.featured, CatalogCollection.featured),
         ),
       ),
+      if (data.brands.isNotEmpty) ...[
+        gap(),
+        SliverToBoxAdapter(
+          child: BrandsSection(
+            brands: data.brands,
+            onTap: (b) => context.pushNamed(
+              RouteNames.nCatalog,
+              extra: CatalogArgs(title: b.name, brand: b.name),
+            ),
+          ),
+        ),
+      ],
       gap(),
       SliverProductSection(
         title: l10n.newArrivals,
@@ -252,6 +271,36 @@ class _HomeView extends StatelessWidget {
               openCollection(l10n.bestSellers, CatalogCollection.bestSellers),
         ),
       ),
+      if (data.budgetPicks.isNotEmpty) ...[
+        gap(),
+        SliverToBoxAdapter(
+          child: ProductRailSection(
+            title: l10n.budgetPicks(data.budgetLimit.toPrice()),
+            subtitle: l10n.budgetPicksSubtitle,
+            products: data.budgetPicks,
+            actions: actions,
+            heroPrefix: 'home_budget',
+            onSeeAll: () => openCollection(
+              l10n.budgetPicks(data.budgetLimit.toPrice()),
+              CatalogCollection.budgetPicks,
+            ),
+          ),
+        ),
+      ],
+      if (data.topRated.isNotEmpty) ...[
+        gap(),
+        SliverToBoxAdapter(
+          child: ProductRailSection(
+            title: l10n.topRated,
+            subtitle: l10n.topRatedSubtitle,
+            products: data.topRated,
+            actions: actions,
+            heroPrefix: 'home_top',
+            onSeeAll: () =>
+                openCollection(l10n.topRated, CatalogCollection.topRated),
+          ),
+        ),
+      ],
       gap(),
       SliverProductSection(
         title: l10n.recommendedForYou,
@@ -260,6 +309,17 @@ class _HomeView extends StatelessWidget {
         actions: actions,
         heroPrefix: 'home_rec',
       ),
+      if (!data.stats.isEmpty) ...[
+        gap(),
+        SliverToBoxAdapter(
+          child: CatalogueStatsCard(
+            productCount: data.stats.productCount,
+            brandCount: data.stats.brandCount,
+            categoryCount: data.stats.categoryCount,
+            onExplore: () => context.goNamed(RouteNames.nExplore),
+          ),
+        ),
+      ],
     ];
   }
 }

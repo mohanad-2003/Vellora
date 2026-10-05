@@ -32,6 +32,10 @@ class CatalogCubit extends Cubit<CatalogState> with SafeEmit<CatalogState> {
   String? _categoryId;
   CatalogCollection? _collection;
 
+  /// Filter to start from once the first results arrive (e.g. a brand picked
+  /// on Home). The user can clear it like any other filter.
+  CatalogFilter? _initialFilter;
+
   /// Number of the latest load. A slower, older request that finishes after a
   /// newer one (or after [reset]) is ignored instead of overwriting it.
   int _loads = 0;
@@ -51,7 +55,9 @@ class CatalogCubit extends Cubit<CatalogState> with SafeEmit<CatalogState> {
     String? categoryId,
     String? query,
     CatalogCollection? collection,
+    CatalogFilter? initialFilter,
   }) async {
+    _initialFilter = initialFilter ?? _initialFilter;
     _categoryId = categoryId;
     _collection = collection ?? _collection;
     final load = ++_loads;
@@ -75,7 +81,9 @@ class CatalogCubit extends Cubit<CatalogState> with SafeEmit<CatalogState> {
             .map((p) => p.copyWith(isFavorite: favIds.contains(p.id)))
             .toList(growable: false);
         if (_collection != null) base = _collection!.apply(base);
-        _emitResults(base);
+        final initial = _initialFilter;
+        _initialFilter = null;
+        _emitResults(base, filter: initial);
       },
     );
   }

@@ -2383,6 +2383,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You need an account for this. Sign in or create one, and your bag and favourites come with you.'**
   String get signInRequiredBody;
+
+  /// No description provided for @valueFreeShipping.
+  ///
+  /// In en, this message translates to:
+  /// **'Free shipping'**
+  String get valueFreeShipping;
+
+  /// No description provided for @valueFreeShippingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'On orders over {amount}'**
+  String valueFreeShippingBody(String amount);
+
+  /// No description provided for @valueEasyReturns.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy returns'**
+  String get valueEasyReturns;
+
+  /// No description provided for @valueEasyReturnsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 30 days'**
+  String get valueEasyReturnsBody;
+
+  /// No description provided for @valueSecurePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure payment'**
+  String get valueSecurePayment;
+
+  /// No description provided for @valueSecurePaymentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Fully protected'**
+  String get valueSecurePaymentBody;
+
+  /// No description provided for @couponsForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupons for you'**
+  String get couponsForYou;
+
+  /// No description provided for @couponsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a code to copy it'**
+  String get couponsSubtitle;
+
+  /// No description provided for @couponOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% off'**
+  String couponOff(String percent);
+
+  /// No description provided for @couponOffShort.
+  ///
+  /// In en, this message translates to:
+  /// **'OFF'**
+  String get couponOffShort;
+
+  /// No description provided for @couponCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'On your whole order'**
+  String get couponCaption;
+
+  /// No description provided for @codeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Code {code} copied'**
+  String codeCopied(String code);
+
+  /// No description provided for @copyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy code'**
+  String get copyCode;
+
+  /// No description provided for @topBrands.
+  ///
+  /// In en, this message translates to:
+  /// **'Top brands'**
+  String get topBrands;
+
+  /// No description provided for @topBrandsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop your favourite labels'**
+  String get topBrandsSubtitle;
+
+  /// No description provided for @brands.
+  ///
+  /// In en, this message translates to:
+  /// **'Brands'**
+  String get brands;
+
+  /// No description provided for @topRated.
+  ///
+  /// In en, this message translates to:
+  /// **'Top rated'**
+  String get topRated;
+
+  /// No description provided for @topRatedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loved by our customers'**
+  String get topRatedSubtitle;
+
+  /// No description provided for @budgetPicks.
+  ///
+  /// In en, this message translates to:
+  /// **'Under {price}'**
+  String budgetPicks(String price);
+
+  /// No description provided for @budgetPicksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Great finds at small prices'**
+  String get budgetPicksSubtitle;
+
+  /// No description provided for @discoverMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover more'**
+  String get discoverMore;
+
+  /// No description provided for @discoverMoreBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh styles from the brands you love, all in one place.'**
+  String get discoverMoreBody;
+
+  /// No description provided for @browseAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse all'**
+  String get browseAll;
+
+  /// No description provided for @quickCollections.
+  ///
+  /// In en, this message translates to:
+  /// **'Collections'**
+  String get quickCollections;
+
+  /// No description provided for @wishlistSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pieces you saved for later'**
+  String get wishlistSubtitle;
+
+  /// No description provided for @cartSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review your items before checkout'**
+  String get cartSubtitle;
+
+  /// No description provided for @ordersLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get ordersLabel;
+
+  /// No description provided for @guestCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Vellora'**
+  String get guestCardTitle;
+
+  /// No description provided for @guestCardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to track orders, save addresses and sync your wishlist.'**
+  String get guestCardBody;
+
+  /// No description provided for @quickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick actions'**
+  String get quickActions;
+
+  /// No description provided for @madeWithCare.
+  ///
+  /// In en, this message translates to:
+  /// **'Vellora · Premium fashion'**
+  String get madeWithCare;
+
+  /// No description provided for @activeOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 order on its way} other{{count} orders on their way}}'**
+  String activeOrders(int count);
+
+  /// No description provided for @activeOrdersBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to track your deliveries'**
+  String get activeOrdersBody;
+
+  /// No description provided for @addresses.
+  ///
+  /// In en, this message translates to:
+  /// **'Addresses'**
+  String get addresses;
+
+  /// No description provided for @payments.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments'**
+  String get payments;
 }
 
 class _AppLocalizationsDelegate
