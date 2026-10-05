@@ -1271,4 +1271,127 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get signInRequiredBody =>
       'You need an account for this. Sign in or create one, and your bag and favourites come with you.';
+
+  @override
+  String get valueFreeShipping => 'Free shipping';
+
+  @override
+  String valueFreeShippingBody(String amount) {
+    return 'On orders over $amount';
+  }
+
+  @override
+  String get valueEasyReturns => 'Easy returns';
+
+  @override
+  String get valueEasyReturnsBody => 'Within 30 days';
+
+  @override
+  String get valueSecurePayment => 'Secure payment';
+
+  @override
+  String get valueSecurePaymentBody => 'Fully protected';
+
+  @override
+  String get couponsForYou => 'Coupons for you';
+
+  @override
+  String get couponsSubtitle => 'Tap a code to copy it';
+
+  @override
+  String couponOff(String percent) {
+    return '$percent% off';
+  }
+
+  @override
+  String get couponOffShort => 'OFF';
+
+  @override
+  String get couponCaption => 'On your whole order';
+
+  @override
+  String codeCopied(String code) {
+    return 'Code $code copied';
+  }
+
+  @override
+  String get copyCode => 'Copy code';
+
+  @override
+  String get topBrands => 'Top brands';
+
+  @override
+  String get topBrandsSubtitle => 'Shop your favourite labels';
+
+  @override
+  String get brands => 'Brands';
+
+  @override
+  String get topRated => 'Top rated';
+
+  @override
+  String get topRatedSubtitle => 'Loved by our customers';
+
+  @override
+  String budgetPicks(String price) {
+    return 'Under $price';
+  }
+
+  @override
+  String get budgetPicksSubtitle => 'Great finds at small prices';
+
+  @override
+  String get discoverMore => 'Discover more';
+
+  @override
+  String get discoverMoreBody =>
+      'Fresh styles from the brands you love, all in one place.';
+
+  @override
+  String get browseAll => 'Browse all';
+
+  @override
+  String get quickCollections => 'Collections';
+
+  @override
+  String get wishlistSubtitle => 'Pieces you saved for later';
+
+  @override
+  String get cartSubtitle => 'Review your items before checkout';
+
+  @override
+  String get ordersLabel => 'Orders';
+
+  @override
+  String get guestCardTitle => 'Welcome to Vellora';
+
+  @override
+  String get guestCardBody =>
+      'Sign in to track orders, save addresses and sync your wishlist.';
+
+  @override
+  String get quickActions => 'Quick actions';
+
+  @override
+  String get madeWithCare => 'Vellora · Premium fashion';
+
+  @override
+  String activeOrders(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count orders on their way',
+      one: '1 order on its way',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get activeOrdersBody => 'Tap to track your deliveries';
+
+  @override
+  String get addresses => 'Addresses';
+
+  @override
+  String get payments => 'Payments';
 }

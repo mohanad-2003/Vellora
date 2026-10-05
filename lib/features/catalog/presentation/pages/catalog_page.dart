@@ -13,10 +13,18 @@ import '../widgets/catalog_toolbar.dart';
 
 /// Navigation payload for [CatalogPage], passed as go_router `extra`.
 class CatalogArgs {
-  const CatalogArgs({required this.title, this.categoryId, this.collection});
+  const CatalogArgs({
+    required this.title,
+    this.categoryId,
+    this.collection,
+    this.brand,
+  });
 
   final String title;
   final String? categoryId;
+
+  /// Opens the list pre-filtered to this brand.
+  final String? brand;
 
   /// A curated list (Flash Sale, Featured…) instead of a category.
   final CatalogCollection? collection;
@@ -30,17 +38,24 @@ class CatalogPage extends StatelessWidget {
     required this.title,
     this.categoryId,
     this.collection,
+    this.brand,
   });
 
   final String title;
   final String? categoryId;
   final CatalogCollection? collection;
+  final String? brand;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<CatalogCubit>()
-        ..load(categoryId: categoryId, collection: collection),
+        ..load(
+          categoryId: categoryId,
+          collection: collection,
+          initialFilter:
+              brand == null ? null : CatalogFilter(brands: {brand!}),
+        ),
       child: Builder(
         builder: (context) => FavoritesListener(
           onChanged: () => context.read<CatalogCubit>().syncFavorites(),

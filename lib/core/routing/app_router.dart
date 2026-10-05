@@ -208,6 +208,7 @@ class AppRouter {
               title: args?.title ?? '',
               categoryId: args?.categoryId,
               collection: args?.collection,
+              brand: args?.brand,
             ),
           );
         },

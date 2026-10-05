@@ -12,6 +12,7 @@ import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/error_state_widget.dart';
 import '../../../../core/widgets/favorites_listener.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
+import '../../../../core/widgets/tab_page_header.dart';
 import '../../../catalog/presentation/widgets/catalog_toolbar.dart';
 import '../../../catalog/presentation/widgets/product_results.dart';
 import '../bloc/wishlist_bloc.dart';
@@ -49,31 +50,17 @@ class _WishlistView extends StatelessWidget {
           maxWidth: Breakpoints.contentMaxWidth,
           child: BlocBuilder<WishlistBloc, WishlistState>(
             builder: (context, state) {
-              final header = Padding(
+              final header = TabPageHeader(
+                title: l10n.wishlist,
+                subtitle: l10n.wishlistSubtitle,
+                count: state.status == WishlistStatus.loaded
+                    ? l10n.productsCount(state.products.length)
+                    : null,
                 padding: EdgeInsets.fromLTRB(
                   gutter,
                   AppSpacing.lg,
                   gutter,
                   AppSpacing.lg,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: Semantics(
-                        header: true,
-                        child: Text(
-                          l10n.wishlist,
-                          style: context.textTheme.displaySmall,
-                        ),
-                      ),
-                    ),
-                    if (state.status == WishlistStatus.loaded)
-                      Text(
-                        l10n.productsCount(state.products.length),
-                        style: context.textTheme.bodyMedium,
-                      ),
-                  ],
                 ),
               );
 

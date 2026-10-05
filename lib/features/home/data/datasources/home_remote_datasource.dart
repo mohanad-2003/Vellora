@@ -9,7 +9,9 @@ import '../../../../core/mock/mock_catalog.dart';
 import '../../domain/entities/banner_entity.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/home_data_entity.dart';
+import '../../domain/entities/home_offer_entity.dart';
 import '../../domain/entities/product_entity.dart';
+import '../../domain/home_rails.dart';
 
 /// Mocked home backend. Builds the home payload from the shared [MockCatalog]
 /// with a simulated delay. A real datasource would deserialize JSON models.
@@ -49,6 +51,21 @@ class MockHomeRemoteDataSource implements HomeRemoteDataSource {
       newArrivals: newArrivals.take(8).toList(),
       bestSellers: bestSellers.take(8).toList(),
       recommended: recommended.take(10).toList(),
+      topRated: HomeRails.topRated(products).take(8).toList(),
+      budgetPicks: HomeRails.budgetPicks(
+        products,
+        HomeDataEntity.defaultBudgetLimit,
+      ).take(8).toList(),
+      brands: HomeRails.brands(products).take(10).toList(),
+      offers: const [
+        HomeOfferEntity(code: 'WELCOME20', discountPercent: 20),
+        HomeOfferEntity(code: 'SAVE10', discountPercent: 10),
+      ],
+      stats: HomeStatsEntity(
+        productCount: products.length,
+        brandCount: products.map((p) => p.brand).toSet().length,
+        categoryCount: _categories(products).length,
+      ),
     );
   }
 
@@ -133,20 +150,68 @@ class ApiHomeRemoteDataSource implements HomeRemoteDataSource {
   Future<HomeDataEntity> getHomeData() async {
     final res = await _dio.get<Map<String, dynamic>>(ApiEndpoints.home);
     final j = res.data!;
+    final featured = ApiMappers.products(j['featured']);
+    final flashSale = ApiMappers.products(j['flashSale']);
+    final newArrivals = ApiMappers.products(j['newArrivals']);
+    final bestSellers = ApiMappers.products(j['bestSellers']);
+    final recommended = ApiMappers.products(j['recommended']);
+    final categories = [
+      for (final c in j['categories'] as List)
+        ApiMappers.category(c as Map<String, dynamic>),
+    ];
+    final budgetLimit =
+        (j['budgetLimit'] as num?)?.toDouble() ??
+        HomeDataEntity.defaultBudgetLimit;
+
+    // Older servers send only the original rails; build the newer ones from
+    // the products already on hand so Home still shows them.
+    late final seen = HomeRails.union([
+      featured,
+      flashSale,
+      newArrivals,
+      bestSellers,
+      recommended,
+    ]);
+    final topRated = j.containsKey('topRated')
+        ? ApiMappers.products(j['topRated'])
+        : HomeRails.topRated(seen).take(8).toList();
+    final budgetPicks = j.containsKey('budgetPicks')
+        ? ApiMappers.products(j['budgetPicks'])
+        : HomeRails.budgetPicks(seen, budgetLimit).take(8).toList();
+    final brands = j['brands'] is List
+        ? [
+            for (final b in j['brands'] as List)
+              ApiMappers.brand(b as Map<String, dynamic>),
+          ]
+        : HomeRails.brands(seen).take(10).toList();
+    final stats = j['stats'] is Map<String, dynamic>
+        ? ApiMappers.homeStats(j['stats'] as Map<String, dynamic>)
+        : HomeStatsEntity(
+            productCount: categories.fold(0, (sum, c) => sum + c.productCount),
+            brandCount: brands.length,
+            categoryCount: categories.length,
+          );
+
     return HomeDataEntity(
       banners: [
         for (final b in j['banners'] as List)
           ApiMappers.banner(b as Map<String, dynamic>),
       ],
-      categories: [
-        for (final c in j['categories'] as List)
-          ApiMappers.category(c as Map<String, dynamic>),
+      categories: categories,
+      featured: featured,
+      flashSale: flashSale,
+      newArrivals: newArrivals,
+      bestSellers: bestSellers,
+      recommended: recommended,
+      topRated: topRated,
+      budgetPicks: budgetPicks,
+      budgetLimit: budgetLimit,
+      brands: brands,
+      offers: [
+        for (final o in (j['promoCodes'] as List? ?? const []))
+          ApiMappers.offer(o as Map<String, dynamic>),
       ],
-      featured: ApiMappers.products(j['featured']),
-      flashSale: ApiMappers.products(j['flashSale']),
-      newArrivals: ApiMappers.products(j['newArrivals']),
-      bestSellers: ApiMappers.products(j['bestSellers']),
-      recommended: ApiMappers.products(j['recommended']),
+      stats: stats,
     );
   }
 }

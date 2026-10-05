@@ -543,6 +543,8 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i36.ProfileCubit(
         gh<_i389.GetCachedUserUseCase>(),
         gh<_i48.LogoutUseCase>(),
+        gh<_i946.GetFavoriteIdsUseCase>(),
+        gh<_i158.OrdersRemoteDataSource>(),
       ),
     );
     return this;

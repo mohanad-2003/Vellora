@@ -1,9 +1,18 @@
 import 'package:equatable/equatable.dart';
 
+import '../../home/domain/entities/home_data_entity.dart';
 import '../../home/domain/entities/product_entity.dart';
+import '../../home/domain/home_rails.dart';
 
 /// Curated lists reachable from Home ("See all", banners).
-enum CatalogCollection { flashSale, featured, newArrivals, bestSellers }
+enum CatalogCollection {
+  flashSale,
+  featured,
+  newArrivals,
+  bestSellers,
+  topRated,
+  budgetPicks,
+}
 
 extension CatalogCollectionX on CatalogCollection {
   /// Narrows and orders [all] to this collection. Mirrors how the Home data
@@ -21,6 +30,10 @@ extension CatalogCollectionX on CatalogCollection {
         return all.reversed.toList();
       case CatalogCollection.bestSellers:
         return [...all]..sort((a, b) => b.reviewCount.compareTo(a.reviewCount));
+      case CatalogCollection.topRated:
+        return HomeRails.topRated(all);
+      case CatalogCollection.budgetPicks:
+        return HomeRails.budgetPicks(all, HomeDataEntity.defaultBudgetLimit);
     }
   }
 }

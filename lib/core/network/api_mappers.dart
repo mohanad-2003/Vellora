@@ -1,5 +1,7 @@
 import '../../features/home/domain/entities/banner_entity.dart';
+import '../../features/home/domain/entities/brand_entity.dart';
 import '../../features/home/domain/entities/category_entity.dart';
+import '../../features/home/domain/entities/home_offer_entity.dart';
 import '../../features/home/domain/entities/product_entity.dart';
 import '../../features/notifications/domain/notification_entity.dart';
 import '../../features/orders/domain/order_entity.dart';
@@ -42,6 +44,23 @@ class ApiMappers {
         title: j['title'] as String,
         subtitle: j['subtitle'] as String,
         imagePath: j['imageUrl'] as String,
+      );
+
+  static BrandEntity brand(Map<String, dynamic> j) => BrandEntity(
+        name: j['name'] as String,
+        imagePath: j['imageUrl'] as String? ?? '',
+        productCount: (j['productCount'] as num?)?.toInt() ?? 0,
+      );
+
+  static HomeOfferEntity offer(Map<String, dynamic> j) => HomeOfferEntity(
+        code: j['code'] as String,
+        discountPercent: (j['discountPercent'] as num).toDouble(),
+      );
+
+  static HomeStatsEntity homeStats(Map<String, dynamic> j) => HomeStatsEntity(
+        productCount: (j['productCount'] as num?)?.toInt() ?? 0,
+        brandCount: (j['brandCount'] as num?)?.toInt() ?? 0,
+        categoryCount: (j['categoryCount'] as num?)?.toInt() ?? 0,
       );
 
   static ReviewEntity review(Map<String, dynamic> j) => ReviewEntity(

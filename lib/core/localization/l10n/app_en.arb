@@ -518,5 +518,75 @@
   "cardExpired": "This card has expired.",
   "serverWaking": "Still connecting… the server may be waking up, this can take a minute.",
   "signInRequiredTitle": "Sign in to continue",
-  "signInRequiredBody": "You need an account for this. Sign in or create one, and your bag and favourites come with you."
+  "signInRequiredBody": "You need an account for this. Sign in or create one, and your bag and favourites come with you.",
+  "valueFreeShipping": "Free shipping",
+  "valueFreeShippingBody": "On orders over {amount}",
+  "@valueFreeShippingBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "valueEasyReturns": "Easy returns",
+  "valueEasyReturnsBody": "Within 30 days",
+  "valueSecurePayment": "Secure payment",
+  "valueSecurePaymentBody": "Fully protected",
+  "couponsForYou": "Coupons for you",
+  "couponsSubtitle": "Tap a code to copy it",
+  "couponOff": "{percent}% off",
+  "@couponOff": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "couponOffShort": "OFF",
+  "couponCaption": "On your whole order",
+  "codeCopied": "Code {code} copied",
+  "@codeCopied": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "copyCode": "Copy code",
+  "topBrands": "Top brands",
+  "topBrandsSubtitle": "Shop your favourite labels",
+  "brands": "Brands",
+  "topRated": "Top rated",
+  "topRatedSubtitle": "Loved by our customers",
+  "budgetPicks": "Under {price}",
+  "@budgetPicks": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "budgetPicksSubtitle": "Great finds at small prices",
+  "discoverMore": "Discover more",
+  "discoverMoreBody": "Fresh styles from the brands you love, all in one place.",
+  "browseAll": "Browse all",
+  "quickCollections": "Collections",
+  "wishlistSubtitle": "Pieces you saved for later",
+  "cartSubtitle": "Review your items before checkout",
+  "ordersLabel": "Orders",
+  "guestCardTitle": "Welcome to Vellora",
+  "guestCardBody": "Sign in to track orders, save addresses and sync your wishlist.",
+  "quickActions": "Quick actions",
+  "madeWithCare": "Vellora · Premium fashion",
+  "activeOrders": "{count, plural, =1{1 order on its way} other{{count} orders on their way}}",
+  "@activeOrders": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activeOrdersBody": "Tap to track your deliveries",
+  "addresses": "Addresses",
+  "payments": "Payments"
 }
