@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
 import '../../../../core/responsive/responsive.dart';
-import '../../../../core/theme/app_radius.dart';
+import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_bar_widget.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
@@ -52,16 +53,17 @@ class _NotificationsView extends StatelessWidget {
             child: switch (state.status) {
               NotificationsStatus.loading => const ListSkeleton(thumb: 48),
               NotificationsStatus.error => FailureStateView(
-                  failureKey: state.failureKey,
-                  onRetry: () => context.read<NotificationsCubit>().load(),
-                ),
-              NotificationsStatus.loaded => state.items.isEmpty
-                  ? EmptyStateWidget(
-                      icon: Icons.notifications_none_rounded,
-                      title: l10n.noNotificationsTitle,
-                      message: l10n.noNotificationsBody,
-                    )
-                  : _Grouped(items: state.items),
+                failureKey: state.failureKey,
+                onRetry: () => context.read<NotificationsCubit>().load(),
+              ),
+              NotificationsStatus.loaded =>
+                state.items.isEmpty
+                    ? EmptyStateWidget(
+                        icon: Icons.notifications_none_rounded,
+                        title: l10n.noNotificationsTitle,
+                        message: l10n.noNotificationsBody,
+                      )
+                    : _Grouped(items: state.items),
             },
           ),
         );
@@ -90,12 +92,14 @@ class _Grouped extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final now = DateTime.now();
-    final sorted = [...items]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final sorted = [...items]
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     final children = <Widget>[];
     for (final group in _Group.values) {
-      final groupItems =
-          sorted.where((n) => _groupOf(n.createdAt, now) == group).toList();
+      final groupItems = sorted
+          .where((n) => _groupOf(n.createdAt, now) == group)
+          .toList();
       if (groupItems.isEmpty) continue;
       final title = switch (group) {
         _Group.today => l10n.today,
@@ -104,30 +108,42 @@ class _Grouped extends StatelessWidget {
       };
       children.add(
         Padding(
-          padding: const EdgeInsets.only(
-            top: AppSpacing.lg,
-            bottom: AppSpacing.sm,
+          padding: EdgeInsets.fromLTRB(
+            context.pageGutter,
+            AppSpacing.xl,
+            context.pageGutter,
+            AppSpacing.xs,
           ),
           child: Semantics(
             header: true,
-            child: Text(title, style: context.textTheme.titleMedium),
+            child: Text(
+              title,
+              style: context.textTheme.labelLarge?.copyWith(
+                color: context.colors.onSurfaceVariant,
+              ),
+            ),
           ),
         ),
       );
-      for (final n in groupItems) {
-        children.add(_NotificationTile(item: n, now: now));
+      for (var i = 0; i < groupItems.length; i++) {
+        children.add(_NotificationTile(item: groupItems[i], now: now));
+        if (i < groupItems.length - 1) {
+          children.add(
+            Divider(
+              height: 1,
+              indent: context.pageGutter,
+              endIndent: context.pageGutter,
+              color: context.colors.outlineVariant,
+            ),
+          );
+        }
       }
     }
 
     return ResponsiveCenter(
       maxWidth: 720,
       child: ListView(
-        padding: EdgeInsets.fromLTRB(
-          context.pageGutter,
-          0,
-          context.pageGutter,
-          AppSpacing.xxl,
-        ),
+        padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
         children: children,
       ),
     );
@@ -141,10 +157,16 @@ class _NotificationTile extends StatelessWidget {
   final DateTime now;
 
   IconData get _icon => switch (item.kind) {
-        NotificationKind.order => Icons.local_shipping_outlined,
-        NotificationKind.promo => Icons.local_offer_outlined,
-        NotificationKind.system => Icons.info_outline_rounded,
-      };
+    NotificationKind.order => Icons.local_shipping_outlined,
+    NotificationKind.promo => Icons.local_offer_outlined,
+    NotificationKind.system => Icons.info_outline_rounded,
+  };
+
+  Color _tone(BuildContext context) => switch (item.kind) {
+    NotificationKind.order => context.colors.primary,
+    NotificationKind.promo => context.vellora.accent,
+    NotificationKind.system => const Color(0xFF0E9F8F),
+  };
 
   String _time(BuildContext context) {
     final l10n = context.l10n;
@@ -175,67 +197,82 @@ class _NotificationTile extends StatelessWidget {
         child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
       ),
       child: Semantics(
-        label: '${item.isUnread ? '${context.l10n.unread}, ' : ''}$title. $body',
+        label:
+            '${item.isUnread ? '${context.l10n.unread}, ' : ''}$title. $body',
         excludeSemantics: true,
-        child: Container(
-          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-          padding: const EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            color: item.isUnread
-                ? colors.primaryContainer.withValues(alpha: 0.45)
-                : colors.surface,
-            borderRadius: AppRadius.rLg,
-            border: Border.all(color: colors.outlineVariant),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: colors.primaryContainer,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(_icon, size: 22, color: colors.primary),
+        // Same colour as the screen; unread shows as a bold title and a dot.
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            // Opens the order it is about, if any, and marks it read.
+            onTap: () {
+              context.read<NotificationsCubit>().markRead(item.id);
+              final orderId = item.orderId;
+              if (orderId != null) {
+                context.pushNamed(
+                  RouteNames.nOrderDetails,
+                  pathParameters: {'id': orderId},
+                );
+              }
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.pageGutter,
+                vertical: AppSpacing.lg,
               ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: _tone(context).withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(_icon, size: 22, color: _tone(context)),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            title,
-                            style: text.titleSmall?.copyWith(
-                              fontWeight: item.isUnread
-                                  ? FontWeight.w700
-                                  : FontWeight.w600,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                title,
+                                style: text.titleSmall?.copyWith(
+                                  fontWeight: item.isUnread
+                                      ? FontWeight.w700
+                                      : FontWeight.w600,
+                                ),
+                              ),
                             ),
-                          ),
+                            if (item.isUnread)
+                              Container(
+                                width: 8,
+                                height: 8,
+                                margin: const EdgeInsetsDirectional.only(
+                                  start: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: context.vellora.accent,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                          ],
                         ),
-                        if (item.isUnread)
-                          Container(
-                            width: 8,
-                            height: 8,
-                            margin: const EdgeInsetsDirectional.only(start: 8),
-                            decoration: BoxDecoration(
-                              color: context.vellora.accent,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
+                        const SizedBox(height: 2),
+                        Text(body, style: text.bodySmall),
+                        const SizedBox(height: 6),
+                        Text(_time(context), style: text.labelSmall),
                       ],
                     ),
-                    const SizedBox(height: 2),
-                    Text(body, style: text.bodySmall),
-                    const SizedBox(height: 6),
-                    Text(_time(context), style: text.labelSmall),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

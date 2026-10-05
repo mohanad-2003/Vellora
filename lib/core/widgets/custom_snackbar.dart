@@ -17,45 +17,65 @@ class AppSnackbar {
     String? actionLabel,
     VoidCallback? onAction,
   }) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        build(
+          context,
+          message: message,
+          type: type,
+          actionLabel: actionLabel,
+          onAction: onAction,
+        ),
+      );
+  }
+
+  /// Builds the themed snackbar without showing it. Use it to capture the
+  /// styling while [context] is still alive when the snackbar has to appear
+  /// after the page was replaced (e.g. after signing out).
+  static SnackBar build(
+    BuildContext context, {
+    required String message,
+    SnackType type = SnackType.info,
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
     final vellora = context.vellora;
     final (color, icon) = switch (type) {
       SnackType.success => (vellora.success, Icons.check_circle_rounded),
       SnackType.error => (context.colors.error, Icons.error_rounded),
       SnackType.info => (context.colors.inverseSurface, Icons.info_rounded),
     };
-    final onColor =
-        type == SnackType.info ? context.colors.onInverseSurface : Colors.white;
+    final onColor = type == SnackType.info
+        ? context.colors.onInverseSurface
+        : Colors.white;
 
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              Icon(icon, color: onColor, size: 20),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  message,
-                  style: context.textTheme.bodyMedium?.copyWith(color: onColor),
-                ),
-              ),
-            ],
+    return SnackBar(
+      content: Row(
+        children: [
+          Icon(icon, color: onColor, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              message,
+              style: context.textTheme.bodyMedium?.copyWith(color: onColor),
+            ),
           ),
-          action: actionLabel != null
-              ? SnackBarAction(
-                  label: actionLabel,
-                  textColor: onColor,
-                  onPressed: onAction ?? () {},
-                )
-              : null,
-          backgroundColor: color,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 3),
-          shape: const RoundedRectangleBorder(borderRadius: AppRadius.rMd),
-          margin: const EdgeInsets.all(16),
-        ),
-      );
+        ],
+      ),
+      action: actionLabel != null
+          ? SnackBarAction(
+              label: actionLabel,
+              textColor: onColor,
+              onPressed: onAction ?? () {},
+            )
+          : null,
+      backgroundColor: color,
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 3),
+      shape: const RoundedRectangleBorder(borderRadius: AppRadius.rMd),
+      margin: const EdgeInsets.all(16),
+    );
   }
 
   static void success(BuildContext context, String message) =>

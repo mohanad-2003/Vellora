@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/custom_snackbar.dart';
+import '../../../../core/utils/quick_add_to_cart.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../domain/catalog_filter.dart';
@@ -131,16 +131,7 @@ class CatalogResultsView extends StatelessWidget {
               extra: tag,
             ),
             onFavorite: (p) => cubit.toggleFavorite(p.id),
-            onAddToCart: (p) {
-              cubit.addToCart(p);
-              AppSnackbar.show(
-                context,
-                message: l10n.addedToCart,
-                type: SnackType.success,
-                actionLabel: l10n.viewCart,
-                onAction: () => context.goNamed(RouteNames.nCart),
-              );
-            },
+            onAddToCart: (p) => quickAddToCart(context, p),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxxl)),
         ],

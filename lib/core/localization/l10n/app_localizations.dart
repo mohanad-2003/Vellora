@@ -2593,6 +2593,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Payments'**
   String get payments;
+
+  /// No description provided for @storage.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage'**
+  String get storage;
+
+  /// No description provided for @clearCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear cache'**
+  String get clearCache;
+
+  /// No description provided for @clearCacheSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove saved images to free up space'**
+  String get clearCacheSub;
+
+  /// No description provided for @cacheCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache cleared'**
+  String get cacheCleared;
+
+  /// No description provided for @accountSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get accountSection;
+
+  /// No description provided for @deleteAccountSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently remove your account and data'**
+  String get deleteAccountSub;
+
+  /// No description provided for @twoFactorDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Two-step verification'**
+  String get twoFactorDialogTitle;
+
+  /// No description provided for @twoFactorDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit code from your authenticator app.'**
+  String get twoFactorDialogBody;
+
+  /// No description provided for @twoFactorCode.
+  ///
+  /// In en, this message translates to:
+  /// **'6-digit code'**
+  String get twoFactorCode;
+
+  /// No description provided for @twoFactorSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up two-factor'**
+  String get twoFactorSetupTitle;
+
+  /// No description provided for @twoFactorSetupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open an authenticator app (Google Authenticator, Microsoft Authenticator or Authy), add an account and choose \"Enter a setup key\". Paste the key below, then type the 6-digit code the app shows.'**
+  String get twoFactorSetupBody;
+
+  /// No description provided for @twoFactorKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup key'**
+  String get twoFactorKeyLabel;
+
+  /// No description provided for @copyKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy key'**
+  String get copyKey;
+
+  /// No description provided for @keyCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Key copied'**
+  String get keyCopied;
+
+  /// No description provided for @twoFactorTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get twoFactorTurnOn;
+
+  /// No description provided for @twoFactorEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Two-factor authentication is on'**
+  String get twoFactorEnabled;
+
+  /// No description provided for @twoFactorDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Two-factor authentication is off'**
+  String get twoFactorDisabled;
+
+  /// No description provided for @twoFactorDisableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off two-factor?'**
+  String get twoFactorDisableTitle;
+
+  /// No description provided for @twoFactorDisableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password and a current code from your authenticator app to confirm.'**
+  String get twoFactorDisableBody;
+
+  /// No description provided for @turnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get turnOff;
+
+  /// No description provided for @biometricReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm it is you to turn on biometric login'**
+  String get biometricReason;
+
+  /// No description provided for @biometricUnlockReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Vellora'**
+  String get biometricUnlockReason;
+
+  /// No description provided for @biometricUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up a fingerprint or face unlock in your phone settings first'**
+  String get biometricUnavailable;
+
+  /// No description provided for @biometricEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric login is on'**
+  String get biometricEnabled;
+
+  /// No description provided for @biometricDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric login is off'**
+  String get biometricDisabled;
+
+  /// No description provided for @appLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vellora is locked'**
+  String get appLockedTitle;
+
+  /// No description provided for @appLockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Use your fingerprint or face to continue.'**
+  String get appLockedBody;
+
+  /// No description provided for @unlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get unlock;
+
+  /// No description provided for @chooseOptionsFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a size or colour first'**
+  String get chooseOptionsFirst;
+
+  /// No description provided for @bannerBadgeLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Limited time'**
+  String get bannerBadgeLimited;
+
+  /// No description provided for @bannerBadgeNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Just in'**
+  String get bannerBadgeNew;
+
+  /// No description provided for @bannerBadgeSeason.
+  ///
+  /// In en, this message translates to:
+  /// **'Season picks'**
+  String get bannerBadgeSeason;
 }
 
 class _AppLocalizationsDelegate

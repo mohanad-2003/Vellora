@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/extensions/num_extensions.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/utils/haptics.dart';
+import 'package:vellora/core/widgets/custom_snackbar.dart';
+import 'package:vellora/core/widgets/product_card.dart';
+import 'package:vellora/core/widgets/product_grid.dart';
+import 'package:vellora/core/widgets/product_image.dart';
+import 'package:vellora/core/widgets/section_header.dart';
+import 'package:vellora/features/home/domain/entities/brand_entity.dart';
+import 'package:vellora/features/home/domain/entities/home_offer_entity.dart';
+import 'package:vellora/features/home/domain/entities/product_entity.dart';
 
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/extensions/num_extensions.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/utils/haptics.dart';
-import '../../../../core/widgets/custom_snackbar.dart';
-import '../../../../core/widgets/product_card.dart';
-import '../../../../core/widgets/product_grid.dart';
-import '../../../../core/widgets/product_image.dart';
-import '../../../../core/widgets/section_header.dart';
-import '../../domain/entities/brand_entity.dart';
-import '../../domain/entities/home_offer_entity.dart';
-import '../../domain/entities/product_entity.dart';
 import 'home_sections.dart';
 
 /// Order threshold for free delivery (matches the cart's progress bar).
@@ -27,61 +27,48 @@ class ValuePropsStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final colors = context.colors;
+    final brand = context.vellora;
     final items = [
       (
         Icons.local_shipping_outlined,
         l10n.valueFreeShipping,
         l10n.valueFreeShippingBody(kFreeShippingThreshold.toPrice()),
+        context.colors.primary,
       ),
       (
         Icons.autorenew_rounded,
         l10n.valueEasyReturns,
         l10n.valueEasyReturnsBody,
+        brand.accent,
       ),
       (
         Icons.verified_user_outlined,
         l10n.valueSecurePayment,
         l10n.valueSecurePaymentBody,
+        brand.success,
       ),
     ];
 
+    // Three separate tiles, each tinted with its own colour, so they read as
+    // distinct reasons to buy instead of one crowded strip.
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenH),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: AppRadius.rLg,
-          border: Border.all(color: colors.outlineVariant),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.md,
-            horizontal: AppSpacing.xs,
-          ),
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (var i = 0; i < items.length; i++) ...[
-                  if (i > 0)
-                    VerticalDivider(
-                      width: 1,
-                      indent: AppSpacing.xs,
-                      endIndent: AppSpacing.xs,
-                      color: colors.outlineVariant,
-                    ),
-                  Expanded(
-                    child: _ValueProp(
-                      icon: items[i].$1,
-                      title: items[i].$2,
-                      body: items[i].$3,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var i = 0; i < items.length; i++) ...[
+              if (i > 0) const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: _ValueProp(
+                  icon: items[i].$1,
+                  title: items[i].$2,
+                  body: items[i].$3,
+                  color: items[i].$4,
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );
@@ -93,11 +80,13 @@ class _ValueProp extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.body,
+    required this.color,
   });
 
   final IconData icon;
   final String title;
   final String body;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -106,41 +95,50 @@ class _ValueProp extends StatelessWidget {
     return Semantics(
       label: '$title, $body',
       excludeSemantics: true,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: colors.primary.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: context.isDark ? 0.14 : 0.08),
+          borderRadius: AppRadius.rLg,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.md,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.18),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 19, color: color),
               ),
-              child: Icon(icon, size: 18, color: colors.primary),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: text.labelMedium?.copyWith(
-                color: colors.onSurface,
-                fontWeight: FontWeight.w700,
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: text.labelMedium?.copyWith(
+                  color: colors.onSurface,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              body,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: text.labelSmall,
-            ),
-          ],
+              const SizedBox(height: 2),
+              Text(
+                body,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: text.labelSmall,
+              ),
+            ],
+          ),
         ),
       ),
     );

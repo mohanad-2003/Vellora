@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/extensions/num_extensions.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/countdown_timer.dart';
-import '../../../../core/widgets/favorite_button.dart';
-import '../../../../core/widgets/product_card.dart';
-import '../../../../core/widgets/product_grid.dart';
-import '../../../../core/widgets/product_horizontal_card.dart';
-import '../../../../core/widgets/product_image.dart';
-import '../../../../core/widgets/section_header.dart';
-import '../../domain/entities/product_entity.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/extensions/num_extensions.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/countdown_timer.dart';
+import 'package:vellora/core/widgets/favorite_button.dart';
+import 'package:vellora/core/widgets/product_card.dart';
+import 'package:vellora/core/widgets/product_grid.dart';
+import 'package:vellora/core/widgets/product_horizontal_card.dart';
+import 'package:vellora/core/widgets/product_image.dart';
+import 'package:vellora/core/widgets/section_header.dart';
+import 'package:vellora/features/home/domain/entities/product_entity.dart';
 
 /// Callbacks shared by every Home product section.
 class ProductActions {
@@ -66,7 +65,7 @@ class FlashSaleSection extends StatelessWidget {
                 onAction: onSeeAll,
                 trailing: CountdownTimer.untilEndOfDay(),
               ),
-              const SizedBox(height: AppSpacing.md),
+              SizedBox(height: AppSpacing.md),
               ProductRail(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 itemCount: products.length,
@@ -84,21 +83,22 @@ class FlashSaleSection extends StatelessWidget {
   }
 
   Widget _card(ProductEntity p, String tag) => ProductCard(
-        heroTag: tag,
-        imagePath: p.imagePath,
-        title: p.name,
-        brand: p.brand,
-        price: p.price,
-        originalPrice: p.originalPrice,
-        rating: p.rating,
-        reviewCount: p.reviewCount,
-        isFavorite: p.isFavorite,
-        titleLines: 1,
-        onTap: () => actions.onTap(p, tag),
-        onFavoriteToggle: () => actions.onFavorite(p),
-        onAddToCart:
-            actions.onAddToCart == null ? null : () => actions.onAddToCart!(p),
-      );
+    heroTag: tag,
+    imagePath: p.imagePath,
+    title: p.name,
+    brand: p.brand,
+    price: p.price,
+    originalPrice: p.originalPrice,
+    rating: p.rating,
+    reviewCount: p.reviewCount,
+    isFavorite: p.isFavorite,
+    titleLines: 1,
+    onTap: () => actions.onTap(p, tag),
+    onFavoriteToggle: () => actions.onFavorite(p),
+    onAddToCart: actions.onAddToCart == null
+        ? null
+        : () => actions.onAddToCart!(p),
+  );
 }
 
 /// Featured: large editorial cards — the photo carries the card, copy sits on
@@ -119,7 +119,7 @@ class FeaturedSection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (products.isEmpty) return const SizedBox.shrink();
     final l10n = context.l10n;
-    final width = (MediaQuery.sizeOf(context).width * 0.74).clamp(240.0, 320.0);
+    final width = (MediaQuery.sizeOf(context).width * 0.6).clamp(200.0, 260.0);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +132,7 @@ class FeaturedSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         SizedBox(
-          height: width * 1.22,
+          height: width * 1.3,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenH),
@@ -230,8 +230,9 @@ class _FeaturedCard extends StatelessWidget {
                           product.name,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: text.titleMedium
-                              ?.copyWith(color: Colors.white),
+                          style: text.titleMedium?.copyWith(
+                            color: Colors.white,
+                          ),
                         ),
                         const SizedBox(height: 6),
                         Row(
@@ -250,8 +251,9 @@ class _FeaturedCard extends StatelessWidget {
                                 style: text.labelMedium?.copyWith(
                                   color: Colors.white.withValues(alpha: 0.7),
                                   decoration: TextDecoration.lineThrough,
-                                  decorationColor:
-                                      Colors.white.withValues(alpha: 0.7),
+                                  decorationColor: Colors.white.withValues(
+                                    alpha: 0.7,
+                                  ),
                                 ),
                               ),
                             ],
@@ -290,8 +292,10 @@ class BestSellersSection extends StatelessWidget {
     final l10n = context.l10n;
     final scaler = MediaQuery.textScalerOf(context);
     final rowHeight = scaler.scale(118).clamp(100.0, 220.0);
-    final columnWidth =
-        (MediaQuery.sizeOf(context).width * 0.82).clamp(280.0, 360.0);
+    final columnWidth = (MediaQuery.sizeOf(context).width * 0.82).clamp(
+      280.0,
+      360.0,
+    );
     final columns = (products.length / 2).ceil();
 
     return Column(

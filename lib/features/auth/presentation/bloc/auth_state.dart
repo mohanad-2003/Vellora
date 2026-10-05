@@ -9,6 +9,9 @@ enum AuthStatus {
   passwordResetSent,
   otpVerified,
   passwordResetSuccess,
+
+  /// Password accepted; waiting for the authenticator code.
+  twoFactorRequired,
 }
 
 class AuthState extends Equatable {
@@ -18,6 +21,7 @@ class AuthState extends Equatable {
     this.failureKey,
     this.pendingEmail,
     this.resetToken,
+    this.twoFactorToken,
   });
 
   final AuthStatus status;
@@ -33,6 +37,9 @@ class AuthState extends Equatable {
   /// Opaque token issued once the OTP verifies, authorising the reset.
   final String? resetToken;
 
+  /// Short-lived challenge from the server, sent back with the 2FA code.
+  final String? twoFactorToken;
+
   bool get isLoading => status == AuthStatus.loading;
 
   AuthState copyWith({
@@ -41,6 +48,7 @@ class AuthState extends Equatable {
     String? failureKey,
     String? pendingEmail,
     String? resetToken,
+    String? twoFactorToken,
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -48,6 +56,7 @@ class AuthState extends Equatable {
       failureKey: failureKey,
       pendingEmail: pendingEmail ?? this.pendingEmail,
       resetToken: resetToken ?? this.resetToken,
+      twoFactorToken: twoFactorToken ?? this.twoFactorToken,
     );
   }
 
@@ -58,5 +67,6 @@ class AuthState extends Equatable {
     failureKey,
     pendingEmail,
     resetToken,
+    twoFactorToken,
   ];
 }

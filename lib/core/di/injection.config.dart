@@ -140,6 +140,7 @@ import '../localization/locale_cubit.dart' as _i960;
 import '../network/dio_client.dart' as _i667;
 import '../network/interceptors/auth_interceptor.dart' as _i745;
 import '../network/network_info.dart' as _i932;
+import '../security/biometric_service.dart' as _i379;
 import '../theme/theme_cubit.dart' as _i611;
 import 'register_modules.dart' as _i8;
 
@@ -242,6 +243,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i960.LocaleCubit>(
       () => _i960.LocaleCubit(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i379.BiometricService>(
+      () => _i379.BiometricService(gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i611.ThemeCubit>(
       () => _i611.ThemeCubit(gh<_i460.SharedPreferences>()),
@@ -498,6 +502,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i990.EditProfileCubit>(
       () => _i990.EditProfileCubit(gh<_i798.UpdateProfileUseCase>()),
     );
+    gh.factory<_i527.SecurityCubit>(
+      () => _i527.SecurityCubit(
+        gh<_i787.AuthRepository>(),
+        gh<_i379.BiometricService>(),
+      ),
+    );
     gh.factory<_i797.AuthBloc>(
       () => _i797.AuthBloc(
         gh<_i188.LoginUseCase>(),
@@ -523,9 +533,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i389.GetCachedUserUseCase>(),
         gh<_i361.Dio>(),
       ),
-    );
-    gh.factory<_i527.SecurityCubit>(
-      () => _i527.SecurityCubit(gh<_i787.AuthRepository>()),
     );
     gh.factory<_i1052.ProductDetailBloc>(
       () => _i1052.ProductDetailBloc(

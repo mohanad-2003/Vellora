@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../notifications/presentation/cubit/notifications_cubit.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/num_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
@@ -83,6 +84,8 @@ void _confirmCancel(BuildContext context) {
       onDone: () {
         Navigator.of(context).pop();
         AppSnackbar.success(context, l10n.orderCancelled);
+        // Cancelling adds a notification: show its dot right away.
+        sl<UnreadNotificationsCubit>().refresh();
       },
     ),
   );

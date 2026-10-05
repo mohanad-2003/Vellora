@@ -1394,4 +1394,104 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get payments => 'Payments';
+
+  @override
+  String get storage => 'Storage';
+
+  @override
+  String get clearCache => 'Clear cache';
+
+  @override
+  String get clearCacheSub => 'Remove saved images to free up space';
+
+  @override
+  String get cacheCleared => 'Cache cleared';
+
+  @override
+  String get accountSection => 'Account';
+
+  @override
+  String get deleteAccountSub => 'Permanently remove your account and data';
+
+  @override
+  String get twoFactorDialogTitle => 'Two-step verification';
+
+  @override
+  String get twoFactorDialogBody =>
+      'Enter the 6-digit code from your authenticator app.';
+
+  @override
+  String get twoFactorCode => '6-digit code';
+
+  @override
+  String get twoFactorSetupTitle => 'Set up two-factor';
+
+  @override
+  String get twoFactorSetupBody =>
+      'Open an authenticator app (Google Authenticator, Microsoft Authenticator or Authy), add an account and choose \"Enter a setup key\". Paste the key below, then type the 6-digit code the app shows.';
+
+  @override
+  String get twoFactorKeyLabel => 'Setup key';
+
+  @override
+  String get copyKey => 'Copy key';
+
+  @override
+  String get keyCopied => 'Key copied';
+
+  @override
+  String get twoFactorTurnOn => 'Turn on';
+
+  @override
+  String get twoFactorEnabled => 'Two-factor authentication is on';
+
+  @override
+  String get twoFactorDisabled => 'Two-factor authentication is off';
+
+  @override
+  String get twoFactorDisableTitle => 'Turn off two-factor?';
+
+  @override
+  String get twoFactorDisableBody =>
+      'Enter your password and a current code from your authenticator app to confirm.';
+
+  @override
+  String get turnOff => 'Turn off';
+
+  @override
+  String get biometricReason => 'Confirm it is you to turn on biometric login';
+
+  @override
+  String get biometricUnlockReason => 'Unlock Vellora';
+
+  @override
+  String get biometricUnavailable =>
+      'Set up a fingerprint or face unlock in your phone settings first';
+
+  @override
+  String get biometricEnabled => 'Biometric login is on';
+
+  @override
+  String get biometricDisabled => 'Biometric login is off';
+
+  @override
+  String get appLockedTitle => 'Vellora is locked';
+
+  @override
+  String get appLockedBody => 'Use your fingerprint or face to continue.';
+
+  @override
+  String get unlock => 'Unlock';
+
+  @override
+  String get chooseOptionsFirst => 'Choose a size or colour first';
+
+  @override
+  String get bannerBadgeLimited => 'Limited time';
+
+  @override
+  String get bannerBadgeNew => 'Just in';
+
+  @override
+  String get bannerBadgeSeason => 'Season picks';
 }

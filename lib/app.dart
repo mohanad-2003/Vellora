@@ -10,9 +10,11 @@ import 'core/routing/app_router.dart';
 import 'core/routing/route_names.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_cubit.dart';
+import 'core/widgets/app_lock_gate.dart';
 import 'features/auth/presentation/bloc/user_session_cubit.dart';
 import 'features/cart/presentation/bloc/cart_badge_cubit.dart';
 import 'features/notifications/presentation/cubit/notifications_cubit.dart';
+import 'features/notifications/presentation/widgets/notifications_refresher.dart';
 
 class VelloraApp extends StatelessWidget {
   const VelloraApp({super.key});
@@ -67,7 +69,11 @@ class VelloraApp extends StatelessWidget {
                           maxScaleFactor: maxTextScale,
                         ),
                       ),
-                      child: child ?? const SizedBox.shrink(),
+                      child: AppLockGate(
+                        child: NotificationsRefresher(
+                          child: child ?? const SizedBox.shrink(),
+                        ),
+                      ),
                     );
                   },
                   routerConfig: AppRouter.router,

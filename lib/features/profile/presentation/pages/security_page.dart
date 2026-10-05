@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
-import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/input_validators.dart';
@@ -16,7 +14,9 @@ import '../../../../core/widgets/auth_error_banner.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/settings_tile.dart';
+import '../../../auth/presentation/bloc/user_session_cubit.dart';
 import '../cubit/security_cubit.dart';
+import '../widgets/two_factor_dialogs.dart';
 
 class SecurityPage extends StatelessWidget {
   const SecurityPage({super.key});
@@ -24,7 +24,8 @@ class SecurityPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<SecurityCubit>(),
+      create: (context) => sl<SecurityCubit>()
+        ..load(context.read<UserSessionCubit>().state?.email),
       child: const _SecurityView(),
     );
   }
@@ -60,7 +61,7 @@ class _SecurityView extends StatelessWidget {
                       subtitle: l10n.biometricLoginSub,
                       trailing: Switch(
                         value: state.biometrics,
-                        onChanged: cubit.toggleBiometrics,
+                        onChanged: (on) => _toggleBiometrics(context, on),
                       ),
                     ),
                     SettingsTile(
@@ -68,8 +69,11 @@ class _SecurityView extends StatelessWidget {
                       title: l10n.twoFactorAuth,
                       subtitle: l10n.twoFactorAuthSub,
                       trailing: Switch(
-                        value: state.twoFactor,
-                        onChanged: cubit.toggleTwoFactor,
+                        value: state.twoFactor ?? false,
+                        // Disabled until the server says what the state is.
+                        onChanged: state.twoFactor == null
+                            ? null
+                            : (on) => _toggleTwoFactor(context, on),
                       ),
                     ),
                   ],
@@ -90,23 +94,47 @@ class _SecurityView extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: AppSpacing.vXl),
-                _Group(
-                  children: [
-                    SettingsTile(
-                      icon: Icons.delete_outline_rounded,
-                      title: l10n.deleteAccount,
-                      destructive: true,
-                      onTap: () => _deleteAccount(context),
-                    ),
-                  ],
-                ),
               ],
             );
           },
         ),
       ),
     );
+  }
+
+  Future<void> _toggleBiometrics(BuildContext context, bool enable) async {
+    final l10n = context.l10n;
+    final result = await context.read<SecurityCubit>().setBiometrics(
+      enable: enable,
+      email: context.read<UserSessionCubit>().state?.email,
+      reason: l10n.biometricReason,
+    );
+    if (!context.mounted) return;
+    switch (result) {
+      case BiometricResult.changed:
+        AppSnackbar.success(
+          context,
+          enable ? l10n.biometricEnabled : l10n.biometricDisabled,
+        );
+      case BiometricResult.unavailable:
+        AppSnackbar.error(context, l10n.biometricUnavailable);
+      case BiometricResult.cancelled:
+        break;
+    }
+  }
+
+  Future<void> _toggleTwoFactor(BuildContext context, bool enable) async {
+    final l10n = context.l10n;
+    final cubit = context.read<SecurityCubit>();
+    final changed = enable
+        ? await showTwoFactorSetupDialog(context, cubit)
+        : await showTwoFactorDisableDialog(context, cubit);
+    if (changed && context.mounted) {
+      AppSnackbar.success(
+        context,
+        enable ? l10n.twoFactorEnabled : l10n.twoFactorDisabled,
+      );
+    }
   }
 
   void _changePassword(BuildContext context) {
@@ -122,129 +150,6 @@ class _SecurityView extends StatelessWidget {
           AppSnackbar.success(context, context.l10n.passwordChanged);
         },
       ),
-    );
-  }
-
-  void _deleteAccount(BuildContext context) {
-    final l10n = context.l10n;
-    final cubit = context.read<SecurityCubit>();
-    final router = GoRouter.of(context);
-    final messenger = ScaffoldMessenger.of(context);
-    AppBottomSheet.show(
-      context,
-      child: _DeleteAccountSheet(
-        onConfirm: cubit.deleteAccount,
-        onDeleted: () {
-          Navigator.of(context).pop();
-          router.go(RouteNames.login);
-          messenger.showSnackBar(SnackBar(content: Text(l10n.accountDeleted)));
-        },
-      ),
-    );
-  }
-}
-
-/// Confirms deleting the account with the password, then calls the server.
-class _DeleteAccountSheet extends StatefulWidget {
-  const _DeleteAccountSheet({required this.onConfirm, required this.onDeleted});
-
-  /// Returns a failure key, or null once the account is deleted.
-  final Future<String?> Function(String password) onConfirm;
-  final VoidCallback onDeleted;
-
-  @override
-  State<_DeleteAccountSheet> createState() => _DeleteAccountSheetState();
-}
-
-class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
-  final _password = TextEditingController();
-  bool _busy = false;
-  String? _error;
-
-  @override
-  void dispose() {
-    _password.dispose();
-    super.dispose();
-  }
-
-  Future<void> _confirm() async {
-    if (_password.text.isEmpty) {
-      setState(() => _error = 'fieldRequired');
-      return;
-    }
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
-    final failure = await widget.onConfirm(_password.text);
-    if (!mounted) return;
-    if (failure == null) {
-      widget.onDeleted();
-    } else {
-      setState(() {
-        _busy = false;
-        _error = failure;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          Icons.warning_amber_rounded,
-          color: context.colors.error,
-          size: 48,
-        ),
-        SizedBox(height: AppSpacing.vMd),
-        Text(
-          l10n.deleteAccountConfirmTitle,
-          style: context.textTheme.titleLarge,
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: AppSpacing.vSm),
-        Text(
-          l10n.deleteAccountConfirmBody,
-          style: context.textTheme.bodyMedium?.copyWith(
-            color: context.colors.onSurfaceVariant,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: AppSpacing.vLg),
-        AppTextField(
-          controller: _password,
-          label: l10n.password,
-          hint: l10n.deleteAccountPasswordHint,
-          prefixIcon: Icons.lock_outline_rounded,
-          obscureText: true,
-        ),
-        if (_error != null) ...[
-          SizedBox(height: AppSpacing.vSm),
-          Text(
-            tr(context, _error!),
-            style: context.textTheme.bodySmall?.copyWith(
-              color: context.colors.error,
-            ),
-          ),
-        ],
-        SizedBox(height: AppSpacing.vXl),
-        AppButton(
-          label: l10n.deleteAccount,
-          icon: Icons.delete_outline_rounded,
-          isLoading: _busy,
-          onPressed: _confirm,
-        ),
-        SizedBox(height: AppSpacing.vMd),
-        AppButton(
-          label: l10n.cancel,
-          variant: AppButtonVariant.outline,
-          onPressed: _busy ? null : () => Navigator.of(context).pop(),
-        ),
-      ],
     );
   }
 }

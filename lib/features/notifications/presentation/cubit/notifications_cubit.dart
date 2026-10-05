@@ -52,9 +52,10 @@ class UnreadNotificationsCubit extends Cubit<int> with SafeEmit<int> {
 /// Drives the Notifications screen. Read / dismiss changes are applied
 /// immediately and sent to the server in the background.
 @injectable
-class NotificationsCubit extends Cubit<NotificationsState> with SafeEmit<NotificationsState> {
+class NotificationsCubit extends Cubit<NotificationsState>
+    with SafeEmit<NotificationsState> {
   NotificationsCubit(this._remote, this._unread)
-      : super(const NotificationsState());
+    : super(const NotificationsState());
 
   final NotificationsRemoteDataSource _remote;
   final UnreadNotificationsCubit _unread;
@@ -63,10 +64,9 @@ class NotificationsCubit extends Cubit<NotificationsState> with SafeEmit<Notific
     emit(const NotificationsState());
     try {
       final items = await _remote.getNotifications();
-      emit(NotificationsState(
-        status: NotificationsStatus.loaded,
-        items: items,
-      ));
+      emit(
+        NotificationsState(status: NotificationsStatus.loaded, items: items),
+      );
       _unread.set(items.where((n) => n.isUnread).length);
     } catch (e) {
       emit(
@@ -80,10 +80,12 @@ class NotificationsCubit extends Cubit<NotificationsState> with SafeEmit<Notific
 
   Future<void> markAllRead() async {
     final previous = state;
-    emit(NotificationsState(
-      status: NotificationsStatus.loaded,
-      items: [for (final n in state.items) n.markRead()],
-    ));
+    emit(
+      NotificationsState(
+        status: NotificationsStatus.loaded,
+        items: [for (final n in state.items) n.markRead()],
+      ),
+    );
     _unread.set(0);
     try {
       await _remote.markAllRead();
@@ -93,13 +95,29 @@ class NotificationsCubit extends Cubit<NotificationsState> with SafeEmit<Notific
     }
   }
 
+  /// Marks one notification as read (a tap on it). Instant on screen, then
+  /// sent to the server; put back if the server refuses.
+  Future<void> markRead(String id) async {
+    final previous = state;
+    final target = state.items.where((n) => n.id == id).firstOrNull;
+    if (target == null || !target.isUnread) return;
+    final items = [for (final n in state.items) n.id == id ? n.markRead() : n];
+    emit(NotificationsState(status: NotificationsStatus.loaded, items: items));
+    _unread.set(items.where((n) => n.isUnread).length);
+    try {
+      await _remote.markRead(id);
+    } catch (_) {
+      emit(previous);
+      _unread.set(previous.items.where((n) => n.isUnread).length);
+    }
+  }
+
   Future<void> dismiss(String id) async {
     final previous = state;
     final remaining = state.items.where((n) => n.id != id).toList();
-    emit(NotificationsState(
-      status: NotificationsStatus.loaded,
-      items: remaining,
-    ));
+    emit(
+      NotificationsState(status: NotificationsStatus.loaded, items: remaining),
+    );
     _unread.set(remaining.where((n) => n.isUnread).length);
     try {
       await _remote.delete(id);

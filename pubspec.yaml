@@ -44,6 +44,7 @@ dependencies:
 
   # UI / responsiveness
   cached_network_image: ^3.4.1
+  flutter_cache_manager: ^3.4.1
   lottie: ^3.2.1
   flutter_svg: ^2.0.14
   shimmer: ^3.0.0
@@ -52,6 +53,7 @@ dependencies:
 
   # Functional error handling
   fpdart: ^1.1.0
+  local_auth: ^3.0.2
 
 dev_dependencies:
   flutter_test:

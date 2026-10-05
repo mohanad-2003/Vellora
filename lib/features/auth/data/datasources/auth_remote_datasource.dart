@@ -6,6 +6,7 @@ import '../../../../core/di/environments.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/interceptors/auth_interceptor.dart';
+import '../../domain/entities/two_factor_setup.dart';
 import '../models/user_model.dart';
 
 /// Auth backend contract. [ApiAuthRemoteDataSource] talks to the Vellora API;
@@ -44,6 +45,27 @@ abstract class AuthRemoteDataSource {
 
   /// Permanently deletes the signed-in account (password confirms it).
   Future<void> deleteAccount({required String password});
+
+  /// Second step of sign-in for accounts with two-factor on.
+  Future<UserModel> loginTwoFactor({
+    required String challengeToken,
+    required String code,
+  });
+
+  /// Whether the signed-in account has two-factor sign-in on.
+  Future<bool> twoFactorStatus();
+
+  /// Creates the authenticator secret; it only counts after [twoFactorEnable].
+  Future<TwoFactorSetup> twoFactorSetup();
+
+  /// Turns two-factor on with a code from the authenticator app.
+  Future<void> twoFactorEnable({required String code});
+
+  /// Turns it off; needs the password and a current code.
+  Future<void> twoFactorDisable({
+    required String password,
+    required String code,
+  });
 }
 
 @mockOnly
@@ -140,6 +162,33 @@ class MockAuthRemoteDataSource implements AuthRemoteDataSource {
   @override
   Future<void> deleteAccount({required String password}) async {}
 
+  @override
+  Future<UserModel> loginTwoFactor({
+    required String challengeToken,
+    required String code,
+  }) => login(email: 'shopper@vellora.com', password: 'password123');
+
+  bool _twoFactor = false;
+
+  @override
+  Future<bool> twoFactorStatus() async => _twoFactor;
+
+  @override
+  Future<TwoFactorSetup> twoFactorSetup() async => const TwoFactorSetup(
+    secret: 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP',
+    otpauthUrl: 'otpauth://totp/Vellora:mock?secret=JBSWY3DPEHPK3PXP',
+  );
+
+  @override
+  Future<void> twoFactorEnable({required String code}) async =>
+      _twoFactor = true;
+
+  @override
+  Future<void> twoFactorDisable({
+    required String password,
+    required String code,
+  }) async => _twoFactor = false;
+
   String _nameFromEmail(String email) {
     final local = email.split('@').first;
     if (local.isEmpty) return 'Shopper';
@@ -173,7 +222,60 @@ class ApiAuthRemoteDataSource implements AuthRemoteDataSource {
       ApiEndpoints.login,
       data: {'email': email.trim(), 'password': password},
     );
+    final body = res.data!;
+    if (body['twoFactorRequired'] == true) {
+      throw TwoFactorRequiredException(body['challengeToken'] as String);
+    }
+    return _session(body);
+  }
+
+  @override
+  Future<UserModel> loginTwoFactor({
+    required String challengeToken,
+    required String code,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      ApiEndpoints.loginTwoFactor,
+      data: {'challengeToken': challengeToken, 'code': code.trim()},
+    );
     return _session(res.data!);
+  }
+
+  @override
+  Future<bool> twoFactorStatus() async {
+    final res = await _dio.get<Map<String, dynamic>>(ApiEndpoints.me);
+    final user = res.data!['user'] as Map<String, dynamic>;
+    return user['twoFactorEnabled'] == true;
+  }
+
+  @override
+  Future<TwoFactorSetup> twoFactorSetup() async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      ApiEndpoints.twoFactorSetup,
+    );
+    return TwoFactorSetup(
+      secret: res.data!['secret'] as String,
+      otpauthUrl: res.data!['otpauthUrl'] as String,
+    );
+  }
+
+  @override
+  Future<void> twoFactorEnable({required String code}) async {
+    await _dio.post<void>(
+      ApiEndpoints.twoFactorEnable,
+      data: {'code': code.trim()},
+    );
+  }
+
+  @override
+  Future<void> twoFactorDisable({
+    required String password,
+    required String code,
+  }) async {
+    await _dio.post<void>(
+      ApiEndpoints.twoFactorDisable,
+      data: {'password': password, 'code': code.trim()},
+    );
   }
 
   @override

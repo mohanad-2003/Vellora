@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/widgets/app_icon_button.dart';
-import '../../../../core/widgets/count_badge.dart';
-import '../../../auth/presentation/bloc/user_session_cubit.dart';
-import '../../../cart/presentation/bloc/cart_badge_cubit.dart';
-import '../../../notifications/presentation/cubit/notifications_cubit.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/widgets/app_icon_button.dart';
+import 'package:vellora/features/auth/presentation/bloc/user_session_cubit.dart';
+import 'package:vellora/features/notifications/presentation/cubit/notifications_cubit.dart';
 
 /// Time-of-day buckets for the greeting.
 enum DayPeriod { morning, afternoon, evening }
@@ -19,9 +16,9 @@ DayPeriod dayPeriodFor(int hour) {
   return DayPeriod.evening;
 }
 
-/// Home top bar: avatar, time-aware greeting (with the user's first name when
-/// signed in), notifications and cart. Theme and language controls live in
-/// Settings, not here.
+/// Home top bar: avatar (display only), time-aware greeting (with the user's first name when
+/// signed in) and notifications. The cart lives in the bottom bar, and theme
+/// and language controls in Settings, so none of those are repeated here.
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key, this.now});
 
@@ -72,15 +69,6 @@ class HomeHeader extends StatelessWidget {
                   ? const _Dot()
                   : null,
             ),
-            const SizedBox(width: 4),
-            BlocBuilder<CartBadgeCubit, int>(
-              builder: (context, count) => AppIconButton(
-                icon: Icons.shopping_bag_outlined,
-                semanticLabel: l10n.cart,
-                onPressed: () => context.goNamed(RouteNames.nCart),
-                badge: count > 0 ? CountBadge(count: count) : null,
-              ),
-            ),
           ],
         );
       },
@@ -112,15 +100,9 @@ class _Avatar extends StatelessWidget {
       child = _fallback(colors, initial);
     }
 
-    return Semantics(
-      button: true,
-      label: context.l10n.profile,
-      excludeSemantics: true,
-      onTap: () => context.goNamed(RouteNames.nProfile),
-      child: GestureDetector(
-        onTap: () => context.goNamed(RouteNames.nProfile),
-        child: ClipOval(child: SizedBox.square(dimension: 44, child: child)),
-      ),
+    // Display only: the Profile tab in the bottom bar is the way to the profile.
+    return ExcludeSemantics(
+      child: ClipOval(child: SizedBox.square(dimension: 44, child: child)),
     );
   }
 

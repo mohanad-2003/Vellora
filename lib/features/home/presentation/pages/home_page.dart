@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/di/injection.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/extensions/num_extensions.dart';
-import '../../../../core/localization/l10n_lookup.dart';
-import '../../../../core/responsive/responsive.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/custom_snackbar.dart';
-import '../../../../core/widgets/favorites_listener.dart';
-import '../../../../core/widgets/section_header.dart';
-import '../../../../core/widgets/shimmer_widgets.dart';
-import '../../../../core/widgets/staggered_reveal.dart';
-import '../../../catalog/domain/catalog_filter.dart';
-import '../../../catalog/presentation/pages/catalog_page.dart';
-import '../../domain/entities/banner_entity.dart';
-import '../../domain/entities/home_data_entity.dart';
-import '../../domain/entities/product_entity.dart';
-import '../bloc/home_bloc.dart';
-import '../widgets/category_list.dart';
-import '../widgets/home_extras.dart';
-import '../widgets/home_header.dart';
-import '../widgets/home_sections.dart';
-import '../widgets/promo_banner_carousel.dart';
-import '../widgets/search_bar_entry.dart';
-import '../../../../core/widgets/failure_state_view.dart';
-import '../../../../core/widgets/slow_load_hint.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/extensions/num_extensions.dart';
+import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/utils/quick_add_to_cart.dart';
+import 'package:vellora/core/widgets/failure_state_view.dart';
+import 'package:vellora/core/widgets/favorites_listener.dart';
+import 'package:vellora/core/widgets/section_header.dart';
+import 'package:vellora/core/widgets/shimmer_widgets.dart';
+import 'package:vellora/core/widgets/slow_load_hint.dart';
+import 'package:vellora/core/widgets/staggered_reveal.dart';
+import 'package:vellora/features/catalog/domain/catalog_filter.dart';
+import 'package:vellora/features/catalog/presentation/pages/catalog_page.dart';
+import 'package:vellora/features/home/domain/entities/banner_entity.dart';
+import 'package:vellora/features/home/domain/entities/home_data_entity.dart';
+import 'package:vellora/features/home/domain/entities/product_entity.dart';
+import 'package:vellora/features/home/presentation/bloc/home_bloc.dart';
+import 'package:vellora/features/home/presentation/widgets/category_list.dart';
+import 'package:vellora/features/home/presentation/widgets/home_extras.dart';
+import 'package:vellora/features/home/presentation/widgets/home_header.dart';
+import 'package:vellora/features/home/presentation/widgets/home_sections.dart';
+import 'package:vellora/features/home/presentation/widgets/promo_banner_carousel.dart';
+import 'package:vellora/features/home/presentation/widgets/search_bar_entry.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -138,16 +137,7 @@ class _HomeView extends StatelessWidget {
         extra: tag,
       ),
       onFavorite: (p) => bloc.add(HomeFavoriteToggled(p.id)),
-      onAddToCart: (ProductEntity p) {
-        bloc.add(HomeAddToCartRequested(p));
-        AppSnackbar.show(
-          context,
-          message: l10n.addedToCart,
-          type: SnackType.success,
-          actionLabel: l10n.viewCart,
-          onAction: () => context.goNamed(RouteNames.nCart),
-        );
-      },
+      onAddToCart: (ProductEntity p) => quickAddToCart(context, p),
     );
 
     void openCollection(String title, CatalogCollection collection) =>
@@ -179,13 +169,7 @@ class _HomeView extends StatelessWidget {
     return [
       SliverToBoxAdapter(
         child: reveal(
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: PromoBannerCarousel(
-              banners: data.banners,
-              onBannerTap: openBanner,
-            ),
-          ),
+          PromoBannerCarousel(banners: data.banners, onBannerTap: openBanner),
         ),
       ),
       gap(AppSpacing.xl),

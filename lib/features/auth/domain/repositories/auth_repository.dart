@@ -1,5 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:vellora/core/errors/failures.dart';
+import 'package:vellora/features/auth/domain/entities/two_factor_setup.dart';
 import 'package:vellora/features/auth/domain/entities/user_entity.dart';
 
 abstract class AuthRepository {
@@ -49,4 +50,23 @@ abstract class AuthRepository {
 
   /// Deletes the account on the server, then clears the local session.
   Future<Either<Failure, Unit>> deleteAccount({required String password});
+
+  /// Completes a sign-in that answered "two-factor required": the challenge
+  /// from the failed [login] plus the authenticator code.
+  Future<Either<Failure, UserEntity>> loginTwoFactor({
+    required String challengeToken,
+    required String code,
+  });
+
+  Future<Either<Failure, bool>> twoFactorStatus();
+
+  /// Starts setup: returns the key to add to an authenticator app.
+  Future<Either<Failure, TwoFactorSetup>> startTwoFactorSetup();
+
+  Future<Either<Failure, Unit>> enableTwoFactor({required String code});
+
+  Future<Either<Failure, Unit>> disableTwoFactor({
+    required String password,
+    required String code,
+  });
 }

@@ -7,6 +7,7 @@ import 'package:vellora/core/errors/failures.dart';
 import 'package:vellora/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:vellora/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:vellora/features/auth/data/models/user_model.dart';
+import 'package:vellora/features/auth/domain/entities/two_factor_setup.dart';
 import 'package:vellora/features/auth/domain/entities/user_entity.dart';
 import 'package:vellora/features/auth/domain/repositories/auth_repository.dart';
 import 'package:vellora/features/cart/domain/repositories/cart_repository.dart';
@@ -37,6 +38,66 @@ class AuthRepositoryImpl implements AuthRepository {
       await _favorites.sync();
       await _cart.sync();
       return Right(user.toEntity());
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> loginTwoFactor({
+    required String challengeToken,
+    required String code,
+  }) async {
+    try {
+      final user = await _remote.loginTwoFactor(
+        challengeToken: challengeToken,
+        code: code,
+      );
+      await _local.cacheUser(user);
+      await _favorites.sync();
+      await _cart.sync();
+      return Right(user.toEntity());
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> twoFactorStatus() async {
+    try {
+      return Right(await _remote.twoFactorStatus());
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, TwoFactorSetup>> startTwoFactorSetup() async {
+    try {
+      return Right(await _remote.twoFactorSetup());
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> enableTwoFactor({required String code}) async {
+    try {
+      await _remote.twoFactorEnable(code: code);
+      return const Right(unit);
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> disableTwoFactor({
+    required String password,
+    required String code,
+  }) async {
+    try {
+      await _remote.twoFactorDisable(password: password, code: code);
+      return const Right(unit);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
     }

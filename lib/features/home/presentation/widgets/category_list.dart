@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../../../../core/localization/l10n_lookup.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/category_card.dart';
-import '../../../../core/widgets/staggered_reveal.dart';
-import '../../domain/entities/category_entity.dart';
+import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/category_card.dart';
+import 'package:vellora/core/widgets/staggered_reveal.dart';
+import 'package:vellora/features/home/domain/entities/category_entity.dart';
 
 /// Horizontally scrolling categories. Height follows the text scale so labels
 /// never clip.

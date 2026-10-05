@@ -102,24 +102,70 @@ class _OrdersList extends StatelessWidget {
         onAction: () => context.goNamed(RouteNames.nExplore),
       );
     }
+    // Newest first, with a heading whenever the month changes.
+    final rows = <Object>[];
+    DateTime? month;
+    for (final order in orders) {
+      final m = DateTime(order.createdAt.year, order.createdAt.month);
+      if (m != month) {
+        rows.add(m);
+        month = m;
+      }
+      rows.add(order);
+    }
+
+    Future<void> open(OrderEntity order) async {
+      final cubit = context.read<OrdersCubit>();
+      await context.pushNamed(
+        RouteNames.nOrderDetails,
+        pathParameters: {'id': order.id},
+      );
+      // The order may have been cancelled over there.
+      await cubit.refresh();
+    }
+
     return ResponsiveCenter(
       maxWidth: 720,
-      child: ListView.separated(
-        padding: EdgeInsets.all(context.pageGutter),
-        itemCount: orders.length,
-        separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
-        itemBuilder: (context, i) => OrderCard(
-          order: orders[i],
-          onTap: () async {
-            final cubit = context.read<OrdersCubit>();
-            await context.pushNamed(
-              RouteNames.nOrderDetails,
-              pathParameters: {'id': orders[i].id},
+      child: ListView.builder(
+        padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
+        itemCount: rows.length,
+        itemBuilder: (context, i) {
+          final row = rows[i];
+          if (row is DateTime) {
+            return Padding(
+              padding: EdgeInsets.fromLTRB(
+                context.pageGutter,
+                AppSpacing.xl,
+                context.pageGutter,
+                AppSpacing.xs,
+              ),
+              child: Semantics(
+                header: true,
+                child: Text(
+                  formatOrderMonth(context, row),
+                  style: context.textTheme.labelLarge?.copyWith(
+                    color: context.colors.onSurfaceVariant,
+                  ),
+                ),
+              ),
             );
-            // The order may have been cancelled over there.
-            await cubit.refresh();
-          },
-        ),
+          }
+          final order = row as OrderEntity;
+          // A divider under each order, except the last one of its month.
+          final isLastOfMonth = i == rows.length - 1 || rows[i + 1] is DateTime;
+          return Column(
+            children: [
+              OrderCard(order: order, onTap: () => open(order)),
+              if (!isLastOfMonth)
+                Divider(
+                  height: 1,
+                  indent: context.pageGutter,
+                  endIndent: context.pageGutter,
+                  color: context.colors.outlineVariant,
+                ),
+            ],
+          );
+        },
       ),
     );
   }

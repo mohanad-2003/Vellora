@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/features/orders/domain/order_entity.dart';
 
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../domain/order_entity.dart';
 import 'order_widgets.dart';
 
 /// Vertical tracking timeline: Placed → Processing → Shipped → Delivered.
@@ -148,7 +148,7 @@ class _StepRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: AppSpacing.md),
+          SizedBox(width: AppSpacing.md),
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacing.xl),

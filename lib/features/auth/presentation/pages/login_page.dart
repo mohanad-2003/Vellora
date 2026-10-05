@@ -16,6 +16,7 @@ import '../../../../core/widgets/auth_error_banner.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/staggered_reveal.dart';
 import '../bloc/auth_bloc.dart';
+import '../widgets/two_factor_login_dialog.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/social_login_buttons.dart';
 
@@ -45,12 +46,20 @@ class _LoginViewState extends State<_LoginView> {
   bool _rememberMe = false;
   bool _showBanner = false;
   String? _bannerKey;
+  bool _twoFactorOpen = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _askTwoFactorCode(BuildContext context) async {
+    if (_twoFactorOpen) return;
+    _twoFactorOpen = true;
+    await showTwoFactorLoginDialog(context, context.read<AuthBloc>());
+    _twoFactorOpen = false;
   }
 
   void _submit() {
@@ -80,8 +89,12 @@ class _LoginViewState extends State<_LoginView> {
           listener: (context, state) {
             if (state.status == AuthStatus.authenticated) {
               context.goNamed(RouteNames.nHome);
+            } else if (state.status == AuthStatus.twoFactorRequired) {
+              _askTwoFactorCode(context);
             } else if (state.status == AuthStatus.failure &&
-                state.failureKey != null) {
+                state.failureKey != null &&
+                // A wrong code is reported inside the dialog instead.
+                !_twoFactorOpen) {
               setState(() {
                 _showBanner = true;
                 _bannerKey = state.failureKey;

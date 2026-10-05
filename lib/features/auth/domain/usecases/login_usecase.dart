@@ -14,16 +14,34 @@ class LoginUseCase implements UseCase<UserEntity, LoginParams> {
   final AuthRepository _repository;
 
   @override
-  Future<Either<Failure, UserEntity>> call(LoginParams params) =>
-      _repository.login(email: params.email, password: params.password);
+  Future<Either<Failure, UserEntity>> call(LoginParams params) {
+    final challenge = params.challengeToken;
+    // Second step of a two-factor sign-in: no password, just the code.
+    if (challenge != null) {
+      return _repository.loginTwoFactor(
+        challengeToken: challenge,
+        code: params.code ?? '',
+      );
+    }
+    return _repository.login(email: params.email, password: params.password);
+  }
 }
 
 class LoginParams extends Equatable {
-  const LoginParams({required this.email, required this.password});
+  const LoginParams({
+    required this.email,
+    required this.password,
+    this.challengeToken,
+    this.code,
+  });
 
   final String email;
   final String password;
 
+  /// Set (with [code]) for the second step of a two-factor sign-in.
+  final String? challengeToken;
+  final String? code;
+
   @override
-  List<Object?> get props => [email, password];
+  List<Object?> get props => [email, password, challengeToken, code];
 }

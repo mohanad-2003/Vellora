@@ -49,7 +49,11 @@ class AppIconButton extends StatelessWidget {
                 color: filled
                     ? context.colors.surfaceContainerHighest
                     : Colors.transparent,
-                shape: const CircleBorder(),
+                shape: CircleBorder(
+                  side: filled
+                      ? BorderSide(color: context.colors.outlineVariant)
+                      : BorderSide.none,
+                ),
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
                   onTap: onPressed,

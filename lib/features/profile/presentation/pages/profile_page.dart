@@ -5,20 +5,17 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/responsive/responsive.dart';
 import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/theme_cubit.dart';
-import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_dialog.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/settings_tile.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../../../core/widgets/favorites_listener.dart';
 import '../../../auth/domain/entities/user_entity.dart';
 import '../../../cart/presentation/bloc/cart_badge_cubit.dart';
-import '../../../settings/presentation/pages/settings_page.dart';
 import '../cubit/profile_cubit.dart';
 import '../widgets/profile_avatar.dart';
 
@@ -139,7 +136,6 @@ class _ProfileContent extends StatelessWidget {
           stats: _ProfileStats(
             ordersCount: state.ordersCount,
             wishlistCount: state.wishlistCount,
-            onOrders: () => _openOrders(context),
           ),
         ),
         if (signedIn && state.activeOrdersCount > 0) ...[
@@ -178,51 +174,8 @@ class _ProfileContent extends StatelessWidget {
             ),
           ],
         ),
-        label(l10n.account),
-        group([
-          SettingsTile(
-            icon: Icons.favorite_border_rounded,
-            title: l10n.wishlist,
-            onTap: () => context.goNamed(RouteNames.nWishlist),
-          ),
-          SettingsTile(
-            icon: Icons.shield_outlined,
-            title: l10n.security,
-            onTap: () => context.pushNamed(RouteNames.nSecurity),
-          ),
-        ]),
         label(l10n.preferences),
         group([
-          BlocBuilder<LocaleCubit, Locale>(
-            builder: (context, locale) => SettingsTile(
-              icon: Icons.translate_rounded,
-              title: l10n.language,
-              trailing: _TrailingValue(
-                locale.languageCode == 'ar' ? 'العربية' : 'English',
-              ),
-              onTap: () => AppBottomSheet.show(
-                context,
-                title: l10n.language,
-                child: const LanguagePicker(),
-              ),
-            ),
-          ),
-          BlocBuilder<ThemeCubit, ThemeMode>(
-            builder: (context, mode) => SettingsTile(
-              icon: Icons.dark_mode_outlined,
-              title: l10n.theme,
-              trailing: _TrailingValue(switch (mode) {
-                ThemeMode.light => l10n.lightTheme,
-                ThemeMode.dark => l10n.darkTheme,
-                ThemeMode.system => l10n.systemTheme,
-              }),
-              onTap: () => AppBottomSheet.show(
-                context,
-                title: l10n.theme,
-                child: const ThemePicker(),
-              ),
-            ),
-          ),
           SettingsTile(
             icon: Icons.settings_outlined,
             title: l10n.settings,
@@ -295,38 +248,21 @@ class _ProfileContent extends StatelessWidget {
   void _confirmLogout(BuildContext context) {
     final cubit = context.read<ProfileCubit>();
     final l10n = context.l10n;
-    AppBottomSheet.show(
+    AppDialog.show(
       context,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            l10n.logoutConfirmTitle,
-            style: context.textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            l10n.logoutConfirmBody,
-            style: context.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          AppButton(
-            label: l10n.logout,
-            icon: Icons.logout_rounded,
-            onPressed: () {
-              Navigator.of(context).pop();
-              cubit.logout();
-            },
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppButton(
-            label: l10n.cancel,
-            variant: AppButtonVariant.outline,
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
+      child: Builder(
+        builder: (dialogContext) => ConfirmDialogCard(
+          icon: Icons.logout_rounded,
+          title: l10n.logoutConfirmTitle,
+          message: l10n.logoutConfirmBody,
+          confirmLabel: l10n.logout,
+          confirmIcon: Icons.logout_rounded,
+          cancelLabel: l10n.cancel,
+          onConfirm: () {
+            Navigator.of(dialogContext).pop();
+            cubit.logout();
+          },
+        ),
       ),
     );
   }
@@ -546,15 +482,10 @@ class _Glow extends StatelessWidget {
 /// Orders · Wishlist · Cart counters on a frosted panel. Each one opens its
 /// screen.
 class _ProfileStats extends StatelessWidget {
-  const _ProfileStats({
-    required this.ordersCount,
-    required this.wishlistCount,
-    required this.onOrders,
-  });
+  const _ProfileStats({required this.ordersCount, required this.wishlistCount});
 
   final int? ordersCount;
   final int wishlistCount;
-  final VoidCallback onOrders;
 
   @override
   Widget build(BuildContext context) {
@@ -578,24 +509,16 @@ class _ProfileStats extends StatelessWidget {
             _Stat(
               value: ordersCount?.toString() ?? '–',
               label: l10n.ordersLabel,
-              onTap: onOrders,
             ),
             divider,
-            _Stat(
-              value: '$wishlistCount',
-              label: l10n.wishlist,
-              onTap: () => context.goNamed(RouteNames.nWishlist),
-            ),
+            _Stat(value: '$wishlistCount', label: l10n.wishlist),
             divider,
             // Read the app-wide badge directly so the page also works where
             // no provider sits above it.
             BlocBuilder<CartBadgeCubit, int>(
               bloc: sl<CartBadgeCubit>(),
-              builder: (context, count) => _Stat(
-                value: '$count',
-                label: l10n.cart,
-                onTap: () => context.goNamed(RouteNames.nCart),
-              ),
+              builder: (context, count) =>
+                  _Stat(value: '$count', label: l10n.cart),
             ),
           ],
         ),
@@ -604,48 +527,43 @@ class _ProfileStats extends StatelessWidget {
   }
 }
 
+/// One figure in the profile header. Display only: Orders, Wishlist and Cart
+/// each have their own entry elsewhere (quick actions and the bottom bar).
 class _Stat extends StatelessWidget {
-  const _Stat({required this.value, required this.label, required this.onTap});
+  const _Stat({required this.value, required this.label});
 
   final String value;
   final String label;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final text = context.textTheme;
     return Expanded(
       child: Semantics(
-        button: true,
         label: '$label: $value',
         excludeSemantics: true,
-        onTap: onTap,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: AppRadius.rMd,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  value,
-                  maxLines: 1,
-                  style: text.titleLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                  ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                value,
+                maxLines: 1,
+                style: text.titleLarge?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
                 ),
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: text.labelMedium?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.85),
-                  ),
+              ),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: text.labelMedium?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.85),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -792,33 +710,6 @@ class _QuickActions extends StatelessWidget {
             ),
         ],
       ),
-    );
-  }
-}
-
-class _TrailingValue extends StatelessWidget {
-  const _TrailingValue(this.value);
-
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          value,
-          style: context.textTheme.bodyMedium?.copyWith(
-            color: context.colors.primary,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        Icon(
-          Icons.chevron_right_rounded,
-          size: 22,
-          color: context.colors.outline,
-        ),
-      ],
     );
   }
 }

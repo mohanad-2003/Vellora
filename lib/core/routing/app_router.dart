@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -361,7 +362,15 @@ class _SnackbarDismissObserver extends NavigatorObserver {
   void _dismiss() {
     final context = navigator?.context;
     if (context == null) return;
-    ScaffoldMessenger.maybeOf(context)?.hideCurrentSnackBar();
+    void hide() => ScaffoldMessenger.maybeOf(context)?.hideCurrentSnackBar();
+    // Pages are pushed while the Navigator builds, and hiding a snackbar
+    // rebuilds the ScaffoldMessenger: not allowed mid-build, so wait a frame.
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      SchedulerBinding.instance.addPostFrameCallback((_) => hide());
+    } else {
+      hide();
+    }
   }
 
   @override

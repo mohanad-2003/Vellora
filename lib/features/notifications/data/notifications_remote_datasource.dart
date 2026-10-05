@@ -11,6 +11,7 @@ import 'mock_notifications.dart';
 abstract class NotificationsRemoteDataSource {
   Future<List<NotificationEntity>> getNotifications();
   Future<void> markAllRead();
+  Future<void> markRead(String id);
   Future<void> delete(String id);
 }
 
@@ -26,6 +27,9 @@ class MockNotificationsRemoteDataSource
 
   @override
   Future<void> markAllRead() async {}
+
+  @override
+  Future<void> markRead(String id) async {}
 
   @override
   Future<void> delete(String id) async {}
@@ -53,6 +57,11 @@ class ApiNotificationsRemoteDataSource
   @override
   Future<void> markAllRead() async {
     await _dio.post<void>(ApiEndpoints.notificationsReadAll);
+  }
+
+  @override
+  Future<void> markRead(String id) async {
+    await _dio.patch<void>(ApiEndpoints.notificationRead(id));
   }
 
   @override

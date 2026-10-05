@@ -172,8 +172,9 @@ class _SearchViewState extends State<_SearchView> {
                       icon: Icons.arrow_back_ios_new_rounded,
                       iconSize: 18,
                       filled: false,
-                      semanticLabel:
-                          MaterialLocalizations.of(context).backButtonTooltip,
+                      semanticLabel: MaterialLocalizations.of(
+                        context,
+                      ).backButtonTooltip,
                       onPressed: () => Navigator.of(context).maybePop(),
                     ),
                     Expanded(
@@ -221,9 +222,9 @@ class _SearchViewState extends State<_SearchView> {
                       viewMode: _viewMode,
                       onViewModeChanged: (m) => setState(() => _viewMode = m),
                       heroPrefix: 'search',
-                      onRetry: () => context
-                          .read<CatalogCubit>()
-                          .search(_controller.text.trim()),
+                      onRetry: () => context.read<CatalogCubit>().search(
+                        _controller.text.trim(),
+                      ),
                       emptyTitle: l10n.noResultsTitle,
                       emptyMessage: l10n.noResultsBody(state.query),
                       emptyIcon: Icons.search_off_rounded,
@@ -281,7 +282,14 @@ class _SearchField extends StatelessWidget {
                 ),
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 14),
+        // The search field stays a soft filled pill, unlike form inputs.
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
         border: const OutlineInputBorder(
+          borderRadius: AppRadius.rMd,
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: const OutlineInputBorder(
           borderRadius: AppRadius.rMd,
           borderSide: BorderSide.none,
         ),
@@ -317,7 +325,12 @@ class _Suggestions extends StatelessWidget {
 
     return ListView(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      padding: EdgeInsets.fromLTRB(gutter, AppSpacing.sm, gutter, AppSpacing.xxl),
+      padding: EdgeInsets.fromLTRB(
+        gutter,
+        AppSpacing.sm,
+        gutter,
+        AppSpacing.xxl,
+      ),
       children: [
         if (recent.isNotEmpty) ...[
           Row(

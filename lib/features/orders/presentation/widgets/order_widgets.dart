@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/extensions/num_extensions.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/product_image.dart';
-import '../../domain/order_entity.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/extensions/num_extensions.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/product_image.dart';
+import 'package:vellora/features/orders/domain/order_entity.dart';
 
 String orderStatusLabel(BuildContext context, OrderStatus status) {
   final l10n = context.l10n;
@@ -64,7 +64,14 @@ class OrderStatusChip extends StatelessWidget {
   }
 }
 
-/// Order summary row for the Orders list.
+/// Month heading above a group of orders ("October 2026").
+String formatOrderMonth(BuildContext context, DateTime date) {
+  final locale = Localizations.localeOf(context).toString();
+  return DateFormat.yMMMM(locale).format(date);
+}
+
+/// Order summary for the Orders list. Drawn straight on the page, with no card
+/// around it: the list's dividers separate one order from the next.
 class OrderCard extends StatelessWidget {
   const OrderCard({super.key, required this.order, required this.onTap});
 
@@ -78,101 +85,141 @@ class OrderCard extends StatelessWidget {
     final l10n = context.l10n;
     final shown = order.items.take(3).toList();
     final extra = order.items.length - shown.length;
+    final first = order.items.isEmpty ? '' : order.items.first.name;
 
     return Semantics(
       button: true,
       label: '${order.number}, ${orderStatusLabel(context, order.status)}',
-      child: Material(
-        color: colors.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.rLg,
-          side: BorderSide(color: colors.outlineVariant),
-        ),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: AppRadius.rLg,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(child: Text(order.number, style: text.titleSmall)),
-                    OrderStatusChip(status: order.status),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  formatOrderDate(context, order.createdAt),
-                  style: text.bodySmall,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Row(
-                  children: [
-                    for (final item in shown)
-                      Padding(
-                        padding: const EdgeInsetsDirectional.only(end: 8),
-                        child: ClipRRect(
-                          borderRadius: AppRadius.rSm,
-                          child: SizedBox.square(
-                            dimension: 52,
-                            child: ProductImage(path: item.imagePath),
-                          ),
-                        ),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: context.pageGutter,
+            vertical: AppSpacing.lg,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      order.number,
+                      style: text.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
                       ),
-                    if (extra > 0)
-                      Container(
-                        width: 52,
-                        height: 52,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: colors.surfaceContainerHighest,
-                          borderRadius: AppRadius.rSm,
-                        ),
-                        child: Text('+$extra', style: text.labelLarge),
-                      ),
-                    const Spacer(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          l10n.cartItemsCount(order.itemCount),
-                          style: text.bodySmall,
-                        ),
-                        Text(
-                          order.total.toPrice(),
-                          style: text.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Align(
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  ),
+                  OrderStatusChip(status: order.status),
+                ],
+              ),
+              const SizedBox(height: 2),
+              Text(
+                formatOrderDate(context, order.createdAt),
+                style: text.bodySmall,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Row(
+                children: [
+                  for (final item in shown)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 8),
+                      child: ClipRRect(
+                        borderRadius: AppRadius.rMd,
+                        child: SizedBox.square(
+                          dimension: 56,
+                          child: ProductImage(path: item.imagePath),
+                        ),
+                      ),
+                    ),
+                  if (extra > 0)
+                    Container(
+                      width: 56,
+                      height: 56,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: colors.surfaceContainerHighest,
+                        borderRadius: AppRadius.rMd,
+                      ),
+                      child: Text('+$extra', style: text.labelLarge),
+                    ),
+                  const Spacer(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        l10n.viewDetails,
-                        style: text.labelLarge?.copyWith(color: colors.primary),
+                        order.total.toPrice(),
+                        style: text.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        size: 18,
-                        color: colors.primary,
+                      Text(
+                        l10n.cartItemsCount(order.itemCount),
+                        style: text.bodySmall,
                       ),
                     ],
                   ),
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    size: 22,
+                    color: colors.outline,
+                  ),
+                ],
+              ),
+              if (first.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  first,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: text.bodyMedium?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
                 ),
               ],
-            ),
+              if (order.status != OrderStatus.cancelled) ...[
+                const SizedBox(height: AppSpacing.md),
+                _StatusProgress(status: order.status),
+              ],
+            ],
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Three segments: placed, shipped, delivered. Filled up to the current step.
+class _StatusProgress extends StatelessWidget {
+  const _StatusProgress({required this.status});
+
+  final OrderStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = orderStatusColor(context, status);
+    final step = switch (status) {
+      OrderStatus.processing => 1,
+      OrderStatus.shipped => 2,
+      OrderStatus.delivered => 3,
+      OrderStatus.cancelled => 0,
+    };
+    return Row(
+      children: [
+        for (var i = 0; i < 3; i++) ...[
+          if (i > 0) const SizedBox(width: 4),
+          Expanded(
+            child: Container(
+              height: 4,
+              decoration: BoxDecoration(
+                color: i < step ? color : context.colors.outlineVariant,
+                borderRadius: AppRadius.rPill,
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

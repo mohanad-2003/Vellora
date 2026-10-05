@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../notifications/presentation/cubit/notifications_cubit.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/num_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
@@ -49,6 +50,8 @@ class _CheckoutView extends StatelessWidget {
         listener: (context, state) {
           if (state.status == CheckoutStatus.success && state.order != null) {
             Haptics.success();
+            // The order's notification now exists on the server: show its dot.
+            sl<UnreadNotificationsCubit>().refresh();
             context.pushReplacementNamed(
               RouteNames.nOrderSuccess,
               extra: state.order,

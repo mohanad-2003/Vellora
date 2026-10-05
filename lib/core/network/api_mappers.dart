@@ -16,59 +16,59 @@ class ApiMappers {
   ApiMappers._();
 
   static ProductEntity product(Map<String, dynamic> j) => ProductEntity(
-        id: j['id'] as String,
-        name: j['name'] as String,
-        brand: j['brand'] as String,
-        imagePath: j['imageUrl'] as String,
-        price: (j['price'] as num).toDouble(),
-        originalPrice: (j['originalPrice'] as num?)?.toDouble(),
-        rating: (j['rating'] as num).toDouble(),
-        reviewCount: (j['reviewCount'] as num).toInt(),
-        category: j['category'] as String,
-      );
+    id: j['id'] as String,
+    name: j['name'] as String,
+    brand: j['brand'] as String,
+    imagePath: j['imageUrl'] as String,
+    price: (j['price'] as num).toDouble(),
+    originalPrice: (j['originalPrice'] as num?)?.toDouble(),
+    rating: (j['rating'] as num).toDouble(),
+    reviewCount: (j['reviewCount'] as num).toInt(),
+    category: j['category'] as String,
+  );
 
   static List<ProductEntity> products(Object? list) => [
-        for (final p in (list as List? ?? const []))
-          product(p as Map<String, dynamic>),
-      ];
+    for (final p in (list as List? ?? const []))
+      product(p as Map<String, dynamic>),
+  ];
 
   static CategoryEntity category(Map<String, dynamic> j) => CategoryEntity(
-        id: j['id'] as String,
-        name: j['name'] as String,
-        imagePath: j['imageUrl'] as String,
-        productCount: (j['productCount'] as num?)?.toInt() ?? 0,
-      );
+    id: j['id'] as String,
+    name: j['name'] as String,
+    imagePath: j['imageUrl'] as String,
+    productCount: (j['productCount'] as num?)?.toInt() ?? 0,
+  );
 
   static BannerEntity banner(Map<String, dynamic> j) => BannerEntity(
-        id: j['id'] as String,
-        title: j['title'] as String,
-        subtitle: j['subtitle'] as String,
-        imagePath: j['imageUrl'] as String,
-      );
+    id: j['id'] as String,
+    title: j['title'] as String,
+    subtitle: j['subtitle'] as String,
+    imagePath: j['imageUrl'] as String,
+  );
 
   static BrandEntity brand(Map<String, dynamic> j) => BrandEntity(
-        name: j['name'] as String,
-        imagePath: j['imageUrl'] as String? ?? '',
-        productCount: (j['productCount'] as num?)?.toInt() ?? 0,
-      );
+    name: j['name'] as String,
+    imagePath: j['imageUrl'] as String? ?? '',
+    productCount: (j['productCount'] as num?)?.toInt() ?? 0,
+  );
 
   static HomeOfferEntity offer(Map<String, dynamic> j) => HomeOfferEntity(
-        code: j['code'] as String,
-        discountPercent: (j['discountPercent'] as num).toDouble(),
-      );
+    code: j['code'] as String,
+    discountPercent: (j['discountPercent'] as num).toDouble(),
+  );
 
   static HomeStatsEntity homeStats(Map<String, dynamic> j) => HomeStatsEntity(
-        productCount: (j['productCount'] as num?)?.toInt() ?? 0,
-        brandCount: (j['brandCount'] as num?)?.toInt() ?? 0,
-        categoryCount: (j['categoryCount'] as num?)?.toInt() ?? 0,
-      );
+    productCount: (j['productCount'] as num?)?.toInt() ?? 0,
+    brandCount: (j['brandCount'] as num?)?.toInt() ?? 0,
+    categoryCount: (j['categoryCount'] as num?)?.toInt() ?? 0,
+  );
 
   static ReviewEntity review(Map<String, dynamic> j) => ReviewEntity(
-        author: j['author'] as String,
-        rating: (j['rating'] as num).toDouble(),
-        comment: j['comment'] as String,
-        timeAgo: timeAgo(DateTime.parse(j['createdAt'] as String)),
-      );
+    author: j['author'] as String,
+    rating: (j['rating'] as num).toDouble(),
+    comment: j['comment'] as String,
+    timeAgo: timeAgo(DateTime.parse(j['createdAt'] as String)),
+  );
 
   static NotificationEntity notification(Map<String, dynamic> j) =>
       NotificationEntity(
@@ -82,6 +82,7 @@ class ApiMappers {
         body: j['body'] as String,
         createdAt: DateTime.parse(j['createdAt'] as String).toLocal(),
         isUnread: j['isUnread'] as bool? ?? false,
+        orderId: j['orderId'] as String?,
       );
 
   static OrderEntity order(Map<String, dynamic> j) {

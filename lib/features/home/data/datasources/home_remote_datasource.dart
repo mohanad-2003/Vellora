@@ -150,7 +150,10 @@ class ApiHomeRemoteDataSource implements HomeRemoteDataSource {
   Future<HomeDataEntity> getHomeData() async {
     final res = await _dio.get<Map<String, dynamic>>(ApiEndpoints.home);
     final j = res.data!;
-    final featured = ApiMappers.products(j['featured']);
+    // Grocery items stay in the catalogue but are not "Featured" picks.
+    final featured = ApiMappers.products(
+      j['featured'],
+    ).where((p) => p.category != 'grocery').toList();
     final flashSale = ApiMappers.products(j['flashSale']);
     final newArrivals = ApiMappers.products(j['newArrivals']);
     final bestSellers = ApiMappers.products(j['bestSellers']);

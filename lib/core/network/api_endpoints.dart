@@ -4,6 +4,7 @@ class ApiEndpoints {
 
   // Auth & profile.
   static const String login = '/auth/login';
+  static const String loginTwoFactor = '/auth/login/2fa';
   static const String register = '/auth/register';
   static const String forgotPassword = '/auth/forgot-password';
   static const String verifyOtp = '/auth/verify-otp';
@@ -11,6 +12,9 @@ class ApiEndpoints {
   static const String logout = '/auth/logout';
   static const String me = '/me';
   static const String changePassword = '/me/change-password';
+  static const String twoFactorSetup = '/me/2fa/setup';
+  static const String twoFactorEnable = '/me/2fa/enable';
+  static const String twoFactorDisable = '/me/2fa/disable';
 
   // Saved addresses and payment methods.
   static const String addresses = '/addresses';

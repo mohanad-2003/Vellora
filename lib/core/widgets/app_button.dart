@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_radius.dart';
 import '../utils/haptics.dart';
 
-enum AppButtonVariant { primary, secondary, outline, text }
+enum AppButtonVariant { primary, secondary, outline, text, danger }
 
 /// The single button used across the app: theme-driven, with loading state,
 /// optional leading/trailing icon and optional haptic confirmation.
@@ -52,16 +52,14 @@ class AppButton extends StatelessWidget {
       AppButtonVariant.secondary => colors.onPrimaryContainer,
       AppButtonVariant.outline => colors.onSurface,
       AppButtonVariant.text => colors.primary,
+      AppButtonVariant.danger => colors.onError,
     };
 
     final content = Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (icon != null) ...[
-          Icon(icon, size: 20),
-          const SizedBox(width: 8),
-        ],
+        if (icon != null) ...[Icon(icon, size: 20), const SizedBox(width: 8)],
         Flexible(
           child: Text(
             label,
@@ -99,34 +97,42 @@ class AppButton extends StatelessWidget {
 
     final Widget button = switch (variant) {
       AppButtonVariant.primary => ElevatedButton(
-          onPressed: handler,
-          style: isLoading
-              ? ElevatedButton.styleFrom(
-                  disabledBackgroundColor: colors.primary,
-                  disabledForegroundColor: colors.onPrimary,
-                )
-              : null,
-          child: child,
-        ),
+        onPressed: handler,
+        style: isLoading
+            ? ElevatedButton.styleFrom(
+                disabledBackgroundColor: colors.primary,
+                disabledForegroundColor: colors.onPrimary,
+              )
+            : null,
+        child: child,
+      ),
       AppButtonVariant.secondary => ElevatedButton(
-          onPressed: handler,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colors.primaryContainer,
-            foregroundColor: colors.onPrimaryContainer,
-            disabledBackgroundColor: colors.primaryContainer,
-            disabledForegroundColor: colors.onPrimaryContainer,
-            shape: shape,
-          ),
-          child: child,
+        onPressed: handler,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colors.primaryContainer,
+          foregroundColor: colors.onPrimaryContainer,
+          disabledBackgroundColor: colors.primaryContainer,
+          disabledForegroundColor: colors.onPrimaryContainer,
+          shape: shape,
         ),
+        child: child,
+      ),
       AppButtonVariant.outline => OutlinedButton(
-          onPressed: handler,
-          child: child,
+        onPressed: handler,
+        child: child,
+      ),
+      AppButtonVariant.danger => ElevatedButton(
+        onPressed: handler,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colors.error,
+          foregroundColor: colors.onError,
+          disabledBackgroundColor: isLoading ? colors.error : null,
+          disabledForegroundColor: isLoading ? colors.onError : null,
+          shape: shape,
         ),
-      AppButtonVariant.text => TextButton(
-          onPressed: handler,
-          child: child,
-        ),
+        child: child,
+      ),
+      AppButtonVariant.text => TextButton(onPressed: handler, child: child),
     };
 
     return expand ? SizedBox(width: double.infinity, child: button) : button;
@@ -160,8 +166,8 @@ class SecondaryButton extends AppButton {
     super.haptic,
     bool outlined = true,
   }) : super(
-          variant: outlined
-              ? AppButtonVariant.outline
-              : AppButtonVariant.secondary,
-        );
+         variant: outlined
+             ? AppButtonVariant.outline
+             : AppButtonVariant.secondary,
+       );
 }

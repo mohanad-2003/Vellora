@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../catalog/presentation/pages/search_page.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/features/catalog/presentation/pages/search_page.dart';
 
 /// Home search entry: a pill that opens the full Search screen, plus a filter
 /// button that opens Search with the filter sheet already showing.
@@ -82,7 +81,7 @@ class SearchBarEntry extends StatelessWidget {
   }
 
   void _openFilters(BuildContext context) => context.pushNamed(
-        RouteNames.nSearch,
-        extra: const SearchArgs(openFilters: true),
-      );
+    RouteNames.nSearch,
+    extra: const SearchArgs(openFilters: true),
+  );
 }

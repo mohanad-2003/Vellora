@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/errors/exception_mapper.dart';
+import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/forgot_password_usecase.dart';
@@ -28,6 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) : super(const AuthState()) {
     on<AuthCheckStatusRequested>(_onCheckStatus);
     on<AuthLoginRequested>(_onLogin);
+    on<AuthTwoFactorSubmitted>(_onTwoFactor);
     on<AuthRegisterRequested>(_onRegister);
     on<AuthForgotPasswordRequested>(_onForgotPassword);
     on<AuthOtpVerifyRequested>(_onVerifyOtp);
@@ -68,6 +71,39 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LoginParams(email: event.email, password: event.password),
     );
     result.match(
+      (failure) => emit(
+        // The password was right but a code is needed: not an error.
+        failure is ValidationFailure && failure.code == twoFactorRequiredCode
+            ? state.copyWith(
+                status: AuthStatus.twoFactorRequired,
+                twoFactorToken: failure.message,
+              )
+            : state.copyWith(
+                status: AuthStatus.failure,
+                failureKey: failure.l10nKey,
+              ),
+      ),
+      (user) =>
+          emit(state.copyWith(status: AuthStatus.authenticated, user: user)),
+    );
+  }
+
+  Future<void> _onTwoFactor(
+    AuthTwoFactorSubmitted event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(state.copyWith(status: AuthStatus.loading));
+    final result = await _login(
+      LoginParams(
+        email: '',
+        password: '',
+        challengeToken: state.twoFactorToken,
+        code: event.code,
+      ),
+    );
+    result.match(
+      // The challenge is kept (copyWith carries it) so a mistyped code can be
+      // retried; it expires on its own after a few minutes.
       (failure) => emit(
         state.copyWith(status: AuthStatus.failure, failureKey: failure.l10nKey),
       ),

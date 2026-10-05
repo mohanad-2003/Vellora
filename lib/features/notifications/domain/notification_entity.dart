@@ -17,6 +17,7 @@ class NotificationEntity extends Equatable {
     this.titleKey = '',
     this.bodyKey = '',
     this.isUnread = false,
+    this.orderId,
   });
 
   final String id;
@@ -28,20 +29,33 @@ class NotificationEntity extends Equatable {
   final String bodyKey;
   final bool isUnread;
 
+  /// The order this notification is about, when it is an order update.
+  final String? orderId;
+
   NotificationEntity markRead() => NotificationEntity(
-        id: id,
-        kind: kind,
-        createdAt: createdAt,
-        title: title,
-        body: body,
-        titleKey: titleKey,
-        bodyKey: bodyKey,
-      );
+    id: id,
+    kind: kind,
+    createdAt: createdAt,
+    title: title,
+    body: body,
+    titleKey: titleKey,
+    bodyKey: bodyKey,
+    orderId: orderId,
+  );
 
   String resolveTitle(String Function(String key) tr) => title ?? tr(titleKey);
   String resolveBody(String Function(String key) tr) => body ?? tr(bodyKey);
 
   @override
-  List<Object?> get props =>
-      [id, kind, createdAt, title, body, titleKey, bodyKey, isUnread];
+  List<Object?> get props => [
+    id,
+    kind,
+    createdAt,
+    title,
+    body,
+    titleKey,
+    bodyKey,
+    isUnread,
+    orderId,
+  ];
 }

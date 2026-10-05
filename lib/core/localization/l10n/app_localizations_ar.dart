@@ -1409,4 +1409,104 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get payments => 'الدفع';
+
+  @override
+  String get storage => 'التخزين';
+
+  @override
+  String get clearCache => 'مسح الذاكرة المؤقتة';
+
+  @override
+  String get clearCacheSub => 'احذف الصور المحفوظة لتوفير المساحة';
+
+  @override
+  String get cacheCleared => 'تم مسح الذاكرة المؤقتة';
+
+  @override
+  String get accountSection => 'الحساب';
+
+  @override
+  String get deleteAccountSub => 'احذف حسابك وبياناتك نهائياً';
+
+  @override
+  String get twoFactorDialogTitle => 'التحقق بخطوتين';
+
+  @override
+  String get twoFactorDialogBody =>
+      'أدخل الرمز المكوّن من 6 أرقام من تطبيق المصادقة.';
+
+  @override
+  String get twoFactorCode => 'رمز من 6 أرقام';
+
+  @override
+  String get twoFactorSetupTitle => 'إعداد المصادقة الثنائية';
+
+  @override
+  String get twoFactorSetupBody =>
+      'افتح تطبيق مصادقة (Google Authenticator أو Microsoft Authenticator أو Authy)، أضف حساباً واختر \"إدخال مفتاح الإعداد\". الصق المفتاح أدناه ثم اكتب الرمز المكوّن من 6 أرقام الذي يظهره التطبيق.';
+
+  @override
+  String get twoFactorKeyLabel => 'مفتاح الإعداد';
+
+  @override
+  String get copyKey => 'نسخ المفتاح';
+
+  @override
+  String get keyCopied => 'تم نسخ المفتاح';
+
+  @override
+  String get twoFactorTurnOn => 'تفعيل';
+
+  @override
+  String get twoFactorEnabled => 'تم تفعيل المصادقة الثنائية';
+
+  @override
+  String get twoFactorDisabled => 'تم إيقاف المصادقة الثنائية';
+
+  @override
+  String get twoFactorDisableTitle => 'إيقاف المصادقة الثنائية؟';
+
+  @override
+  String get twoFactorDisableBody =>
+      'أدخل كلمة المرور ورمزاً حالياً من تطبيق المصادقة للتأكيد.';
+
+  @override
+  String get turnOff => 'إيقاف';
+
+  @override
+  String get biometricReason => 'أكّد هويتك لتفعيل الدخول بالبصمة';
+
+  @override
+  String get biometricUnlockReason => 'افتح Vellora';
+
+  @override
+  String get biometricUnavailable =>
+      'فعّل البصمة أو بصمة الوجه من إعدادات هاتفك أولاً';
+
+  @override
+  String get biometricEnabled => 'تم تفعيل الدخول بالبصمة';
+
+  @override
+  String get biometricDisabled => 'تم إيقاف الدخول بالبصمة';
+
+  @override
+  String get appLockedTitle => 'التطبيق مقفل';
+
+  @override
+  String get appLockedBody => 'استخدم بصمتك أو وجهك للمتابعة.';
+
+  @override
+  String get unlock => 'فتح';
+
+  @override
+  String get chooseOptionsFirst => 'اختر المقاس أو اللون أولاً';
+
+  @override
+  String get bannerBadgeLimited => 'لفترة محدودة';
+
+  @override
+  String get bannerBadgeNew => 'وصل حديثاً';
+
+  @override
+  String get bannerBadgeSeason => 'اختيارات الموسم';
 }

@@ -63,10 +63,14 @@ class _SavedAddressesView extends StatelessWidget {
               children: [
                 Expanded(
                   child: ListView.separated(
-                    padding: EdgeInsets.all(AppSpacing.screenH),
+                    padding: EdgeInsets.only(top: AppSpacing.sm),
                     itemCount: state.addresses.length,
-                    separatorBuilder: (_, _) =>
-                        SizedBox(height: AppSpacing.vMd),
+                    separatorBuilder: (_, _) => Divider(
+                      height: 1,
+                      indent: AppSpacing.screenH,
+                      endIndent: AppSpacing.screenH,
+                      color: context.colors.outlineVariant,
+                    ),
                     itemBuilder: (_, i) {
                       final address = state.addresses[i];
                       return _AddressCard(
@@ -132,6 +136,8 @@ class _SavedAddressesView extends StatelessWidget {
   }
 }
 
+/// One saved address, drawn straight on the page (no card): a tinted pin, the
+/// label with a "Default" badge, then recipient, street, city and phone.
 class _AddressCard extends StatelessWidget {
   const _AddressCard({
     required this.address,
@@ -148,67 +154,80 @@ class _AddressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final text = context.textTheme;
     final l10n = context.l10n;
-    return Container(
-      padding: EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: AppRadius.rLg,
-        border: Border.all(
-          color: isDefault ? colors.primary : colors.outlineVariant,
-          width: isDefault ? 1.6 : 1,
-        ),
+    final tone = isDefault ? colors.primary : colors.onSurfaceVariant;
+    final muted = text.bodySmall?.copyWith(
+      color: colors.onSurfaceVariant,
+      height: 1.4,
+    );
+
+    return Padding(
+      padding: EdgeInsetsDirectional.only(
+        start: AppSpacing.screenH,
+        end: AppSpacing.xs,
+        top: AppSpacing.lg,
+        bottom: AppSpacing.lg,
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(Icons.location_on_rounded, color: colors.primary, size: 20),
-              SizedBox(width: AppSpacing.sm),
-              Text(address.label, style: context.textTheme.titleSmall),
-              SizedBox(width: AppSpacing.sm),
-              if (isDefault) _DefaultBadge(label: l10n.defaultLabel),
-              const Spacer(),
-              PopupMenuButton<String>(
-                icon: Icon(Icons.more_vert_rounded, size: 20),
-                onSelected: (value) {
-                  if (value == 'default') onSetDefault();
-                  if (value == 'delete') onDelete();
-                },
-                itemBuilder: (_) => [
-                  if (!isDefault)
-                    PopupMenuItem(
-                      value: 'default',
-                      child: Text(l10n.setAsDefault),
+          Container(
+            width: 44,
+            height: 44,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: tone.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.location_on_rounded, color: tone, size: 22),
+          ),
+          SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        address.label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: text.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
-                  PopupMenuItem(
-                    value: 'delete',
-                    child: Text(
-                      l10n.delete,
-                      style: TextStyle(color: colors.error),
-                    ),
-                  ),
-                ],
+                    if (isDefault) ...[
+                      SizedBox(width: AppSpacing.sm),
+                      _DefaultBadge(label: l10n.defaultLabel),
+                    ],
+                  ],
+                ),
+                SizedBox(height: 4),
+                Text(address.recipient, style: text.bodyMedium),
+                SizedBox(height: 2),
+                Text('${address.line}\n${address.city}', style: muted),
+                SizedBox(height: 2),
+                Text(address.phone, style: muted),
+              ],
+            ),
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert_rounded, size: 22),
+            onSelected: (value) {
+              if (value == 'default') onSetDefault();
+              if (value == 'delete') onDelete();
+            },
+            itemBuilder: (_) => [
+              if (!isDefault)
+                PopupMenuItem(value: 'default', child: Text(l10n.setAsDefault)),
+              PopupMenuItem(
+                value: 'delete',
+                child: Text(l10n.delete, style: TextStyle(color: colors.error)),
               ),
             ],
-          ),
-          SizedBox(height: AppSpacing.vSm),
-          Text(address.recipient, style: context.textTheme.bodyMedium),
-          SizedBox(height: 2),
-          Text(
-            '${address.line}\n${address.city}',
-            style: context.textTheme.bodySmall?.copyWith(
-              color: colors.onSurfaceVariant,
-              height: 1.4,
-            ),
-          ),
-          SizedBox(height: 2),
-          Text(
-            address.phone,
-            style: context.textTheme.bodySmall?.copyWith(
-              color: colors.onSurfaceVariant,
-            ),
           ),
         ],
       ),

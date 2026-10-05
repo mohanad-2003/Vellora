@@ -27,6 +27,15 @@ class ValidationException extends AppException {
   final String? code;
 }
 
+/// The password was right but the account has two-factor sign-in on: the app
+/// must send an authenticator code together with this [challengeToken].
+class TwoFactorRequiredException extends AppException {
+  const TwoFactorRequiredException(this.challengeToken)
+    : super('Two-factor code required');
+
+  final String challengeToken;
+}
+
 class UnauthorizedException extends AppException {
   const UnauthorizedException([super.message = 'Unauthorized', this.code]);
 

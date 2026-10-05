@@ -11,6 +11,7 @@ class FavoriteButton extends StatelessWidget {
     required this.onToggle,
     this.size = 36,
     this.floating = true,
+    this.discColor,
   });
 
   final bool isFavorite;
@@ -19,6 +20,9 @@ class FavoriteButton extends StatelessWidget {
 
   /// Draws a translucent surface disc behind the heart (for use over photos).
   final bool floating;
+
+  /// Overrides the disc colour when [floating] (default: a translucent surface).
+  final Color? discColor;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +41,7 @@ class FavoriteButton extends StatelessWidget {
         child: Center(
           child: Material(
             color: floating
-                ? colors.surface.withValues(alpha: 0.92)
+                ? (discColor ?? colors.surface.withValues(alpha: 0.92))
                 : Colors.transparent,
             shape: const CircleBorder(),
             clipBehavior: Clip.antiAlias,

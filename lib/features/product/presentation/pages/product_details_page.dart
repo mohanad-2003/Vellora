@@ -355,12 +355,11 @@ class _HeaderActions extends StatelessWidget {
           isFavorite: product.isFavorite,
           onToggle: () => bloc.add(const ProductFavoriteToggled()),
           size: 40,
-          floating: false,
+          discColor: context.colors.surfaceContainerHighest,
         ),
         AppIconButton(
           icon: Icons.ios_share_rounded,
           semanticLabel: l10n.copyLink,
-          filled: false,
           onPressed: () async {
             await Clipboard.setData(
               ClipboardData(text: AppConstants.productUrl(product.id)),
@@ -374,7 +373,6 @@ class _HeaderActions extends StatelessWidget {
           builder: (context, count) => AppIconButton(
             icon: Icons.shopping_bag_outlined,
             semanticLabel: l10n.cart,
-            filled: false,
             onPressed: () => context.goNamed(RouteNames.nCart),
             badge: count > 0 ? CountBadge(count: count) : null,
           ),
@@ -596,7 +594,7 @@ class _PerkRow extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: context.colors.primaryContainer,
+            color: context.colors.primary.withValues(alpha: 0.14),
             borderRadius: AppRadius.rMd,
           ),
           child: Icon(icon, size: 20, color: context.colors.primary),

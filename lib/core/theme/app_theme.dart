@@ -85,14 +85,15 @@ class AppTheme {
   static ThemeData build(Brightness brightness, String languageCode) {
     final isDark = brightness == Brightness.dark;
     final scheme = _scheme(isDark);
-    final background =
-        isDark ? AppColors.darkBackground : AppColors.lightBackground;
-    final textPrimary =
-        isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textSecondary =
-        isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
-    final fill =
-        isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant;
+    final background = isDark
+        ? AppColors.darkBackground
+        : AppColors.lightBackground;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textSecondary = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final textTheme = AppTypography.textTheme(
       languageCode: languageCode,
@@ -130,8 +131,9 @@ class AppTheme {
         centerTitle: true,
         titleTextStyle: textTheme.titleLarge,
         iconTheme: IconThemeData(color: textPrimary),
-        systemOverlayStyle:
-            isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+        systemOverlayStyle: isDark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
       ),
       cardTheme: CardThemeData(
         color: scheme.surface,
@@ -179,30 +181,33 @@ class AppTheme {
         style: IconButton.styleFrom(minimumSize: const Size(44, 44)),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: fill,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        // Unfilled and outlined: the field reads as an input on the page colour.
+        filled: false,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
         hintStyle: textTheme.bodyMedium?.copyWith(
           color: textSecondary.withValues(alpha: 0.8),
         ),
         errorStyle: textTheme.bodySmall?.copyWith(color: scheme.error),
         prefixIconColor: textSecondary,
         suffixIconColor: textSecondary,
-        border: border(Colors.transparent),
-        enabledBorder: border(Colors.transparent),
-        disabledBorder: border(Colors.transparent),
-        focusedBorder: border(scheme.primary, 1.5),
+        border: border(scheme.outline, 1.2),
+        enabledBorder: border(scheme.outline, 1.2),
+        disabledBorder: border(scheme.outlineVariant, 1.2),
+        focusedBorder: border(scheme.primary, 1.8),
         errorBorder: border(scheme.error, 1.2),
-        focusedErrorBorder: border(scheme.error, 1.5),
+        focusedErrorBorder: border(scheme.error, 1.8),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: scheme.surface,
         selectedColor: scheme.primary,
         secondarySelectedColor: scheme.primary,
         labelStyle: textTheme.labelMedium,
-        secondaryLabelStyle:
-            textTheme.labelMedium?.copyWith(color: scheme.onPrimary),
+        secondaryLabelStyle: textTheme.labelMedium?.copyWith(
+          color: scheme.onPrimary,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         shape: const StadiumBorder(),
         side: BorderSide(color: scheme.outlineVariant),
@@ -233,7 +238,10 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         shape: const RoundedRectangleBorder(borderRadius: AppRadius.rMd),
-        contentTextStyle: textTheme.bodyMedium?.copyWith(color: Colors.white),
+        backgroundColor: scheme.inverseSurface,
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: scheme.onInverseSurface,
+        ),
       ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: scheme.surface,
@@ -268,11 +276,11 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         side: BorderSide(color: scheme.outline, width: 1.4),
       ),
-      progressIndicatorTheme:
-          ProgressIndicatorThemeData(color: scheme.primary),
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: scheme.primary),
       tooltipTheme: TooltipThemeData(
-        textStyle:
-            textTheme.bodySmall?.copyWith(color: scheme.onInverseSurface),
+        textStyle: textTheme.bodySmall?.copyWith(
+          color: scheme.onInverseSurface,
+        ),
       ),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
@@ -285,5 +293,6 @@ class AppTheme {
 }
 
 extension VelloraThemeX on ThemeData {
-  VelloraColors get vellora => extension<VelloraColors>() ?? VelloraColors.light;
+  VelloraColors get vellora =>
+      extension<VelloraColors>() ?? VelloraColors.light;
 }

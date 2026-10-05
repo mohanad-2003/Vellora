@@ -10,11 +10,14 @@ import 'package:vellora/core/responsive/responsive.dart';
 import 'package:vellora/core/routing/route_names.dart';
 import 'package:vellora/core/theme/app_spacing.dart';
 import 'package:vellora/core/usecases/usecase.dart';
+import 'package:vellora/core/utils/safe_emit.dart';
 import 'package:vellora/core/widgets/category_card.dart';
 import 'package:vellora/core/extensions/num_extensions.dart';
 import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/widgets/failure_state_view.dart';
 import 'package:vellora/core/widgets/section_header.dart';
 import 'package:vellora/core/widgets/shimmer_widgets.dart';
+import 'package:vellora/core/widgets/slow_load_hint.dart';
 import 'package:vellora/core/widgets/tab_page_header.dart';
 import 'package:vellora/features/catalog/domain/catalog_filter.dart';
 import 'package:vellora/features/catalog/presentation/pages/catalog_page.dart';
@@ -24,9 +27,6 @@ import 'package:vellora/features/home/domain/entities/home_data_entity.dart';
 import 'package:vellora/features/home/domain/usecases/get_home_data_usecase.dart';
 import 'package:vellora/features/home/presentation/widgets/home_extras.dart';
 import 'package:vellora/features/home/presentation/widgets/search_bar_entry.dart';
-import '../../../../core/utils/safe_emit.dart';
-import '../../../../core/widgets/failure_state_view.dart';
-import '../../../../core/widgets/slow_load_hint.dart';
 
 enum ExploreStatus { loading, loaded, error }
 

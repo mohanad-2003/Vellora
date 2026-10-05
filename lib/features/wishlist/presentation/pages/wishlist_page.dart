@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/di/injection.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/localization/l10n_lookup.dart';
-import '../../../../core/responsive/responsive.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/empty_state_widget.dart';
-import '../../../../core/widgets/error_state_widget.dart';
-import '../../../../core/widgets/favorites_listener.dart';
-import '../../../../core/widgets/shimmer_widgets.dart';
-import '../../../../core/widgets/tab_page_header.dart';
-import '../../../catalog/presentation/widgets/catalog_toolbar.dart';
-import '../../../catalog/presentation/widgets/product_results.dart';
-import '../bloc/wishlist_bloc.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/empty_state_widget.dart';
+import 'package:vellora/core/widgets/error_state_widget.dart';
+import 'package:vellora/core/widgets/favorites_listener.dart';
+import 'package:vellora/core/widgets/shimmer_widgets.dart';
+import 'package:vellora/core/widgets/tab_page_header.dart';
+import 'package:vellora/features/catalog/presentation/widgets/catalog_toolbar.dart';
+import 'package:vellora/features/catalog/presentation/widgets/product_results.dart';
+import 'package:vellora/features/wishlist/presentation/bloc/wishlist_bloc.dart';
 
 class WishlistPage extends StatelessWidget {
   const WishlistPage({super.key});
@@ -65,47 +64,49 @@ class _WishlistView extends StatelessWidget {
               );
 
               final Widget body = switch (state.status) {
-                WishlistStatus.loading => const ProductGridShimmer(),
+                WishlistStatus.loading => ProductGridShimmer(),
                 WishlistStatus.error => ErrorStateWidget(
-                    message: state.failureKey != null
-                        ? tr(context, state.failureKey!)
-                        : l10n.somethingWentWrong,
-                    onRetry: () => context
-                        .read<WishlistBloc>()
-                        .add(const WishlistStarted()),
-                  ),
+                  message: state.failureKey != null
+                      ? tr(context, state.failureKey!)
+                      : l10n.somethingWentWrong,
+                  onRetry: () =>
+                      context.read<WishlistBloc>().add(const WishlistStarted()),
+                ),
                 WishlistStatus.empty => EmptyStateWidget(
-                    icon: Icons.favorite_border_rounded,
-                    title: l10n.emptyWishlistTitle,
-                    message: l10n.emptyWishlistBody,
-                    actionLabel: l10n.exploreProducts,
-                    onAction: () => context.goNamed(RouteNames.nExplore),
-                  ),
+                  icon: Icons.favorite_border_rounded,
+                  title: l10n.emptyWishlistTitle,
+                  message: l10n.emptyWishlistBody,
+                  actionLabel: l10n.exploreProducts,
+                  onAction: () => context.goNamed(RouteNames.nExplore),
+                ),
                 WishlistStatus.loaded => CustomScrollView(
-                    slivers: [
-                      SliverProductResults(
-                        products: state.products,
-                        viewMode: CatalogViewMode.grid,
-                        heroPrefix: 'wishlist',
-                        onTap: (p, tag) => context.pushNamed(
-                          RouteNames.nProduct,
-                          pathParameters: {'id': p.id},
-                          extra: tag,
-                        ),
-                        onFavorite: (p) => context
-                            .read<WishlistBloc>()
-                            .add(WishlistItemRemoved(p.id)),
+                  slivers: [
+                    SliverProductResults(
+                      products: state.products,
+                      viewMode: CatalogViewMode.grid,
+                      heroPrefix: 'wishlist',
+                      onTap: (p, tag) => context.pushNamed(
+                        RouteNames.nProduct,
+                        pathParameters: {'id': p.id},
+                        extra: tag,
                       ),
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: AppSpacing.xxl),
+                      onFavorite: (p) => context.read<WishlistBloc>().add(
+                        WishlistItemRemoved(p.id),
                       ),
-                    ],
-                  ),
+                    ),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: AppSpacing.xxl),
+                    ),
+                  ],
+                ),
               };
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [header, Expanded(child: body)],
+                children: [
+                  header,
+                  Expanded(child: body),
+                ],
               );
             },
           ),

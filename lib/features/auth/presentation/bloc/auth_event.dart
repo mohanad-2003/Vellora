@@ -21,6 +21,16 @@ class AuthLoginRequested extends AuthEvent {
   List<Object?> get props => [email, password];
 }
 
+/// The authenticator code for an account that asked for two-factor sign-in.
+class AuthTwoFactorSubmitted extends AuthEvent {
+  const AuthTwoFactorSubmitted({required this.code});
+
+  final String code;
+
+  @override
+  List<Object?> get props => [code];
+}
+
 class AuthRegisterRequested extends AuthEvent {
   const AuthRegisterRequested({
     required this.name,
