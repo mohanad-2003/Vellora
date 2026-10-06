@@ -44,6 +44,7 @@ class ApiMappers {
     title: j['title'] as String,
     subtitle: j['subtitle'] as String,
     imagePath: j['imageUrl'] as String,
+    color: j['color'] as String?,
   );
 
   static BrandEntity brand(Map<String, dynamic> j) => BrandEntity(

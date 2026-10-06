@@ -94,7 +94,27 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
   /// Three different hues so each banner stands apart from the others and from
   /// the app's own indigo buttons. All are dark enough for white copy in both
   /// themes. "New" uses the logo's navy and gold.
+  /// Colours the back office can pick (keys match the API's BANNER_COLORS).
+  static const _palette = <String, List<Color>>{
+    'rose': [Color(0xFFE11D48), Color(0xFFFF7A45)],
+    'orange': [Color(0xFFC2410C), Color(0xFFEA580C)],
+    'navy': [Color(0xFF1B1560), Color(0xFF3D2C9B)],
+    'blue': [Color(0xFF1E40AF), Color(0xFF2563EB)],
+    'teal': [Color(0xFF0A8F8A), Color(0xFF075E85)],
+    'emerald': [Color(0xFF047857), Color(0xFF059669)],
+    'purple': [Color(0xFF6D28D9), Color(0xFFA21CAF)],
+  };
+
   PromoBannerStyle _styleFor(BannerEntity b) {
+    final picked = _palette[b.color];
+    if (picked != null) {
+      return PromoBannerStyle(
+        background: picked,
+        foreground: Colors.white,
+        cta: Colors.white,
+        ctaForeground: picked.first,
+      );
+    }
     switch (b.id) {
       case 'flash':
         return const PromoBannerStyle(
