@@ -36,6 +36,7 @@ class ApiEndpoints {
   // Cart and checkout.
   static const String cart = '/cart';
   static const String deliveryOptions = '/delivery-options';
+  static const String paymentOptions = '/payment-options';
 
   // Wishlist.
   static const String wishlist = '/wishlist';

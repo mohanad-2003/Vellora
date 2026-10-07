@@ -83,7 +83,8 @@ class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
       final book = await _wallet.getAddresses();
       final wallet = await _wallet.getWallet();
       final delivery = await _loadDeliveryOptions();
-      final methods = [...wallet.methods, PaymentMethodOption.cashOnDelivery];
+      _offered = await _loadPaymentKinds();
+      final methods = _methodsFor(wallet.methods);
       emit(
         state.copyWith(
           status: CheckoutStatus.ready,
@@ -94,8 +95,8 @@ class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
               book.defaultId ??
               (book.addresses.isEmpty ? null : book.addresses.first.id),
           paymentMethods: methods,
-          selectedPaymentId:
-              wallet.defaultId ?? PaymentMethodOption.cashOnDelivery.id,
+          selectedPaymentId: _defaultFor(methods, wallet.defaultId),
+          cardsOffered: _offers(PaymentKind.card),
           deliveryOptions: delivery,
           selectedDeliveryId: delivery.first.id,
         ),
@@ -108,6 +109,34 @@ class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
           failureKey: mapExceptionToFailure(e).l10nKey,
         ),
       );
+    }
+  }
+
+  /// The payment kinds the server accepts; `null` while that is not known.
+  Set<PaymentKind>? _offered;
+
+  bool _offers(PaymentKind kind) =>
+      _offered == null || _offered!.contains(kind);
+
+  /// Saved cards plus cash on delivery, without what the shop does not accept.
+  /// Showing a payment the server will refuse would only fail at the last step.
+  List<PaymentMethodOption> _methodsFor(List<PaymentMethodOption> saved) {
+    final all = [...saved, PaymentMethodOption.cashOnDelivery];
+    final offered = all.where((m) => _offers(m.kind)).toList();
+    return offered.isEmpty ? [PaymentMethodOption.cashOnDelivery] : offered;
+  }
+
+  /// The saved default when it can still be used, otherwise the first one on offer.
+  String _defaultFor(List<PaymentMethodOption> methods, String? savedDefault) =>
+      methods.any((m) => m.id == savedDefault)
+      ? savedDefault!
+      : methods.first.id;
+
+  Future<Set<PaymentKind>?> _loadPaymentKinds() async {
+    try {
+      return await _deliveryOptions.getPaymentKinds();
+    } catch (_) {
+      return null;
     }
   }
 
@@ -128,7 +157,7 @@ class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
     try {
       final book = await _wallet.getAddresses();
       final wallet = await _wallet.getWallet();
-      final methods = [...wallet.methods, PaymentMethodOption.cashOnDelivery];
+      final methods = _methodsFor(wallet.methods);
       final keepAddress = book.addresses.any(
         (a) => a.id == state.selectedAddressId,
       );
@@ -143,7 +172,7 @@ class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
           paymentMethods: methods,
           selectedPaymentId: keepPayment
               ? state.selectedPaymentId
-              : (wallet.defaultId ?? PaymentMethodOption.cashOnDelivery.id),
+              : _defaultFor(methods, wallet.defaultId),
         ),
       );
     } catch (_) {

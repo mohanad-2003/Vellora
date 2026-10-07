@@ -36,6 +36,20 @@ class _MockDelivery extends Mock implements DeliveryRemoteDataSource {}
 
 class _FakeRequest extends Fake implements PlaceOrderRequest {}
 
+class _Answer implements HttpClientAdapter {
+  _Answer(this.status, this.body);
+
+  final int status;
+  final String body;
+
+  @override
+  Future<ResponseBody> fetch(RequestOptions options, Stream<Uint8List>? requestStream, Future<void>? cancelFuture) async =>
+      ResponseBody.fromString(body, status, headers: {Headers.contentTypeHeader: ['application/json']});
+
+  @override
+  void close({bool force = false}) {}
+}
+
 class _Adapter implements HttpClientAdapter {
   final requests = <RequestOptions>[];
 
@@ -235,6 +249,83 @@ void main() {
     });
   });
 
+  group('checkout offers only the payments the shop accepts', () {
+    const item = CartItemEntity(
+      id: 'p1__',
+      productId: 'p1',
+      name: 'Tee',
+      imagePath: '',
+      price: 10,
+      quantity: 1,
+    );
+    const visa = PaymentMethodOption(
+      id: 'card1',
+      kind: PaymentKind.card,
+      title: 'Visa •••• 4242',
+      subtitle: '08/28',
+    );
+    const address = ShippingAddress(
+      id: 'a1', label: 'Home', recipient: 'R', line: 'L', city: 'C', phone: '1');
+
+    Future<CheckoutCubit> open({
+      required Set<PaymentKind>? offered,
+      Wallet wallet = const Wallet(methods: [visa], defaultId: 'card1'),
+      Object? paymentOptionsError,
+    }) async {
+      final getCart = _MockGetCart();
+      final delivery = _MockDelivery();
+      final walletSource = _MockWallet();
+      when(() => getCart(any())).thenAnswer((_) async => const Right([item]));
+      when(walletSource.getAddresses).thenAnswer(
+        (_) async => const AddressBook(addresses: [address], defaultId: 'a1'),
+      );
+      when(walletSource.getWallet).thenAnswer((_) async => wallet);
+      when(delivery.getOptions).thenAnswer((_) async => DeliveryDefaults.options);
+      when(delivery.getPaymentKinds).thenAnswer((_) async {
+        if (paymentOptionsError != null) throw paymentOptionsError;
+        return offered;
+      });
+      final cubit = CheckoutCubit(getCart, _MockRemove(), _MockOrders(), walletSource, delivery);
+      await cubit.load(null);
+      return cubit;
+    }
+
+    test('cash on delivery only: saved cards and "add a card" are not shown', () async {
+      final cubit = await open(offered: {PaymentKind.cashOnDelivery});
+      expect(cubit.state.paymentMethods.map((m) => m.kind), [PaymentKind.cashOnDelivery]);
+      expect(cubit.state.selectedPaymentId, PaymentMethodOption.cashOnDelivery.id,
+          reason: 'the saved default card is no longer usable');
+      expect(cubit.state.cardsOffered, isFalse);
+      await cubit.close();
+    });
+
+    test('cards on offer: saved cards stay, and the saved default is kept', () async {
+      final cubit = await open(offered: {PaymentKind.cashOnDelivery, PaymentKind.card});
+      expect(cubit.state.paymentMethods.map((m) => m.id), ['card1', PaymentMethodOption.cashOnDelivery.id]);
+      expect(cubit.state.selectedPaymentId, 'card1');
+      expect(cubit.state.cardsOffered, isTrue);
+      await cubit.close();
+    });
+
+    test('an older server that cannot say leaves everything as it was', () async {
+      for (final cubit in [
+        await open(offered: null),
+        await open(offered: null, paymentOptionsError: const NetworkException()),
+      ]) {
+        expect(cubit.state.paymentMethods, hasLength(2));
+        expect(cubit.state.selectedPaymentId, 'card1');
+        expect(cubit.state.cardsOffered, isTrue);
+        await cubit.close();
+      }
+    });
+
+    test('a server that lists nothing still leaves cash on delivery', () async {
+      final cubit = await open(offered: <PaymentKind>{});
+      expect(cubit.state.paymentMethods.map((m) => m.kind), [PaymentKind.cashOnDelivery]);
+      await cubit.close();
+    });
+  });
+
   group('placing an order is safe to retry', () {
     late _MockOrders orders;
     late _MockGetCart getCart;
@@ -333,6 +424,25 @@ void main() {
         expect(k, matches(RegExp(r'^[A-Za-z0-9_-]{16,64}$')));
       }
     });
+  });
+
+  test('the payment options come from the server, and a server that cannot say gives null', () async {
+    Dio dioAnswering(int status, Object body) => Dio(BaseOptions(baseUrl: 'https://api.test'))
+      ..httpClientAdapter = _Answer(status, jsonEncode(body));
+
+    final only = await ApiDeliveryRemoteDataSource(
+      dioAnswering(200, {'methods': ['cashOnDelivery']}),
+    ).getPaymentKinds();
+    expect(only, {PaymentKind.cashOnDelivery});
+
+    final all = await ApiDeliveryRemoteDataSource(
+      dioAnswering(200, {'methods': ['cashOnDelivery', 'card', 'paypal', 'bitcoin']}),
+    ).getPaymentKinds();
+    expect(all, PaymentKind.values.toSet(), reason: 'unknown names are ignored');
+
+    // An older server has no such route; a broken one answers badly.
+    expect(await ApiDeliveryRemoteDataSource(dioAnswering(404, {'error': {}})).getPaymentKinds(), isNull);
+    expect(await ApiDeliveryRemoteDataSource(dioAnswering(200, {'oops': 1})).getPaymentKinds(), isNull);
   });
 
   test('the API request carries the key as an Idempotency-Key header', () async {

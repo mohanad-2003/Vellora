@@ -11,6 +11,7 @@ class CheckoutState extends Equatable {
     this.selectedAddressId,
     this.paymentMethods = const [],
     this.selectedPaymentId,
+    this.cardsOffered = true,
     this.deliveryOptions = const [],
     this.selectedDeliveryId,
     this.order,
@@ -24,6 +25,9 @@ class CheckoutState extends Equatable {
   final String? selectedAddressId;
   final List<PaymentMethodOption> paymentMethods;
   final String? selectedPaymentId;
+
+  /// Whether the shop takes cards right now; when it does not, "add a card" is not shown.
+  final bool cardsOffered;
   final List<DeliveryOption> deliveryOptions;
   final String? selectedDeliveryId;
 
@@ -60,6 +64,7 @@ class CheckoutState extends Equatable {
     String? selectedAddressId,
     List<PaymentMethodOption>? paymentMethods,
     String? selectedPaymentId,
+    bool? cardsOffered,
     List<DeliveryOption>? deliveryOptions,
     String? selectedDeliveryId,
     OrderEntity? order,
@@ -73,6 +78,7 @@ class CheckoutState extends Equatable {
       selectedAddressId: selectedAddressId ?? this.selectedAddressId,
       paymentMethods: paymentMethods ?? this.paymentMethods,
       selectedPaymentId: selectedPaymentId ?? this.selectedPaymentId,
+      cardsOffered: cardsOffered ?? this.cardsOffered,
       deliveryOptions: deliveryOptions ?? this.deliveryOptions,
       selectedDeliveryId: selectedDeliveryId ?? this.selectedDeliveryId,
       order: order ?? this.order,
@@ -89,6 +95,7 @@ class CheckoutState extends Equatable {
     selectedAddressId,
     paymentMethods,
     selectedPaymentId,
+    cardsOffered,
     deliveryOptions,
     selectedDeliveryId,
     order,

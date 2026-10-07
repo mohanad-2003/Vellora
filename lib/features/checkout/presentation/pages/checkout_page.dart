@@ -195,14 +195,15 @@ class _CheckoutBody extends StatelessWidget {
                             onTap: () => cubit.selectPayment(m.id),
                           ),
                         ),
-                      _AddPrompt(
-                        icon: Icons.add_card_rounded,
-                        label: l10n.addCard,
-                        onTap: () => _openAndRefresh(
-                          context,
-                          RouteNames.nPaymentMethods,
+                      if (state.cardsOffered)
+                        _AddPrompt(
+                          icon: Icons.add_card_rounded,
+                          label: l10n.addCard,
+                          onTap: () => _openAndRefresh(
+                            context,
+                            RouteNames.nPaymentMethods,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
