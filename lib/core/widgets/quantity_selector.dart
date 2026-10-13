@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../extensions/context_extensions.dart';
-import '../theme/app_radius.dart';
-import '../utils/haptics.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/utils/haptics.dart';
 
 /// Compact "− n +" stepper used in product details and the cart. Buttons keep
 /// a 44dp touch target and announce their action to screen readers.

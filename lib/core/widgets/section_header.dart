@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../extensions/context_extensions.dart';
-import '../theme/app_spacing.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
 
 /// "Title ............ See all ›" header for content sections.
 class SectionHeader extends StatelessWidget {
@@ -12,6 +11,7 @@ class SectionHeader extends StatelessWidget {
     this.actionLabel,
     this.onAction,
     this.trailing,
+
     this.padding = const EdgeInsets.symmetric(horizontal: AppSpacing.screenH),
   });
 
@@ -70,10 +70,7 @@ class SectionHeader extends StatelessWidget {
                 children: [
                   Text(actionLabel!),
                   const SizedBox(width: 2),
-                  Icon(
-                    Icons.chevron_right_rounded,
-                    size: 18,
-                  ),
+                  Icon(Icons.chevron_right_rounded, size: 18),
                 ],
               ),
             ),

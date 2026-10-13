@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../extensions/context_extensions.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
 
 /// Row of star icons rendering a fractional rating (0–5).
 class RatingStars extends StatelessWidget {
@@ -30,8 +29,8 @@ class RatingStars extends StatelessWidget {
             half
                 ? Icons.star_half_rounded
                 : filled
-                    ? Icons.star_rounded
-                    : Icons.star_outline_rounded,
+                ? Icons.star_rounded
+                : Icons.star_outline_rounded,
             color: star,
             size: size,
             // Stars are symmetric, but half-stars must not mirror in RTL.

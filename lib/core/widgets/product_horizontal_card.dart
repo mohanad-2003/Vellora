@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_radius.dart';
 
-import '../extensions/context_extensions.dart';
-import '../theme/app_radius.dart';
 import 'favorite_button.dart';
 import 'price_widget.dart';
 import 'product_image.dart';
