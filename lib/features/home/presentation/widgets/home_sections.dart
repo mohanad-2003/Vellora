@@ -291,7 +291,7 @@ class BestSellersSection extends StatelessWidget {
     if (products.isEmpty) return const SizedBox.shrink();
     final l10n = context.l10n;
     final scaler = MediaQuery.textScalerOf(context);
-    final rowHeight = scaler.scale(128).clamp(110.0, 220.0);
+    final rowHeight = scaler.scale(140).clamp(124.0, 240.0);
     final columnWidth = (MediaQuery.sizeOf(context).width * 0.82).clamp(
       280.0,
       360.0,
