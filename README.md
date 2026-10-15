@@ -256,6 +256,17 @@ The brand name **Vellora** stays in Latin script in Arabic text.
 
 ---
 
+### Crash reporting (optional)
+
+Errors can be sent to [Sentry](https://sentry.io). It is off unless the app is built with a DSN:
+
+```bash
+flutter build apk --dart-define=SENTRY_DSN=https://<key>@<org>.ingest.sentry.io/<project>
+```
+
+Nothing identifying is sent: no user or IP address, no screenshots, web requests are kept out of the trail and email
+addresses are masked in every message. Without the define, reporting does nothing.
+
 ## 🧪 Testing
 
 ```bash
