@@ -7,6 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'app.dart';
 import 'core/di/injection.dart';
+import 'core/localization/locale_cubit.dart';
 import 'core/monitoring/crash_reporting.dart';
 import 'core/push/push_gateway.dart';
 import 'core/push/push_navigation.dart';
@@ -46,6 +47,8 @@ void _startPush() {
       onOpen: openFromPush,
       onForeground: () => sl<UnreadNotificationsCubit>().refresh(),
       platform: defaultTargetPlatform == TargetPlatform.iOS ? 'ios' : 'android',
+      locale: () => sl<LocaleCubit>().state.languageCode,
+      localeChanges: sl<LocaleCubit>().stream.map((_) {}),
     ).start(),
   );
 }

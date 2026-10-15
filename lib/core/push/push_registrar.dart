@@ -28,6 +28,8 @@ class PushRegistrar {
     required this.onOpen,
     required this.onForeground,
     this.platform = 'android',
+    this.locale = _english,
+    this.localeChanges = const Stream.empty(),
   });
 
   final PushGateway gateway;
@@ -44,6 +46,14 @@ class PushRegistrar {
   final VoidCallback onForeground;
   final String platform;
 
+  /// The app's language (`en`, `ar`): phones are told in it.
+  final String Function() locale;
+
+  /// Fires when the shopper changes the app's language.
+  final Stream<void> localeChanges;
+
+  static String _english() => 'en';
+
   final _subscriptions = <StreamSubscription<Object?>>[];
   bool _started = false;
   bool _wasSignedIn = false;
@@ -57,6 +67,7 @@ class PushRegistrar {
       _wasSignedIn = isSignedIn();
       _subscriptions
         ..add(sessionChanges.listen((_) => _sync()))
+        ..add(localeChanges.listen((_) => _languageChanged()))
         ..add(gateway.onTokenRefresh.listen(_register))
         ..add(gateway.onMessage.listen((_) => onForeground()))
         ..add(gateway.onOpened.listen(onOpen));
@@ -86,6 +97,12 @@ class PushRegistrar {
     }
   }
 
+  /// The shop is told the new language, for a phone it already knows.
+  Future<void> _languageChanged() async {
+    final token = _registered;
+    if (token != null) await _send(token);
+  }
+
   /// Asks permission and registers the phone's current address.
   Future<void> _register([String? known]) async {
     try {
@@ -103,7 +120,7 @@ class PushRegistrar {
     try {
       await dio.post<void>(
         ApiEndpoints.devices,
-        data: {'token': token, 'platform': platform},
+        data: {'token': token, 'platform': platform, 'locale': locale()},
       );
       _registered = token;
     } catch (_) {}

@@ -2,8 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 import '../constants/app_constants.dart';
+import '../di/injection.dart';
+import '../localization/locale_cubit.dart';
 import 'interceptors/auth_interceptor.dart';
 import 'interceptors/error_interceptor.dart';
+import 'interceptors/locale_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
 
 /// Configures a shared [Dio] instance with base options + the three
@@ -19,6 +22,7 @@ class DioClient {
         headers: {'Content-Type': 'application/json'},
       ),
     )..interceptors.addAll([
+        LocaleInterceptor(() => sl<LocaleCubit>().state.languageCode),
         _authInterceptor,
         buildLoggingInterceptor(),
         ErrorInterceptor(),

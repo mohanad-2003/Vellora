@@ -71,6 +71,8 @@ void main() {
   late List<Map<String, String>> opened;
   late int foreground;
   late PushRegistrar registrar;
+  late String language;
+  late StreamController<void> languageChanges;
 
   Future<void> settle() => Future<void>.delayed(const Duration(milliseconds: 20));
 
@@ -81,6 +83,8 @@ void main() {
     session = StreamController<void>.broadcast();
     opened = [];
     foreground = 0;
+    language = 'en';
+    languageChanges = StreamController<void>.broadcast();
     registrar = PushRegistrar(
       gateway: gateway,
       dio: calls.dio(),
@@ -88,12 +92,15 @@ void main() {
       sessionChanges: session.stream,
       onOpen: opened.add,
       onForeground: () => foreground++,
+      locale: () => language,
+      localeChanges: languageChanges.stream,
     );
   });
 
   tearDown(() async {
     await registrar.dispose();
     await session.close();
+    await languageChanges.close();
   });
 
   test('nobody signed in: nothing is registered, nobody is asked, the shop hears nothing', () async {
@@ -114,7 +121,30 @@ void main() {
 
     expect(gateway.permissionAsks, 1);
     expect(calls.sent.single.path, '/devices');
-    expect(calls.sent.single.body, {'token': 'token-one-aaaaaaaaaaaaaaaa', 'platform': 'android'});
+    expect(calls.sent.single.body, {'token': 'token-one-aaaaaaaaaaaaaaaa', 'platform': 'android', 'locale': 'en'});
+  });
+
+  test('the phone is registered with the language of the app, and again when the language changes', () async {
+    language = 'ar';
+    signedIn = true;
+    await registrar.start();
+    expect(calls.sent.single.body['locale'], 'ar');
+    calls.sent.clear();
+
+    language = 'en';
+    languageChanges.add(null);
+    await settle();
+    expect(calls.sent.single.path, '/devices');
+    expect(calls.sent.single.body, {'token': 'token-one-aaaaaaaaaaaaaaaa', 'platform': 'android', 'locale': 'en'});
+  });
+
+  test('a language change tells the shop nothing when this phone is not registered', () async {
+    await registrar.start();
+    language = 'ar';
+    languageChanges.add(null);
+    await settle();
+
+    expect(calls.sent, isEmpty);
   });
 
   test('already signed in at start: registers at once', () async {
