@@ -56,6 +56,8 @@ dependencies:
   local_auth: ^3.0.2
   sentry_flutter: ^9.0.0
   image_picker: ^1.2.4
+  firebase_core: ^4.0.0
+  firebase_messaging: ^16.0.0
 
 dev_dependencies:
   flutter_test:
