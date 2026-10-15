@@ -321,6 +321,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get buyNow => 'Buy Now';
 
   @override
+  String get notifyWhenAvailable => 'Notify me when available';
+
+  @override
+  String get stockAlertOn => 'We will tell you when it is back';
+
+  @override
+  String get cancelNotify => 'Cancel notification';
+
+  @override
   String get addedToCart => 'Added to your cart';
 
   @override

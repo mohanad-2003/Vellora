@@ -8,6 +8,11 @@ abstract class ProductRepository {
   Future<Either<Failure, ProductDetailEntity>> getProductDetails(String id);
   Future<Either<Failure, List<ProductEntity>>> getRelatedProducts(String id);
 
+  Future<Either<Failure, Unit>> setStockAlert(
+    String productId, {
+    required bool enabled,
+  });
+
   Future<Either<Failure, Unit>> addReview({
     required String productId,
     required int rating,

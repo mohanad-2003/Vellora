@@ -12,6 +12,7 @@ import '../../domain/entities/product_detail_entity.dart';
 import '../../domain/usecases/add_review_usecase.dart';
 import '../../domain/usecases/get_product_details_usecase.dart';
 import '../../domain/usecases/get_related_products_usecase.dart';
+import '../../domain/usecases/set_stock_alert_usecase.dart';
 import '../../domain/usecases/toggle_favorite_usecase.dart';
 
 part 'product_detail_event.dart';
@@ -25,12 +26,14 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     this._toggleFavorite,
     this._addToCart,
     this._addReview,
+    this._setStockAlert,
   ) : super(const ProductDetailState()) {
     on<ProductDetailRequested>(_onRequested);
     on<ProductColorSelected>(_onColorSelected);
     on<ProductSizeSelected>(_onSizeSelected);
     on<ProductQuantityChanged>(_onQuantityChanged);
     on<ProductFavoriteToggled>(_onFavoriteToggled);
+    on<ProductStockAlertToggled>(_onStockAlertToggled);
     on<ProductReviewSubmitted>(_onReviewSubmitted);
     on<ProductAddToCartRequested>(_onAddToCart);
     on<ProductBuyNowRequested>(_onBuyNow);
@@ -41,6 +44,7 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   final ToggleFavoriteUseCase _toggleFavorite;
   final AddToCartUseCase _addToCart;
   final AddReviewUseCase _addReview;
+  final SetStockAlertUseCase _setStockAlert;
 
   Future<void> _onRequested(
     ProductDetailRequested event,
@@ -107,6 +111,29 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
           ),
         ),
       ),
+    );
+  }
+
+  /// Flips the request at once and puts it back if the server refuses.
+  Future<void> _onStockAlertToggled(
+    ProductStockAlertToggled event,
+    Emitter<ProductDetailState> emit,
+  ) async {
+    final detail = state.detail;
+    if (detail == null) return;
+    final wanted = !detail.stockAlert;
+    emit(state.copyWith(detail: detail.copyWith(stockAlert: wanted)));
+    final result = await _setStockAlert(
+      SetStockAlertParams(detail.product.id, enabled: wanted),
+    );
+    result.match(
+      (failure) => emit(
+        state.copyWith(
+          detail: detail.copyWith(stockAlert: !wanted),
+          failureKey: failure.l10nKey,
+        ),
+      ),
+      (_) {},
     );
   }
 

@@ -111,6 +111,8 @@ import '../../features/product/domain/usecases/get_product_details_usecase.dart'
     as _i133;
 import '../../features/product/domain/usecases/get_related_products_usecase.dart'
     as _i511;
+import '../../features/product/domain/usecases/set_stock_alert_usecase.dart'
+    as _i820;
 import '../../features/product/domain/usecases/toggle_favorite_usecase.dart'
     as _i714;
 import '../../features/product/presentation/bloc/product_detail_bloc.dart'
@@ -445,6 +447,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i511.GetRelatedProductsUseCase>(
       () => _i511.GetRelatedProductsUseCase(gh<_i39.ProductRepository>()),
     );
+    gh.factory<_i820.SetStockAlertUseCase>(
+      () => _i820.SetStockAlertUseCase(gh<_i39.ProductRepository>()),
+    );
     gh.factory<_i709.GetWishlistProductsUseCase>(
       () => _i709.GetWishlistProductsUseCase(gh<_i4.WishlistRepository>()),
     );
@@ -541,6 +546,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i714.ToggleFavoriteUseCase>(),
         gh<_i659.AddToCartUseCase>(),
         gh<_i585.AddReviewUseCase>(),
+        gh<_i820.SetStockAlertUseCase>(),
       ),
     );
     gh.factory<_i487.ExploreCubit>(

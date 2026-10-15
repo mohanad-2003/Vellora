@@ -214,6 +214,13 @@ class _NotificationTile extends StatelessWidget {
                   pathParameters: {'id': orderId},
                 );
               }
+              final productId = item.productId;
+              if (productId != null) {
+                context.pushNamed(
+                  RouteNames.nProduct,
+                  pathParameters: {'id': productId},
+                );
+              }
             },
             child: Padding(
               padding: EdgeInsets.symmetric(

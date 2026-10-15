@@ -32,6 +32,19 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
+  Future<Either<Failure, Unit>> setStockAlert(
+    String productId, {
+    required bool enabled,
+  }) async {
+    try {
+      await _remote.setStockAlert(productId, enabled: enabled);
+      return const Right(unit);
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
   Future<Either<Failure, Unit>> addReview({
     required String productId,
     required int rating,

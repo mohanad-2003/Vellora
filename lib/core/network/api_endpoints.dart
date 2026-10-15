@@ -31,6 +31,7 @@ class ApiEndpoints {
   static const String products = '/products';
   static String productDetails(String id) => '/products/$id';
   static String relatedProducts(String id) => '/products/$id/related';
+  static String productStockAlert(String id) => '/products/$id/stock-alert';
   static String productReviews(String id) => '/products/$id/reviews';
 
   // Cart and checkout.

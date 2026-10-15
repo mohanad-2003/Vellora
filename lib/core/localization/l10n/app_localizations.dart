@@ -668,6 +668,24 @@ abstract class AppLocalizations {
   /// **'Buy Now'**
   String get buyNow;
 
+  /// No description provided for @notifyWhenAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify me when available'**
+  String get notifyWhenAvailable;
+
+  /// No description provided for @stockAlertOn.
+  ///
+  /// In en, this message translates to:
+  /// **'We will tell you when it is back'**
+  String get stockAlertOn;
+
+  /// No description provided for @cancelNotify.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel notification'**
+  String get cancelNotify;
+
   /// No description provided for @addedToCart.
   ///
   /// In en, this message translates to:

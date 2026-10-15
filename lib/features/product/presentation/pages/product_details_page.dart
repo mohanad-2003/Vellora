@@ -4,38 +4,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/constants/app_constants.dart';
-import '../../../../core/di/injection.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/extensions/num_extensions.dart';
-import '../../../../core/responsive/responsive.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/app_bar_widget.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_icon_button.dart';
-import '../../../../core/widgets/count_badge.dart';
-import '../../../../core/widgets/custom_bottom_sheet.dart';
-import '../../../../core/widgets/custom_snackbar.dart';
-import '../../../../core/widgets/favorite_button.dart';
-import '../../../../core/widgets/price_widget.dart';
-import '../../../../core/widgets/quantity_selector.dart';
-import '../../../../core/widgets/rating_stars.dart';
-import '../../../../core/widgets/section_header.dart';
-import '../../../../core/widgets/shimmer_widgets.dart';
-import '../../../cart/presentation/bloc/cart_badge_cubit.dart';
-import '../../../home/domain/entities/product_entity.dart';
-import '../bloc/product_detail_bloc.dart';
-import '../widgets/product_actions_bar.dart';
-import '../widgets/product_gallery.dart';
-import '../widgets/rating_summary.dart';
-import '../widgets/related_products_list.dart';
-import '../widgets/variant_selector.dart';
-import '../widgets/write_review_sheet.dart';
-import '../../../../core/widgets/failure_state_view.dart';
-import '../../../../core/widgets/slow_load_hint.dart';
+import 'package:vellora/core/constants/app_constants.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/extensions/num_extensions.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/app_bar_widget.dart';
+import 'package:vellora/core/widgets/app_button.dart';
+import 'package:vellora/core/widgets/app_icon_button.dart';
+import 'package:vellora/core/widgets/count_badge.dart';
+import 'package:vellora/core/widgets/custom_bottom_sheet.dart';
+import 'package:vellora/core/widgets/custom_snackbar.dart';
+import 'package:vellora/core/widgets/failure_state_view.dart';
+import 'package:vellora/core/widgets/favorite_button.dart';
+import 'package:vellora/core/widgets/price_widget.dart';
+import 'package:vellora/core/widgets/quantity_selector.dart';
+import 'package:vellora/core/widgets/rating_stars.dart';
+import 'package:vellora/core/widgets/section_header.dart';
+import 'package:vellora/core/widgets/shimmer_widgets.dart';
+import 'package:vellora/core/widgets/slow_load_hint.dart';
+import 'package:vellora/features/cart/presentation/bloc/cart_badge_cubit.dart';
+import 'package:vellora/features/home/domain/entities/product_entity.dart';
+import 'package:vellora/features/product/presentation/bloc/product_detail_bloc.dart';
+import 'package:vellora/features/product/presentation/widgets/product_actions_bar.dart';
+import 'package:vellora/features/product/presentation/widgets/product_gallery.dart';
+import 'package:vellora/features/product/presentation/widgets/rating_summary.dart';
+import 'package:vellora/features/product/presentation/widgets/related_products_list.dart';
+import 'package:vellora/features/product/presentation/widgets/variant_selector.dart';
+import 'package:vellora/features/product/presentation/widgets/write_review_sheet.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   const ProductDetailsPage({super.key, required this.productId, this.heroTag});
@@ -187,6 +186,13 @@ class _LoadedView extends StatelessWidget {
       inStock: detail.inStock,
       onAddToCart: () => bloc.add(const ProductAddToCartRequested()),
       onBuyNow: () => bloc.add(const ProductBuyNowRequested()),
+      stockAlert: detail.stockAlert,
+      onStockAlert: () {
+        if (!detail.stockAlert) {
+          AppSnackbar.show(context, message: context.l10n.stockAlertOn);
+        }
+        bloc.add(const ProductStockAlertToggled());
+      },
     );
 
     final wide = context.screenWidth >= Breakpoints.medium;

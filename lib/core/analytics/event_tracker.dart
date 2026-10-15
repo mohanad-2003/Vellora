@@ -56,10 +56,10 @@ class EventTracker {
       final custom = sender;
       if (custom != null) return await custom(body);
       await sl<DioClient>().dio.post<void>(
-            ApiEndpoints.events,
-            data: body,
-            options: Options(extra: {AuthInterceptor.skipAuthErrorKey: true}),
-          );
+        ApiEndpoints.events,
+        data: body,
+        options: Options(extra: {AuthInterceptor.skipAuthErrorKey: true}),
+      );
     } catch (_) {
       // Best effort only.
     }

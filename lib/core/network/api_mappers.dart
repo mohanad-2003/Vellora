@@ -84,6 +84,7 @@ class ApiMappers {
         createdAt: DateTime.parse(j['createdAt'] as String).toLocal(),
         isUnread: j['isUnread'] as bool? ?? false,
         orderId: j['orderId'] as String?,
+        productId: j['productId'] as String?,
       );
 
   static OrderEntity order(Map<String, dynamic> j) {

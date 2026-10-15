@@ -60,6 +60,11 @@ class ProductReviewSubmitted extends ProductDetailEvent {
   List<Object?> get props => [rating, comment];
 }
 
+/// Asks to be told when a sold-out product is back, or takes the request back.
+class ProductStockAlertToggled extends ProductDetailEvent {
+  const ProductStockAlertToggled();
+}
+
 class ProductFavoriteToggled extends ProductDetailEvent {
   const ProductFavoriteToggled();
 }

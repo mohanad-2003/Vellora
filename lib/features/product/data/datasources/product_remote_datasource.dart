@@ -19,6 +19,9 @@ abstract class ProductRemoteDataSource {
   Future<ProductDetailEntity> getProductDetails(String id);
   Future<List<ProductEntity>> getRelatedProducts(String id);
 
+  /// Asks to be told (or stops asking) when a sold-out product is back.
+  Future<void> setStockAlert(String productId, {required bool enabled});
+
   /// Adds the signed-in user's review. Needs an account against the API.
   Future<void> addReview({
     required String productId,
@@ -30,6 +33,11 @@ abstract class ProductRemoteDataSource {
 @mockOnly
 @LazySingleton(as: ProductRemoteDataSource)
 class MockProductRemoteDataSource implements ProductRemoteDataSource {
+  @override
+  Future<void> setStockAlert(String productId, {required bool enabled}) async {
+    await Future<void>.delayed(AppConstants.mockShortDelay);
+  }
+
   @override
   Future<ProductDetailEntity> getProductDetails(String id) async {
     await Future<void>.delayed(AppConstants.mockDelay);
@@ -157,7 +165,18 @@ class ApiProductRemoteDataSource implements ProductRemoteDataSource {
       ],
       inStock:
           (j['product'] as Map<String, dynamic>)['inStock'] as bool? ?? true,
+      stockAlert: j['stockAlert'] as bool? ?? false,
     );
+  }
+
+  @override
+  Future<void> setStockAlert(String productId, {required bool enabled}) async {
+    final path = ApiEndpoints.productStockAlert(productId);
+    if (enabled) {
+      await _dio.put<void>(path);
+    } else {
+      await _dio.delete<void>(path);
+    }
   }
 
   @override

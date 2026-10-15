@@ -14,6 +14,7 @@ class ProductDetailEntity extends Equatable {
     required this.variant,
     required this.reviews,
     this.inStock = true,
+    this.stockAlert = false,
   });
 
   final ProductEntity product;
@@ -23,13 +24,18 @@ class ProductDetailEntity extends Equatable {
   final List<ReviewEntity> reviews;
   final bool inStock;
 
-  ProductDetailEntity copyWith({ProductEntity? product}) => ProductDetailEntity(
+  /// The signed-in shopper asked to be told when this sold-out product returns.
+  final bool stockAlert;
+
+  ProductDetailEntity copyWith({ProductEntity? product, bool? stockAlert}) =>
+      ProductDetailEntity(
     product: product ?? this.product,
     gallery: gallery,
     description: description,
     variant: variant,
     reviews: reviews,
     inStock: inStock,
+    stockAlert: stockAlert ?? this.stockAlert,
   );
 
   @override
@@ -40,5 +46,6 @@ class ProductDetailEntity extends Equatable {
     variant,
     reviews,
     inStock,
+    stockAlert,
   ];
 }

@@ -322,6 +322,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get buyNow => 'اشترِ الآن';
 
   @override
+  String get notifyWhenAvailable => 'أعلمني عند التوفر';
+
+  @override
+  String get stockAlertOn => 'سنخبرك عندما يعود متوفرًا';
+
+  @override
+  String get cancelNotify => 'إلغاء التنبيه';
+
+  @override
   String get addedToCart => 'تمت الإضافة إلى سلتك';
 
   @override
