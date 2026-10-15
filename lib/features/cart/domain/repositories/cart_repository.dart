@@ -2,6 +2,7 @@ import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../entities/cart_item_entity.dart';
+import '../entities/coupon_offer_entity.dart';
 import '../entities/promo_code_entity.dart';
 
 abstract class CartRepository {
@@ -10,6 +11,8 @@ abstract class CartRepository {
   Future<Either<Failure, Unit>> updateQuantity(String itemId, int quantity);
   Future<Either<Failure, Unit>> removeItem(String itemId);
   Future<Either<Failure, PromoCodeEntity>> applyPromo(String code);
+
+  Future<Either<Failure, List<CouponOfferEntity>>> availableCoupons();
 
   /// Merges the device's bag with the signed-in account's (after signing in or
   /// at app start). No-op for guests; failures keep the local bag.

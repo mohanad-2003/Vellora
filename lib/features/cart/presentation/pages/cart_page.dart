@@ -20,6 +20,7 @@ import 'package:vellora/features/cart/domain/entities/cart_item_entity.dart';
 import 'package:vellora/features/cart/presentation/widgets/cart_item_tile.dart';
 import 'package:vellora/features/cart/presentation/widgets/free_shipping_progress.dart';
 import 'package:vellora/features/cart/presentation/widgets/price_summary_card.dart';
+import 'package:vellora/features/cart/presentation/widgets/available_coupons.dart';
 import 'package:vellora/features/cart/presentation/widgets/promo_code_input.dart';
 
 class CartPage extends StatelessWidget {
@@ -161,6 +162,10 @@ class _LoadedCart extends StatelessWidget {
                 onApply: (code) => bloc.add(CartPromoApplied(code)),
                 onRemove: () => bloc.add(const CartPromoRemoved()),
               ),
+              if (state.promo == null)
+                AvailableCoupons(
+                  onApply: (code) => bloc.add(CartPromoApplied(code)),
+                ),
               const SizedBox(height: AppSpacing.xxl),
               if (summary != null) PriceSummaryCard(summary: summary),
             ],

@@ -49,6 +49,8 @@ import '../../features/cart/data/repositories/cart_repository_impl.dart'
 import '../../features/cart/domain/repositories/cart_repository.dart' as _i322;
 import '../../features/cart/domain/usecases/add_to_cart_usecase.dart' as _i659;
 import '../../features/cart/domain/usecases/apply_promo_usecase.dart' as _i759;
+import '../../features/cart/domain/usecases/get_available_coupons_usecase.dart'
+    as _i602;
 import '../../features/cart/domain/usecases/get_cart_usecase.dart' as _i179;
 import '../../features/cart/domain/usecases/remove_from_cart_usecase.dart'
     as _i355;
@@ -385,6 +387,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i759.ApplyPromoUseCase>(
       () => _i759.ApplyPromoUseCase(gh<_i322.CartRepository>()),
+    );
+    gh.factory<_i602.GetAvailableCouponsUseCase>(
+      () => _i602.GetAvailableCouponsUseCase(gh<_i322.CartRepository>()),
     );
     gh.factory<_i179.GetCartUseCase>(
       () => _i179.GetCartUseCase(gh<_i322.CartRepository>()),

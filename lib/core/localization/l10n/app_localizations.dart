@@ -764,6 +764,30 @@ abstract class AppLocalizations {
   /// **'Invalid promo code'**
   String get invalidPromo;
 
+  /// No description provided for @availableCoupons.
+  ///
+  /// In en, this message translates to:
+  /// **'Available coupons'**
+  String get availableCoupons;
+
+  /// No description provided for @couponPercentOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% off'**
+  String couponPercentOff(String percent);
+
+  /// No description provided for @couponMinSpend.
+  ///
+  /// In en, this message translates to:
+  /// **'Spend {amount}+'**
+  String couponMinSpend(String amount);
+
+  /// No description provided for @couponFirstOrderOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'First order'**
+  String get couponFirstOrderOnly;
+
   /// No description provided for @subtotal.
   ///
   /// In en, this message translates to:

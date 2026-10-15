@@ -135,6 +135,24 @@
   "apply": "Apply",
   "promoApplied": "Promo code applied",
   "invalidPromo": "Invalid promo code",
+  "availableCoupons": "Available coupons",
+  "couponPercentOff": "{percent}% off",
+  "@couponPercentOff": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "couponMinSpend": "Spend {amount}+",
+  "@couponMinSpend": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "couponFirstOrderOnly": "First order",
   "subtotal": "Subtotal",
   "discount": "Discount",
   "shipping": "Shipping",

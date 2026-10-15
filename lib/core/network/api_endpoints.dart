@@ -45,6 +45,7 @@ class ApiEndpoints {
 
   // Promos, orders, notifications.
   static const String promoValidate = '/promos/validate';
+  static const String promosAvailable = '/promos/available';
   static const String events = '/events';
   static const String orders = '/orders';
   static String order(String id) => '/orders/$id';

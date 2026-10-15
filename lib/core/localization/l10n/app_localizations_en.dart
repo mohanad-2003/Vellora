@@ -370,6 +370,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidPromo => 'Invalid promo code';
 
   @override
+  String get availableCoupons => 'Available coupons';
+
+  @override
+  String couponPercentOff(String percent) {
+    return '$percent% off';
+  }
+
+  @override
+  String couponMinSpend(String amount) {
+    return 'Spend $amount+';
+  }
+
+  @override
+  String get couponFirstOrderOnly => 'First order';
+
+  @override
   String get subtotal => 'Subtotal';
 
   @override

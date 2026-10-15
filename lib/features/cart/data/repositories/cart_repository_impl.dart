@@ -7,6 +7,7 @@ import '../../../../core/errors/exception_mapper.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../auth/data/datasources/auth_local_datasource.dart';
 import '../../domain/entities/cart_item_entity.dart';
+import '../../domain/entities/coupon_offer_entity.dart';
 import '../../domain/entities/promo_code_entity.dart';
 import '../../domain/repositories/cart_repository.dart';
 import '../datasources/cart_local_datasource.dart';
@@ -99,6 +100,15 @@ class CartRepositoryImpl implements CartRepository {
   Future<Either<Failure, PromoCodeEntity>> applyPromo(String code) async {
     try {
       return Right(await _promo.validate(code));
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<CouponOfferEntity>>> availableCoupons() async {
+    try {
+      return Right(await _promo.available());
     } catch (e) {
       return Left(mapExceptionToFailure(e));
     }

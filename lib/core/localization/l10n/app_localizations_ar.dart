@@ -370,6 +370,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalidPromo => 'رمز خصم غير صالح';
 
   @override
+  String get availableCoupons => 'كوبونات متاحة';
+
+  @override
+  String couponPercentOff(String percent) {
+    return 'خصم $percent%';
+  }
+
+  @override
+  String couponMinSpend(String amount) {
+    return 'عند شراء $amount+';
+  }
+
+  @override
+  String get couponFirstOrderOnly => 'الطلب الأول';
+
+  @override
   String get subtotal => 'المجموع الفرعي';
 
   @override
