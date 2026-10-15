@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/localization/l10n_lookup.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_dialog.dart';
-import '../../../../core/widgets/app_text_field.dart';
-import '../../../../core/widgets/custom_snackbar.dart';
-import '../../../../core/widgets/two_factor_code_field.dart';
-import '../../../auth/domain/entities/two_factor_setup.dart';
-import '../cubit/security_cubit.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/app_button.dart';
+import 'package:vellora/core/widgets/app_dialog.dart';
+import 'package:vellora/core/widgets/app_text_field.dart';
+import 'package:vellora/core/widgets/custom_snackbar.dart';
+import 'package:vellora/core/widgets/two_factor_code_field.dart';
+import 'package:vellora/features/auth/domain/entities/two_factor_setup.dart';
+import 'package:vellora/features/profile/presentation/cubit/security_cubit.dart';
 
 /// Walks the user through adding the account to an authenticator app and
 /// confirming with a code. True once two-factor is on.

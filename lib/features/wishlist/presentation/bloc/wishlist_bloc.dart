@@ -1,10 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../home/domain/entities/product_entity.dart';
-import '../../domain/usecases/get_wishlist_products_usecase.dart';
-import '../../domain/usecases/remove_from_wishlist_usecase.dart';
+import 'package:vellora/features/home/domain/entities/product_entity.dart';
+import 'package:vellora/features/wishlist/domain/usecases/get_wishlist_products_usecase.dart';
+import 'package:vellora/features/wishlist/domain/usecases/remove_from_wishlist_usecase.dart';
 
 part 'wishlist_event.dart';
 part 'wishlist_state.dart';

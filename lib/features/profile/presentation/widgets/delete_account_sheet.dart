@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/localization/l10n_lookup.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/app_dialog.dart';
-import '../../../../core/widgets/app_text_field.dart';
-import '../../../../core/widgets/custom_snackbar.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/app_dialog.dart';
+import 'package:vellora/core/widgets/app_text_field.dart';
+import 'package:vellora/core/widgets/custom_snackbar.dart';
 
 /// Opens the confirm-with-password sheet. [onConfirm] deletes the account on
 /// the server and returns a failure key, or null once it is gone; the session

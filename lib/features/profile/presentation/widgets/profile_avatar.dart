@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../../../core/extensions/context_extensions.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
 
 /// Circular user avatar that renders [avatarUrl] when available, otherwise the
 /// user's initials on a primary-colored disc. Optionally shows an edit badge.

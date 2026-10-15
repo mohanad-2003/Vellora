@@ -1,8 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
-import '../extensions/context_extensions.dart';
-import '../theme/app_spacing.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
 
 /// Checkbox + rich text with a tappable "Terms & Privacy" link. Used on the
 /// Register form to gate submission behind explicit consent.

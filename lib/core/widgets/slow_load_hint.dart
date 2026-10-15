@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-import '../extensions/context_extensions.dart';
-import '../theme/app_radius.dart';
-import '../theme/app_spacing.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
 
 /// A quiet note that appears when a screen has been loading for a while. The
 /// hosted API sleeps when idle and can take about a minute to wake up; without

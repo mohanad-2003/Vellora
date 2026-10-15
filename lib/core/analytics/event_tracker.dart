@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/network/api_endpoints.dart';
+import 'package:vellora/core/network/dio_client.dart';
 
-import '../di/injection.dart';
-import '../network/api_endpoints.dart';
-import '../network/dio_client.dart';
 import '../network/interceptors/auth_interceptor.dart';
 
 /// The steps of a shopping visit the back office funnel counts.

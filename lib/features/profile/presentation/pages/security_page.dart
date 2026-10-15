@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/di/injection.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/localization/l10n_lookup.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/utils/input_validators.dart';
-import '../../../../core/widgets/app_bar_widget.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_text_field.dart';
-import '../../../../core/widgets/auth_error_banner.dart';
-import '../../../../core/widgets/custom_bottom_sheet.dart';
-import '../../../../core/widgets/custom_snackbar.dart';
-import '../../../../core/widgets/settings_tile.dart';
-import '../../../auth/presentation/bloc/user_session_cubit.dart';
-import '../cubit/security_cubit.dart';
-import '../widgets/two_factor_dialogs.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/utils/input_validators.dart';
+import 'package:vellora/core/widgets/app_bar_widget.dart';
+import 'package:vellora/core/widgets/app_button.dart';
+import 'package:vellora/core/widgets/app_text_field.dart';
+import 'package:vellora/core/widgets/auth_error_banner.dart';
+import 'package:vellora/core/widgets/custom_bottom_sheet.dart';
+import 'package:vellora/core/widgets/custom_snackbar.dart';
+import 'package:vellora/core/widgets/settings_tile.dart';
+import 'package:vellora/features/auth/presentation/bloc/user_session_cubit.dart';
+import 'package:vellora/features/profile/presentation/cubit/security_cubit.dart';
+import 'package:vellora/features/profile/presentation/widgets/two_factor_dialogs.dart';
 
 class SecurityPage extends StatelessWidget {
   const SecurityPage({super.key});
@@ -23,8 +22,9 @@ class SecurityPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<SecurityCubit>()
-        ..load(context.read<UserSessionCubit>().state?.email),
+      create: (context) =>
+          sl<SecurityCubit>()
+            ..load(context.read<UserSessionCubit>().state?.email),
       child: const _SecurityView(),
     );
   }

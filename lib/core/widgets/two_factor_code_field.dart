@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
 
-import '../extensions/context_extensions.dart';
 import 'app_text_field.dart';
 
 /// Input for the 6-digit code from an authenticator app.

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
 
-import '../extensions/context_extensions.dart';
-import '../theme/app_radius.dart';
-import '../theme/app_spacing.dart';
 import 'product_card.dart';
 import 'product_grid.dart';
 import 'slow_load_hint.dart';
@@ -100,7 +100,7 @@ class ProductGridShimmer extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       slivers: [
         SliverPadding(
-          padding: const EdgeInsets.all(AppSpacing.screenH),
+          padding: EdgeInsets.all(AppSpacing.screenH),
           sliver: SliverProductGridSkeleton(itemCount: itemCount),
         ),
       ],
@@ -175,10 +175,7 @@ class ListSkeleton extends StatelessWidget {
           separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.xl),
           itemBuilder: (_, _) => ListRowSkeleton(thumb: thumb),
         ),
-        const Align(
-          alignment: Alignment.bottomCenter,
-          child: SlowLoadHint(),
-        ),
+        const Align(alignment: Alignment.bottomCenter, child: SlowLoadHint()),
       ],
     );
   }

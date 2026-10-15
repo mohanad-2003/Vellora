@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/di/injection.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/utils/input_validators.dart';
-import '../../../../core/widgets/app_bar_widget.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_text_field.dart';
-import '../../../../core/widgets/custom_bottom_sheet.dart';
-import '../../../../core/widgets/custom_snackbar.dart';
-import '../../../../core/widgets/empty_state_widget.dart';
-import '../../../../core/widgets/shimmer_widgets.dart';
-import '../../../../core/localization/l10n_lookup.dart';
-import '../../../checkout/presentation/models/checkout_models.dart';
-import '../cubit/addresses_cubit.dart';
-import '../../../../core/widgets/failure_state_view.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/utils/input_validators.dart';
+import 'package:vellora/core/widgets/app_bar_widget.dart';
+import 'package:vellora/core/widgets/app_button.dart';
+import 'package:vellora/core/widgets/app_text_field.dart';
+import 'package:vellora/core/widgets/custom_bottom_sheet.dart';
+import 'package:vellora/core/widgets/custom_snackbar.dart';
+import 'package:vellora/core/widgets/empty_state_widget.dart';
+import 'package:vellora/core/widgets/failure_state_view.dart';
+import 'package:vellora/core/widgets/shimmer_widgets.dart';
+import 'package:vellora/features/checkout/presentation/models/checkout_models.dart';
+import 'package:vellora/features/profile/presentation/cubit/addresses_cubit.dart';
 
 class SavedAddressesPage extends StatelessWidget {
   const SavedAddressesPage({super.key});

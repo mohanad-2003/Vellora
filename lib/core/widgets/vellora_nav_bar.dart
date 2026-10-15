@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/utils/haptics.dart';
 
-import '../extensions/context_extensions.dart';
-import '../theme/app_radius.dart';
-import '../utils/haptics.dart';
 import 'count_badge.dart';
 
 /// One destination in the main navigation.

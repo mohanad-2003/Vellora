@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../constants/app_constants.dart';
-import '../constants/asset_paths.dart';
-import '../extensions/context_extensions.dart';
+import 'package:vellora/core/constants/app_constants.dart';
+import 'package:vellora/core/constants/asset_paths.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
 
 /// Vellora app mark: the "V" tile used as the launcher icon. It carries its
 /// own navy-to-violet background, so it reads on light and dark surfaces alike.

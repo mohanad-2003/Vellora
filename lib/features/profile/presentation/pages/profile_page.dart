@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/constants/app_constants.dart';
-import '../../../../core/di/injection.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/responsive/responsive.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/app_dialog.dart';
-import '../../../../core/widgets/custom_bottom_sheet.dart';
-import '../../../../core/widgets/settings_tile.dart';
-import '../../../../core/widgets/shimmer_widgets.dart';
-import '../../../../core/widgets/favorites_listener.dart';
-import '../../../auth/domain/entities/user_entity.dart';
-import '../../../cart/presentation/bloc/cart_badge_cubit.dart';
-import '../cubit/profile_cubit.dart';
-import '../widgets/profile_avatar.dart';
+import 'package:vellora/core/constants/app_constants.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/app_dialog.dart';
+import 'package:vellora/core/widgets/custom_bottom_sheet.dart';
+import 'package:vellora/core/widgets/favorites_listener.dart';
+import 'package:vellora/core/widgets/settings_tile.dart';
+import 'package:vellora/core/widgets/shimmer_widgets.dart';
+import 'package:vellora/features/auth/domain/entities/user_entity.dart';
+import 'package:vellora/features/cart/presentation/bloc/cart_badge_cubit.dart';
+import 'package:vellora/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:vellora/features/profile/presentation/widgets/profile_avatar.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});

@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/constants/app_constants.dart';
-import '../../../../core/errors/failures.dart';
-import '../../../../core/di/injection.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/localization/locale_cubit.dart';
-import '../../../../core/responsive/responsive.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/theme_cubit.dart';
-import '../../../../core/utils/cache_cleaner.dart';
-import '../../../../core/utils/haptics.dart';
-import '../../../../core/widgets/app_bar_widget.dart';
-import '../../../../core/widgets/custom_snackbar.dart';
-import '../../../../core/widgets/language_option_tile.dart';
-import '../../../../core/widgets/settings_tile.dart';
-import '../../../../core/widgets/vellora_logo.dart';
-import '../../../auth/domain/repositories/auth_repository.dart';
-import '../../../auth/presentation/bloc/user_session_cubit.dart';
-import '../../../profile/presentation/widgets/delete_account_sheet.dart';
-import '../cubit/notification_prefs_cubit.dart';
+import 'package:vellora/core/constants/app_constants.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/errors/failures.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/localization/locale_cubit.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/theme/theme_cubit.dart';
+import 'package:vellora/core/utils/cache_cleaner.dart';
+import 'package:vellora/core/utils/haptics.dart';
+import 'package:vellora/core/widgets/app_bar_widget.dart';
+import 'package:vellora/core/widgets/custom_snackbar.dart';
+import 'package:vellora/core/widgets/language_option_tile.dart';
+import 'package:vellora/core/widgets/settings_tile.dart';
+import 'package:vellora/core/widgets/vellora_logo.dart';
+import 'package:vellora/features/auth/domain/repositories/auth_repository.dart';
+import 'package:vellora/features/auth/presentation/bloc/user_session_cubit.dart';
+import 'package:vellora/features/profile/presentation/widgets/delete_account_sheet.dart';
+import 'package:vellora/features/settings/presentation/cubit/notification_prefs_cubit.dart';
 
 /// App settings: appearance, language, notifications, security, privacy, about.
 class SettingsPage extends StatelessWidget {

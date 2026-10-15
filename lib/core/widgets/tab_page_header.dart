@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../extensions/context_extensions.dart';
-import '../theme/app_radius.dart';
-import '../theme/app_spacing.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
 
 /// Large title for a top-level tab (Explore, Wishlist, Cart): the title, a
 /// short subtitle and an optional count pill.

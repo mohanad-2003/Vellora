@@ -12,6 +12,7 @@ class PromoBannerStyle {
     required this.foreground,
     required this.cta,
     required this.ctaForeground,
+    req,
   });
 
   /// Panel gradient.
