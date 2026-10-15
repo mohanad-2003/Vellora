@@ -50,8 +50,9 @@ class _CheckoutView extends StatelessWidget {
         listener: (context, state) {
           if (state.status == CheckoutStatus.success && state.order != null) {
             Haptics.success();
-            // The order's notification now exists on the server: show its dot.
-            sl<UnreadNotificationsCubit>().refresh();
+            // The order's notification now exists on the server: show its dot,
+            // without announcing what the shopper has just done themselves.
+            sl<UnreadNotificationsCubit>().refresh(announce: false);
             context.pushReplacementNamed(
               RouteNames.nOrderSuccess,
               extra: state.order,

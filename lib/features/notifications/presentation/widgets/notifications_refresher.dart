@@ -74,10 +74,8 @@ class _NotificationsRefresherState extends State<NotificationsRefresher>
         : null;
     AppSnackbar.show(
       context,
-      message: [
-        if (n.title != null) n.title!,
-        if (n.body != null) n.body!,
-      ].join('\n'),
+      title: n.title,
+      message: n.body ?? '',
       actionLabel: target == null ? null : context.l10n.viewDetails,
       onAction: target == null
           ? null

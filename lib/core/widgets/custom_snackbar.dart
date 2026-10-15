@@ -5,14 +5,26 @@ import '../theme/app_radius.dart';
 
 enum SnackType { success, error, info }
 
+final RegExp _rtlLetters = RegExp(r'[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]');
+
+/// The direction a piece of text reads in: right to left when it holds Arabic
+/// or Hebrew letters, left to right otherwise. Server messages are English even
+/// in the Arabic app, and a full stop or number would otherwise land on the
+/// wrong side.
+
 /// Themed floating snackbars. Content is announced to screen readers by the
 /// framework's [SnackBar] semantics.
 class AppSnackbar {
   AppSnackbar._();
 
+  /// The direction [text] should be laid out in.
+  static TextDirection directionOf(String text) =>
+      _rtlLetters.hasMatch(text) ? TextDirection.rtl : TextDirection.ltr;
+
   static void show(
     BuildContext context, {
     required String message,
+    String? title,
     SnackType type = SnackType.info,
     String? actionLabel,
     VoidCallback? onAction,
@@ -23,6 +35,7 @@ class AppSnackbar {
         build(
           context,
           message: message,
+          title: title,
           type: type,
           actionLabel: actionLabel,
           onAction: onAction,
@@ -36,6 +49,7 @@ class AppSnackbar {
   static SnackBar build(
     BuildContext context, {
     required String message,
+    String? title,
     SnackType type = SnackType.info,
     String? actionLabel,
     VoidCallback? onAction,
@@ -56,9 +70,27 @@ class AppSnackbar {
           Icon(icon, color: onColor, size: 20),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              message,
-              style: context.textTheme.bodyMedium?.copyWith(color: onColor),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (title != null && title.isNotEmpty)
+                  Text(
+                    title,
+                    textDirection: directionOf(title),
+                    style: context.textTheme.titleSmall?.copyWith(
+                      color: onColor,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                Text(
+                  message,
+                  textDirection: directionOf(message),
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    color: onColor,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

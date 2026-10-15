@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:vellora/core/di/injection.dart';
 import 'package:vellora/core/localization/l10n/app_localizations.dart';
 import 'package:vellora/core/theme/app_theme.dart';
+import 'package:vellora/core/widgets/custom_snackbar.dart';
 import 'package:vellora/features/notifications/data/notifications_remote_datasource.dart';
 import 'package:vellora/features/notifications/domain/notification_entity.dart';
 import 'package:vellora/features/notifications/presentation/cubit/notifications_cubit.dart';
@@ -101,6 +102,21 @@ void main() {
       await unread.refresh();
       await Future<void>.delayed(Duration.zero);
       expect(announced, ['b']);
+    });
+
+    test('what the shopper has just done themselves is taken in without announcing it', () async {
+      feed.items = [_n('a')];
+      await unread.refresh();
+
+      feed.items = [_n('placed', orderId: 'o-1', title: 'Order placed'), _n('a')];
+      await unread.refresh(announce: false);
+      await Future<void>.delayed(Duration.zero);
+      expect(announced, isEmpty);
+      expect(unread.state, 2, reason: 'the dot still counts it');
+
+      await unread.refresh();
+      await Future<void>.delayed(Duration.zero);
+      expect(announced, isEmpty, reason: 'and it is not announced afterwards either');
     });
 
     test('after the account changes the new feed starts from scratch', () async {
@@ -221,6 +237,20 @@ void main() {
       expect(find.text('View details'), findsOneWidget);
     });
 
+    testWidgets('the title is its own line above the text', (tester) async {
+      feed.items = [_n('a')];
+      await tester.runAsync(unread.refresh);
+      await tester.pumpWidget(app());
+
+      feed.items = [_n('b', productId: 'p1', title: 'Back in stock'), _n('a')];
+      await tester.runAsync(unread.refresh);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Back in stock'), findsOneWidget);
+      expect(find.text('Body b'), findsOneWidget);
+    });
+
     testWidgets('a notification with nothing to open is shown without a button', (tester) async {
       feed.items = [_n('a')];
       await tester.runAsync(unread.refresh);
@@ -233,6 +263,16 @@ void main() {
 
       expect(find.textContaining('Sale'), findsOneWidget);
       expect(find.text('View details'), findsNothing);
+    });
+  });
+
+  group('which way a message reads', () {
+    test('Arabic right to left, everything else left to right', () {
+      expect(AppSnackbar.directionOf('Order #VL-20042 was placed and is being processed.'), TextDirection.ltr);
+      expect(AppSnackbar.directionOf('تم تأكيد طلبك'), TextDirection.rtl);
+      expect(AppSnackbar.directionOf('طلب VL-20042'), TextDirection.rtl);
+      expect(AppSnackbar.directionOf(''), TextDirection.ltr);
+      expect(AppSnackbar.directionOf('12345'), TextDirection.ltr);
     });
   });
 }

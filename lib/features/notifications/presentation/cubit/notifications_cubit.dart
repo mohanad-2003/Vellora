@@ -52,12 +52,16 @@ class UnreadNotificationsCubit extends Cubit<int> with SafeEmit<int> {
   Stream<NotificationEntity> get arrivals => _arrivals.stream;
 
   /// Silent: a guest or an offline device simply shows no dot.
-  Future<void> refresh() async {
+  ///
+  /// With [announce] false what is new is taken in without being announced, for
+  /// when the shopper has just done the thing the notification is about (the
+  /// order they placed a second ago).
+  Future<void> refresh({bool announce = true}) async {
     try {
       final items = await _remote.getNotifications();
       final known = _known;
       _known = {for (final n in items) n.id};
-      if (known != null) {
+      if (known != null && announce) {
         for (final n in items.reversed) {
           if (n.isUnread && !known.contains(n.id)) _arrivals.add(n);
         }
