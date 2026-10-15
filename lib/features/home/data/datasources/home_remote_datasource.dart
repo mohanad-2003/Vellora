@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/errors/exceptions.dart';
+import '../../../../core/network/interceptors/error_interceptor.dart';
 import '../../../../core/di/environments.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/api_mappers.dart';
@@ -12,6 +14,7 @@ import '../../domain/entities/home_data_entity.dart';
 import '../../domain/entities/home_offer_entity.dart';
 import '../../domain/entities/product_entity.dart';
 import '../../domain/home_rails.dart';
+import '../home_cache.dart';
 
 /// Mocked home backend. Builds the home payload from the shared [MockCatalog]
 /// with a simulated delay. A real datasource would deserialize JSON models.
@@ -145,11 +148,31 @@ class ApiHomeRemoteDataSource implements HomeRemoteDataSource {
   ApiHomeRemoteDataSource(this._dio);
 
   final Dio _dio;
+  static const _cache = HomeCache();
+
+  /// The response from the shop, saved for next time. When the shop cannot be
+  /// reached (no signal, a server that is asleep or failing) the last saved
+  /// response is used instead; with none saved the failure is passed on.
+  Future<Map<String, dynamic>> _fetch() async {
+    try {
+      final res = await _dio.get<Map<String, dynamic>>(ApiEndpoints.home);
+      final json = res.data!;
+      await _cache.save(json);
+      return json;
+    } on DioException catch (e) {
+      final cause = e.error;
+      final unreachable = cause is NetworkException ||
+          cause is ServerException ||
+          cause is UnexpectedFallback;
+      final saved = unreachable ? await _cache.read() : null;
+      if (saved == null) rethrow;
+      return saved;
+    }
+  }
 
   @override
   Future<HomeDataEntity> getHomeData() async {
-    final res = await _dio.get<Map<String, dynamic>>(ApiEndpoints.home);
-    final j = res.data!;
+    final j = await _fetch();
     // Grocery items stay in the catalogue but are not "Featured" picks.
     final featured = ApiMappers.products(
       j['featured'],
