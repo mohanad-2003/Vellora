@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -30,23 +32,60 @@ class NotificationsState extends Equatable {
 
 /// Number of unread notifications, for the dot on Home's bell. Kept in sync by
 /// [NotificationsCubit] and refreshed by Home.
+///
+/// It also notices notifications that arrive while the app is open: every
+/// unread one it had not seen before is sent on [arrivals], so the app can say
+/// so at once instead of waiting for the shopper to open the list. What was
+/// already there when the feed was first read (or when the account changed) is
+/// never announced.
 @lazySingleton
 class UnreadNotificationsCubit extends Cubit<int> with SafeEmit<int> {
   UnreadNotificationsCubit(this._remote) : super(0);
 
   final NotificationsRemoteDataSource _remote;
+  final _arrivals = StreamController<NotificationEntity>.broadcast();
+
+  /// The ids of the feed as last read; null until the first read.
+  Set<String>? _known;
+
+  /// Notifications that came in while the app was open, oldest first.
+  Stream<NotificationEntity> get arrivals => _arrivals.stream;
 
   /// Silent: a guest or an offline device simply shows no dot.
   Future<void> refresh() async {
     try {
       final items = await _remote.getNotifications();
+      final known = _known;
+      _known = {for (final n in items) n.id};
+      if (known != null) {
+        for (final n in items.reversed) {
+          if (n.isUnread && !known.contains(n.id)) _arrivals.add(n);
+        }
+      }
       emit(items.where((n) => n.isUnread).length);
     } catch (_) {
       emit(0);
     }
   }
 
+  /// A different account (or none): the next read starts from scratch, so its
+  /// existing notifications are not announced as new.
+  void reset() => _known = null;
+
+  /// Takes the feed the Notifications screen just read as seen, and updates the
+  /// dot, without announcing anything.
+  void sync(List<NotificationEntity> items) {
+    _known = {for (final n in items) n.id};
+    emit(items.where((n) => n.isUnread).length);
+  }
+
   void set(int count) => emit(count);
+
+  @override
+  Future<void> close() {
+    _arrivals.close();
+    return super.close();
+  }
 }
 
 /// Drives the Notifications screen. Read / dismiss changes are applied
@@ -55,10 +94,32 @@ class UnreadNotificationsCubit extends Cubit<int> with SafeEmit<int> {
 class NotificationsCubit extends Cubit<NotificationsState>
     with SafeEmit<NotificationsState> {
   NotificationsCubit(this._remote, this._unread)
-    : super(const NotificationsState());
+    : super(const NotificationsState()) {
+    // A notification that arrives while the list is open appears in it.
+    _arrivals = _unread.arrivals.listen((_) => reloadQuietly());
+  }
 
   final NotificationsRemoteDataSource _remote;
   final UnreadNotificationsCubit _unread;
+  StreamSubscription<NotificationEntity>? _arrivals;
+
+  /// Reads the feed again without clearing the screen. A failure leaves what is
+  /// shown as it is.
+  Future<void> reloadQuietly() async {
+    try {
+      final items = await _remote.getNotifications();
+      emit(
+        NotificationsState(status: NotificationsStatus.loaded, items: items),
+      );
+      _unread.sync(items);
+    } catch (_) {}
+  }
+
+  @override
+  Future<void> close() {
+    _arrivals?.cancel();
+    return super.close();
+  }
 
   Future<void> load() async {
     emit(const NotificationsState());
@@ -67,7 +128,7 @@ class NotificationsCubit extends Cubit<NotificationsState>
       emit(
         NotificationsState(status: NotificationsStatus.loaded, items: items),
       );
-      _unread.set(items.where((n) => n.isUnread).length);
+      _unread.sync(items);
     } catch (e) {
       emit(
         NotificationsState(

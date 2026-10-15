@@ -36,7 +36,9 @@ class VelloraApp extends StatelessWidget {
       // A different user (or a log out) means a different notification feed.
       child: BlocListener<UserSessionCubit, SessionUser?>(
         listener: (context, session) {
-          context.read<UnreadNotificationsCubit>().refresh();
+          context.read<UnreadNotificationsCubit>()
+            ..reset()
+            ..refresh();
           // The session ended without the user asking (expired token): the
           // auth interceptor cleared it, so send them to sign in again.
           if (session == null) AppRouter.router.go(RouteNames.login);
