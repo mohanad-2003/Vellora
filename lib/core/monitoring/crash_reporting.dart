@@ -16,6 +16,9 @@ class CrashReporting {
 
   static bool get enabled => _dsn.isNotEmpty;
 
+  /// `--dart-define=SENTRY_TEST=true` sends one test error at start-up, to check that reporting reaches Sentry.
+  static const bool _sendTest = bool.fromEnvironment('SENTRY_TEST');
+
   /// Runs [appRunner], with error reporting around it when it is on.
   static Future<void> run(FutureOr<void> Function() appRunner) async {
     if (!enabled) return appRunner();
@@ -31,7 +34,12 @@ class CrashReporting {
           ..beforeSend = scrub
           ..beforeBreadcrumb = dropNetworkBreadcrumbs;
       },
-      appRunner: appRunner,
+      appRunner: () async {
+        if (_sendTest) {
+          await Sentry.captureException(StateError('Sentry test error from the Vellora app'));
+        }
+        await appRunner();
+      },
     );
   }
 
