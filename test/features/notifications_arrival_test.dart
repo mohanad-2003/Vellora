@@ -5,6 +5,7 @@ import 'package:vellora/core/di/injection.dart';
 import 'package:vellora/core/localization/l10n/app_localizations.dart';
 import 'package:vellora/core/theme/app_theme.dart';
 import 'package:vellora/core/widgets/custom_snackbar.dart';
+import 'package:vellora/core/widgets/in_app_banner.dart';
 import 'package:vellora/features/notifications/data/notifications_remote_datasource.dart';
 import 'package:vellora/features/notifications/domain/notification_entity.dart';
 import 'package:vellora/features/notifications/presentation/cubit/notifications_cubit.dart';
@@ -195,17 +196,24 @@ void main() {
     });
   });
 
-  group('the announcement on screen', () {
+  group('the banner over the top of the screen', () {
+    late GlobalKey<NavigatorState> nav;
+    late List<String> opened;
+
     setUp(() {
+      nav = GlobalKey<NavigatorState>();
+      opened = [];
       if (sl.isRegistered<UnreadNotificationsCubit>()) sl.unregister<UnreadNotificationsCubit>();
       sl.registerSingleton<UnreadNotificationsCubit>(unread);
     });
 
     tearDown(() {
+      InAppBanner.hide();
       if (sl.isRegistered<UnreadNotificationsCubit>()) sl.unregister<UnreadNotificationsCubit>();
     });
 
     Widget app() => MaterialApp(
+          navigatorKey: nav,
           theme: AppTheme.light,
           locale: const Locale('en'),
           supportedLocales: const [Locale('en')],
@@ -217,52 +225,90 @@ void main() {
           ],
           builder: (context, child) => NotificationsRefresher(
             every: const Duration(hours: 1),
+            overlay: () => nav.currentState?.overlay,
+            open: (route, id) => opened.add('$route:$id'),
             child: child ?? const SizedBox.shrink(),
           ),
-          home: const Scaffold(body: Center(child: Text('Product page'))),
+          home: const Scaffold(body: Center(child: Text('Product page')), bottomNavigationBar: SizedBox(height: 56, child: Text('Bottom bar'))),
         );
 
-    testWidgets('says what arrived, with a button to open it', (tester) async {
+    Future<void> arrive(WidgetTester tester, NotificationEntity n) async {
       feed.items = [_n('a')];
       await tester.runAsync(unread.refresh);
       await tester.pumpWidget(app());
-
-      feed.items = [_n('b', productId: 'p1', title: 'Back in stock'), _n('a')];
+      feed.items = [n, _n('a')];
       await tester.runAsync(unread.refresh);
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 400));
+    }
 
-      expect(find.textContaining('Back in stock'), findsOneWidget);
-      expect(find.textContaining('Body b'), findsOneWidget);
-      expect(find.text('View details'), findsOneWidget);
-    });
-
-    testWidgets('the title is its own line above the text', (tester) async {
-      feed.items = [_n('a')];
-      await tester.runAsync(unread.refresh);
-      await tester.pumpWidget(app());
-
-      feed.items = [_n('b', productId: 'p1', title: 'Back in stock'), _n('a')];
-      await tester.runAsync(unread.refresh);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
+    testWidgets('shows the title and text at the top, away from the bottom of the screen', (tester) async {
+      await arrive(tester, _n('b', productId: 'p1', title: 'Back in stock'));
 
       expect(find.text('Back in stock'), findsOneWidget);
       expect(find.text('Body b'), findsOneWidget);
+      final top = tester.getTopLeft(find.text('Back in stock')).dy;
+      expect(top, lessThan(120), reason: 'near the top edge');
+      expect(tester.getBottomLeft(find.text('Body b')).dy, lessThan(tester.getTopLeft(find.text('Bottom bar')).dy));
     });
 
-    testWidgets('a notification with nothing to open is shown without a button', (tester) async {
-      feed.items = [_n('a')];
-      await tester.runAsync(unread.refresh);
-      await tester.pumpWidget(app());
+    testWidgets('a tap opens the product it is about and closes the banner', (tester) async {
+      await arrive(tester, _n('b', productId: 'p1', title: 'Back in stock'));
 
-      feed.items = [_n('b', title: 'Sale'), _n('a')];
+      await tester.tap(find.text('Back in stock'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(opened, ['product:p1']);
+      expect(find.text('Back in stock'), findsNothing);
+    });
+
+    testWidgets('an order notification opens the order', (tester) async {
+      await arrive(tester, _n('b', orderId: 'o-7', title: 'Order shipped'));
+
+      await tester.tap(find.text('Order shipped'));
+      await tester.pump();
+
+      expect(opened, ['orderDetails:o-7']);
+    });
+
+    testWidgets('one with nothing to open just closes when tapped', (tester) async {
+      await arrive(tester, _n('b', title: 'Sale'));
+
+      await tester.tap(find.text('Sale'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(opened, isEmpty);
+      expect(find.text('Sale'), findsNothing);
+    });
+
+    testWidgets('goes away by itself, and a swipe up sends it away at once', (tester) async {
+      await arrive(tester, _n('b', title: 'Sale'));
+      expect(find.text('Sale'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 6));
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.text('Sale'), findsNothing);
+
+      feed.items = [_n('c', title: 'Second'), _n('b', title: 'Sale'), _n('a')];
       await tester.runAsync(unread.refresh);
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.text('Second'), findsOneWidget);
+      await tester.fling(find.text('Second'), const Offset(0, -300), 1500);
+      await tester.pumpAndSettle();
+      expect(find.text('Second'), findsNothing);
+    });
 
-      expect(find.textContaining('Sale'), findsOneWidget);
-      expect(find.text('View details'), findsNothing);
+    testWidgets('a newer notification replaces the one showing', (tester) async {
+      await arrive(tester, _n('b', title: 'First'));
+      feed.items = [_n('c', title: 'Second'), _n('b', title: 'First'), _n('a')];
+      await tester.runAsync(unread.refresh);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text('Second'), findsOneWidget);
+      expect(find.text('First'), findsNothing);
     });
   });
 
