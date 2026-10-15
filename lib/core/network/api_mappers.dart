@@ -69,6 +69,7 @@ class ApiMappers {
     rating: (j['rating'] as num).toDouble(),
     comment: j['comment'] as String,
     timeAgo: timeAgo(DateTime.parse(j['createdAt'] as String)),
+    photos: [for (final p in (j['photos'] as List? ?? const [])) p as String],
   );
 
   static NotificationEntity notification(Map<String, dynamic> j) =>

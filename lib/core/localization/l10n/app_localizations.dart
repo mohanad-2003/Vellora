@@ -2360,6 +2360,36 @@ abstract class AppLocalizations {
   /// **'Write at least 3 characters.'**
   String get reviewTooShort;
 
+  /// No description provided for @addPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photos'**
+  String get addPhotos;
+
+  /// No description provided for @photosHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 3 pictures'**
+  String get photosHint;
+
+  /// No description provided for @removePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get removePhoto;
+
+  /// No description provided for @photoUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not upload the photos. Check your connection and try again.'**
+  String get photoUploadFailed;
+
+  /// No description provided for @reviewPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Review photo'**
+  String get reviewPhoto;
+
   /// No description provided for @cancelOrder.
   ///
   /// In en, this message translates to:

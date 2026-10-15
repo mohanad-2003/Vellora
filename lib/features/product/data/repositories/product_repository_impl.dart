@@ -49,12 +49,14 @@ class ProductRepositoryImpl implements ProductRepository {
     required String productId,
     required int rating,
     required String comment,
+    List<String> photos = const [],
   }) async {
     try {
       await _remote.addReview(
         productId: productId,
         rating: rating,
         comment: comment,
+        photos: photos,
       );
       return const Right(unit);
     } catch (e) {

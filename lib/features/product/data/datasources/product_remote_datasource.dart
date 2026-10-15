@@ -27,6 +27,7 @@ abstract class ProductRemoteDataSource {
     required String productId,
     required int rating,
     required String comment,
+    List<String> photos,
   });
 }
 
@@ -77,6 +78,7 @@ class MockProductRemoteDataSource implements ProductRemoteDataSource {
     required String productId,
     required int rating,
     required String comment,
+    List<String> photos = const [],
   }) async {}
 
   List<String> _galleryFor(ProductEntity p) {
@@ -190,10 +192,11 @@ class ApiProductRemoteDataSource implements ProductRemoteDataSource {
     required String productId,
     required int rating,
     required String comment,
+    List<String> photos = const [],
   }) async {
     await _dio.post<void>(
       ApiEndpoints.productReviews(productId),
-      data: {'rating': rating, 'comment': comment},
+      data: {'rating': rating, 'comment': comment, 'photos': photos},
     );
   }
 }

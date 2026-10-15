@@ -687,12 +687,13 @@ void _writeReview(BuildContext context) {
   AppBottomSheet.show(
     context,
     child: WriteReviewSheet(
-      onSubmit: (rating, comment) {
+      onSubmit: (rating, comment, photos) {
         final result = Completer<String?>();
         bloc.add(
           ProductReviewSubmitted(
             rating: rating,
             comment: comment,
+            photos: photos,
             result: result,
           ),
         );

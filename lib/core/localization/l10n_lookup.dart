@@ -41,6 +41,8 @@ String _lookup(AppLocalizations l, String key) {
       return l.ratingRequired;
     case 'reviewTooShort':
       return l.reviewTooShort;
+    case 'photoUploadFailed':
+      return l.photoUploadFailed;
     case 'orderNotCancellable':
       return l.orderNotCancellable;
     case 'mustAcceptTerms':

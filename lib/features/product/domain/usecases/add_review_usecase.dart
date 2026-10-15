@@ -14,9 +14,11 @@ class AddReviewUseCase {
     required String productId,
     required int rating,
     required String comment,
+    List<String> photos = const [],
   }) => _repository.addReview(
     productId: productId,
     rating: rating,
     comment: comment,
+    photos: photos,
   );
 }

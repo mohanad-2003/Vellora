@@ -1262,6 +1262,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reviewTooShort => 'Write at least 3 characters.';
 
   @override
+  String get addPhotos => 'Add photos';
+
+  @override
+  String get photosHint => 'Up to 3 pictures';
+
+  @override
+  String get removePhoto => 'Remove photo';
+
+  @override
+  String get photoUploadFailed =>
+      'Could not upload the photos. Check your connection and try again.';
+
+  @override
+  String get reviewPhoto => 'Review photo';
+
+  @override
   String get cancelOrder => 'Cancel order';
 
   @override

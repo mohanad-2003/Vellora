@@ -150,6 +150,7 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
       productId: current.product.id,
       rating: event.rating,
       comment: event.comment,
+      photos: event.photos,
     );
     final failure = added.match<String?>((f) => f.l10nKey, (_) => null);
     if (failure != null) {

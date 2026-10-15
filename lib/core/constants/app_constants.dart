@@ -54,6 +54,14 @@ class AppConstants {
   /// API). Signing in never enforces it, so older accounts keep working.
   static const int minPasswordLength = 8;
 
+  /// Shoppers' review photos go straight to this Cloudinary account (an unsigned
+  /// upload preset limited to pictures); the API only accepts addresses from it.
+  static const String cloudinaryCloud = 'oswjzdto';
+  static const String reviewUploadPreset = 'vellora_reviews';
+
+  /// Photos allowed on one review (the API enforces the same limit).
+  static const int maxReviewPhotos = 3;
+
   // Hive box names.
   static const String cartBox = 'cart_box';
   static const String favoritesBox = 'favorites_box';

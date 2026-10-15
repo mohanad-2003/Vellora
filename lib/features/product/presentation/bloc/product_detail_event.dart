@@ -50,14 +50,18 @@ class ProductReviewSubmitted extends ProductDetailEvent {
     required this.rating,
     required this.comment,
     required this.result,
+    this.photos = const [],
   });
 
   final int rating;
   final String comment;
+
+  /// Addresses of pictures already uploaded for this review.
+  final List<String> photos;
   final Completer<String?> result;
 
   @override
-  List<Object?> get props => [rating, comment];
+  List<Object?> get props => [rating, comment, photos];
 }
 
 /// Asks to be told when a sold-out product is back, or takes the request back.

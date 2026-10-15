@@ -1275,6 +1275,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reviewTooShort => 'اكتب 3 أحرف على الأقل.';
 
   @override
+  String get addPhotos => 'أضف صورًا';
+
+  @override
+  String get photosHint => 'حتى 3 صور';
+
+  @override
+  String get removePhoto => 'إزالة الصورة';
+
+  @override
+  String get photoUploadFailed =>
+      'تعذر رفع الصور. تحقق من اتصالك وحاول مجددًا.';
+
+  @override
+  String get reviewPhoto => 'صورة من التقييم';
+
+  @override
   String get cancelOrder => 'إلغاء الطلب';
 
   @override

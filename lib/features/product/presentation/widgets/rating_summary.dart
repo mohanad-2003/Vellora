@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/theme/app_radius.dart';
@@ -101,6 +102,97 @@ class _ReviewTile extends StatelessWidget {
           RatingStars(rating: review.rating, size: 14),
           const SizedBox(height: AppSpacing.sm),
           Text(review.comment, style: text.bodyMedium),
+          if (review.photos.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            _ReviewPhotos(photos: review.photos),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// The pictures a reviewer added: small squares that open full screen.
+class _ReviewPhotos extends StatelessWidget {
+  const _ReviewPhotos({required this.photos});
+
+  final List<String> photos;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
+      children: [
+        for (final url in photos)
+          Semantics(
+            button: true,
+            image: true,
+            label: context.l10n.reviewPhoto,
+            child: InkWell(
+              onTap: () => showDialog<void>(
+                context: context,
+                builder: (_) => _PhotoViewer(url: url),
+              ),
+              borderRadius: AppRadius.rMd,
+              child: ClipRRect(
+                borderRadius: AppRadius.rMd,
+                child: SizedBox(
+                  width: 72,
+                  height: 72,
+                  child: CachedNetworkImage(
+                    imageUrl: url,
+                    fit: BoxFit.cover,
+                    errorWidget: (_, _, _) => const ColoredBox(
+                      color: Colors.black12,
+                      child: Icon(Icons.broken_image_outlined),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _PhotoViewer extends StatelessWidget {
+  const _PhotoViewer({required this.url});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog.fullscreen(
+      backgroundColor: Colors.black,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: InteractiveViewer(
+              child: CachedNetworkImage(
+                imageUrl: url,
+                fit: BoxFit.contain,
+                errorWidget: (_, _, _) => const Center(
+                  child: Icon(
+                    Icons.broken_image_outlined,
+                    color: Colors.white54,
+                    size: 48,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Align(
+              alignment: AlignmentDirectional.topEnd,
+              child: IconButton(
+                tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.close, color: Colors.white),
+              ),
+            ),
+          ),
         ],
       ),
     );

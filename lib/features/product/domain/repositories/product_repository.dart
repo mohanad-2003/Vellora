@@ -17,5 +17,6 @@ abstract class ProductRepository {
     required String productId,
     required int rating,
     required String comment,
+    List<String> photos,
   });
 }
