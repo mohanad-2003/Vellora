@@ -94,7 +94,8 @@ class _HomeView extends StatelessWidget {
                     ),
                     if (state.status == HomeStatus.error)
                       SliverFillRemaining(
-                        hasScrollBody: false,
+                        // The placeholder scrolls by itself and takes the whole remaining height.
+                        hasScrollBody: true,
                         child: FailureStateView(
                           failureKey: state.failureKey,
                           onRetry: () =>

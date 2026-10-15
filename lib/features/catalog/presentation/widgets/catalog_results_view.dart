@@ -109,7 +109,8 @@ class CatalogResultsView extends StatelessWidget {
         SliverToBoxAdapter(child: toolbar),
         if (state.status == CatalogStatus.empty)
           SliverFillRemaining(
-            hasScrollBody: false,
+            // The placeholder scrolls by itself and takes the whole remaining height.
+            hasScrollBody: true,
             child: EmptyStateWidget(
               icon: filtersActive ? Icons.filter_alt_off_rounded : emptyIcon,
               title: filtersActive ? l10n.noFilterResultsTitle : emptyTitle,

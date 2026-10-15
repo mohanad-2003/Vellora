@@ -152,7 +152,8 @@ class _ExploreView extends StatelessWidget {
                       ],
                     ),
                     ExploreStatus.error => SliverFillRemaining(
-                      hasScrollBody: false,
+                      // The placeholder scrolls by itself and takes the whole remaining height.
+                      hasScrollBody: true,
                       child: FailureStateView(
                         failureKey: state.failureKey,
                         onRetry: () => context.read<ExploreCubit>().load(),
