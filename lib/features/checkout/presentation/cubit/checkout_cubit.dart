@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/analytics/event_tracker.dart';
 import '../../../../core/errors/exception_mapper.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../cart/domain/entities/cart_item_entity.dart';
@@ -65,6 +66,7 @@ class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
   Future<void> load(PromoCodeEntity? promo) async {
     _promo = promo;
     _startNewAttempt();
+    EventTracker.track(ShopEvent.beginCheckout);
     emit(state.copyWith(status: CheckoutStatus.loading));
 
     final result = await _getCart(const NoParams());
@@ -261,6 +263,7 @@ class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
       await _removeItem(item.id);
     }
 
+    EventTracker.track(ShopEvent.purchase);
     emit(state.copyWith(status: CheckoutStatus.success, order: order));
   }
 

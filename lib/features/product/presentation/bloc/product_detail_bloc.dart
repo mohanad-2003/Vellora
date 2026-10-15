@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/analytics/event_tracker.dart';
 import '../../../cart/domain/entities/cart_item_entity.dart';
 import '../../../cart/domain/usecases/add_to_cart_usecase.dart';
 import '../../../home/domain/entities/product_entity.dart';
@@ -55,6 +56,7 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
         ),
       ),
       (detail) async {
+        EventTracker.track(ShopEvent.viewProduct, productId: event.id);
         final related = await _getRelated(event.id);
         emit(
           state.copyWith(
