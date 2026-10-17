@@ -62,7 +62,8 @@ class ProductCard extends StatefulWidget {
   }) {
     final scaler = MediaQuery.textScalerOf(context);
     final image = width * imageRatio;
-    final info = 10 + // gap under photo
+    final info =
+        10 + // gap under photo
         scaler.scale(15) + // brand
         2 +
         scaler.scale(14 * 1.4 * titleLines) + // name
@@ -122,32 +123,44 @@ class _ProductCardState extends State<ProductCard> {
       photo = Hero(tag: widget.heroTag!, child: photo);
     }
 
-    return ClipRRect(
-      borderRadius: AppRadius.rLg,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          photo,
-          if (hasDiscount)
-            PositionedDirectional(
-              top: 8,
-              start: 8,
-              child: DiscountBadge.fromPrices(
-                price: widget.price,
-                originalPrice: widget.originalPrice!,
-              ),
-            ),
-          if (widget.onFavoriteToggle != null)
-            PositionedDirectional(
-              top: 0,
-              end: 0,
-              child: FavoriteButton(
-                isFavorite: widget.isFavorite,
-                onToggle: widget.onFavoriteToggle,
-                size: 34,
-              ),
-            ),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: AppRadius.rLg,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: context.isDark ? 0.35 : 0.07),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: AppRadius.rLg,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            photo,
+            if (hasDiscount)
+              PositionedDirectional(
+                top: 8,
+                start: 8,
+                child: DiscountBadge.fromPrices(
+                  price: widget.price,
+                  originalPrice: widget.originalPrice!,
+                ),
+              ),
+            if (widget.onFavoriteToggle != null)
+              PositionedDirectional(
+                top: 0,
+                end: 0,
+                child: FavoriteButton(
+                  isFavorite: widget.isFavorite,
+                  onToggle: widget.onFavoriteToggle,
+                  size: 34,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -156,6 +169,8 @@ class _ProductCardState extends State<ProductCard> {
     final text = context.textTheme;
     final colors = context.colors;
     final hasBrand = widget.brand != null && widget.brand!.isNotEmpty;
+    final hasDiscount =
+        widget.originalPrice != null && widget.originalPrice! > widget.price;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,7 +200,8 @@ class _ProductCardState extends State<ProductCard> {
               child: PriceWidget(
                 price: widget.price,
                 originalPrice: widget.originalPrice,
-                color: colors.onSurface,
+                // A discounted price reads in the sale colour.
+                color: hasDiscount ? context.vellora.sale : colors.onSurface,
               ),
             ),
             if (widget.onAddToCart != null)
@@ -218,7 +234,7 @@ class _AddButton extends StatelessWidget {
         dimension: 44,
         child: Center(
           child: Material(
-            color: context.colors.primary,
+            color: context.colors.primaryContainer,
             shape: const CircleBorder(),
             clipBehavior: Clip.antiAlias,
             child: InkWell(
@@ -228,7 +244,7 @@ class _AddButton extends StatelessWidget {
                 child: Icon(
                   Icons.add_rounded,
                   size: 20,
-                  color: context.colors.onPrimary,
+                  color: context.colors.primary,
                 ),
               ),
             ),

@@ -27,7 +27,10 @@ class PriceWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = context.textTheme;
     final priceStyle = (large ? text.headlineMedium : text.titleMedium)
-        ?.copyWith(color: color ?? context.colors.onSurface);
+        ?.copyWith(
+          color: color ?? context.colors.onSurface,
+          fontWeight: FontWeight.w800,
+        );
 
     return Semantics(
       label: _hasDiscount
