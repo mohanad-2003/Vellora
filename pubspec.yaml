@@ -101,8 +101,8 @@ flutter_launcher_icons:
   web:
     generate: true
     image_path: assets/branding/vellora_icon.png
-    background_color: "#0B0E4A"
-    theme_color: "#0B0E4A"
+    background_color: "#0A2620"
+    theme_color: "#0A2620"
   windows:
     generate: true
     image_path: assets/branding/vellora_icon.png
