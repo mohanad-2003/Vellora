@@ -111,12 +111,6 @@ class MockHomeRemoteDataSource implements HomeRemoteDataSource {
         imagePath: '',
         productCount: count('electronics'),
       ),
-      CategoryEntity(
-        id: 'grocery',
-        name: 'Grocery',
-        imagePath: '',
-        productCount: count('grocery'),
-      ),
     ];
   }
 
@@ -173,10 +167,7 @@ class ApiHomeRemoteDataSource implements HomeRemoteDataSource {
   @override
   Future<HomeDataEntity> getHomeData() async {
     final j = await _fetch();
-    // Grocery items stay in the catalogue but are not "Featured" picks.
-    final featured = ApiMappers.products(
-      j['featured'],
-    ).where((p) => p.category != 'grocery').toList();
+    final featured = ApiMappers.products(j['featured']);
     final flashSale = ApiMappers.products(j['flashSale']);
     final newArrivals = ApiMappers.products(j['newArrivals']);
     final bestSellers = ApiMappers.products(j['bestSellers']);

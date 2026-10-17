@@ -83,7 +83,6 @@ class _SearchViewState extends State<_SearchView> {
     'accessories',
     'beauty',
     'electronics',
-    'grocery',
   ];
 
   @override

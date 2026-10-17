@@ -74,7 +74,6 @@ class _FilterSheetState extends State<FilterSheet> {
     'accessories',
     'beauty',
     'electronics',
-    'grocery',
   ];
 
   RangeValues get _range => RangeValues(

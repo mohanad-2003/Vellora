@@ -53,8 +53,6 @@ class MockCatalog {
         originalPrice: 24, rating: 4.6, reviewCount: 455),
     _p('p8', 'Smartphone', 'realme', 'electronics', 279,
         originalPrice: 329, rating: 4.6, reviewCount: 431),
-    _p('p14', 'Instant Hot Chocolate', 'Cocoa House', 'grocery', 9.5,
-        rating: 4.6, reviewCount: 118),
   ];
 
   static final Map<String, ProductEntity> byId = {
