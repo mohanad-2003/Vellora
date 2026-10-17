@@ -23,6 +23,8 @@ class AppTextField extends StatefulWidget {
     this.inputFormatters,
     this.focusNode,
     this.maxLines = 1,
+    this.floatingLabel = false,
+    this.verticalPadding,
   });
 
   final TextEditingController? controller;
@@ -46,6 +48,13 @@ class AppTextField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final FocusNode? focusNode;
 
+  /// Puts [label] inside the field (it floats up when focused) instead of
+  /// above it. Saves about 28dp per field on short screens.
+  final bool floatingLabel;
+
+  /// Overrides the theme's vertical content padding (16) to shrink the field.
+  final double? verticalPadding;
+
   @override
   State<AppTextField> createState() => _AppTextFieldState();
 }
@@ -59,7 +68,7 @@ class _AppTextFieldState extends State<AppTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.label != null) ...[
+        if (widget.label != null && !widget.floatingLabel) ...[
           Text(widget.label!, style: textTheme.labelMedium),
           SizedBox(height: 8),
         ],
@@ -81,7 +90,14 @@ class _AppTextFieldState extends State<AppTextField> {
           inputFormatters: widget.inputFormatters,
           style: textTheme.bodyLarge,
           decoration: InputDecoration(
+            labelText: widget.floatingLabel ? widget.label : null,
             hintText: widget.hint,
+            contentPadding: widget.verticalPadding == null
+                ? null
+                : EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: widget.verticalPadding!,
+                  ),
             prefixIcon: widget.prefixIcon != null
                 ? Icon(widget.prefixIcon, size: 20)
                 : null,

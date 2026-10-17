@@ -5,20 +5,16 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
-import '../../../../core/responsive/responsive.dart';
 import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/input_validators.dart';
-import '../../../../core/widgets/app_bar_widget.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/auth_error_banner.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
-import '../../../../core/widgets/staggered_reveal.dart';
 import '../bloc/auth_bloc.dart';
+import '../widgets/auth_scaffold.dart';
 import '../widgets/two_factor_login_dialog.dart';
-import '../widgets/auth_header.dart';
-import '../widgets/social_login_buttons.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -77,165 +73,112 @@ class _LoginViewState extends State<_LoginView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final gutter = context.pageGutter;
 
-    return Scaffold(
-      // Back button only when reached from Welcome; Login is also the landing
-      // page for returning signed-out users, where there is nothing to pop.
-      appBar: const AppBarWidget(),
-      body: SafeArea(
-        top: false,
-        child: BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state.status == AuthStatus.authenticated) {
-              context.goNamed(RouteNames.nHome);
-            } else if (state.status == AuthStatus.twoFactorRequired) {
-              _askTwoFactorCode(context);
-            } else if (state.status == AuthStatus.failure &&
-                state.failureKey != null &&
-                // A wrong code is reported inside the dialog instead.
-                !_twoFactorOpen) {
-              setState(() {
-                _showBanner = true;
-                _bannerKey = state.failureKey;
-              });
-              AppSnackbar.error(context, tr(context, state.failureKey!));
-            }
-          },
-          builder: (context, state) {
-            return SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: EdgeInsets.fromLTRB(
-                gutter,
-                AppSpacing.sm,
-                gutter,
-                AppSpacing.xxl,
-              ),
-              child: ResponsiveCenter(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      StaggeredReveal(
-                        child: AuthHeader(
-                          showLogo: true,
-                          title: l10n.welcomeBack,
-                          subtitle: l10n.loginSubtitle,
-                        ),
-                      ),
-                      if (_showBanner && _bannerKey != null)
-                        AuthErrorBanner(
-                          failureKey: _bannerKey!,
-                          onDismiss: () => setState(() => _showBanner = false),
-                        ),
-                      StaggeredReveal(
-                        delay: const Duration(milliseconds: 80),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            AppTextField(
-                              controller: _emailController,
-                              label: l10n.email,
-                              hint: 'you@example.com',
-                              prefixIcon: Icons.mail_outline_rounded,
-                              keyboardType: TextInputType.emailAddress,
-                              autofillHints: const [AutofillHints.email],
-                              autocorrect: false,
-                              textInputAction: TextInputAction.next,
-                              validator: (v) {
-                                final key = InputValidators.email(v);
-                                return key == null ? null : tr(context, key);
-                              },
-                            ),
-                            const SizedBox(height: AppSpacing.lg),
-                            AppTextField(
-                              controller: _passwordController,
-                              label: l10n.password,
-                              hint: '••••••',
-                              prefixIcon: Icons.lock_outline_rounded,
-                              obscureText: true,
-                              autofillHints: const [AutofillHints.password],
-                              autocorrect: false,
-                              textInputAction: TextInputAction.done,
-                              onSubmitted: (_) => _submit(),
-                              validator: (v) {
-                                final key = InputValidators.loginPassword(v);
-                                return key == null ? null : tr(context, key);
-                              },
-                            ),
-                            const SizedBox(height: AppSpacing.sm),
-                            // Wraps onto two lines instead of squeezing when
-                            // the text is long (Arabic) or scaled up.
-                            Wrap(
-                              alignment: WrapAlignment.spaceBetween,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                _RememberMe(
-                                  value: _rememberMe,
-                                  label: l10n.rememberMe,
-                                  onChanged: (v) =>
-                                      setState(() => _rememberMe = v),
-                                ),
-                                TextButton(
-                                  onPressed: () => context.pushNamed(
-                                    RouteNames.nForgotPassword,
-                                  ),
-                                  child: Text(l10n.forgotPassword),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: AppSpacing.lg),
-                            AppButton(
-                              label: l10n.login,
-                              isLoading: state.isLoading,
-                              onPressed: _submit,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xxl),
-                      StaggeredReveal(
-                        delay: const Duration(milliseconds: 160),
-                        child: Column(
-                          children: [
-                            _OrDivider(label: l10n.orContinueWith),
-                            const SizedBox(height: AppSpacing.xl),
-                            const SocialLoginButtons(),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xxl),
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Text(
-                            l10n.dontHaveAccount,
-                            style: context.textTheme.bodyMedium,
-                          ),
-                          TextButton(
-                            // Swap rather than stack (see Register).
-                            onPressed: () => context.pushReplacementNamed(
-                              RouteNames.nRegister,
-                            ),
-                            child: Text(l10n.register),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state.status == AuthStatus.authenticated) {
+          context.goNamed(RouteNames.nHome);
+        } else if (state.status == AuthStatus.twoFactorRequired) {
+          _askTwoFactorCode(context);
+        } else if (state.status == AuthStatus.failure &&
+            state.failureKey != null &&
+            // A wrong code is reported inside the dialog instead.
+            !_twoFactorOpen) {
+          setState(() {
+            _showBanner = true;
+            _bannerKey = state.failureKey;
+          });
+          AppSnackbar.error(context, tr(context, state.failureKey!));
+        }
+      },
+      builder: (context, state) {
+        return AuthScaffold(
+          title: l10n.welcomeBack,
+          subtitle: l10n.loginSubtitle,
+          switchPrompt: l10n.dontHaveAccount,
+          switchLabel: l10n.register,
+          // Swap rather than stack (see Register).
+          onSwitch: () => context.pushReplacementNamed(RouteNames.nRegister),
+          orLabel: l10n.orContinueWith,
+          socialMinHeight: 560,
+          banner: _showBanner && _bannerKey != null
+              ? AuthErrorBanner(
+                  failureKey: _bannerKey!,
+                  onDismiss: () => setState(() => _showBanner = false),
+                )
+              : null,
+          body: (context, d) => Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AppTextField(
+                  controller: _emailController,
+                  label: l10n.email,
+                  floatingLabel: true,
+                  verticalPadding: d.fieldPadding,
+                  prefixIcon: Icons.mail_outline_rounded,
+                  keyboardType: TextInputType.emailAddress,
+                  autofillHints: const [AutofillHints.email],
+                  autocorrect: false,
+                  textInputAction: TextInputAction.next,
+                  validator: (v) {
+                    final key = InputValidators.email(v);
+                    return key == null ? null : tr(context, key);
+                  },
                 ),
-              ),
-            );
-          },
-        ),
-      ),
+                SizedBox(height: d.gap),
+                AppTextField(
+                  controller: _passwordController,
+                  label: l10n.password,
+                  floatingLabel: true,
+                  verticalPadding: d.fieldPadding,
+                  prefixIcon: Icons.lock_outline_rounded,
+                  obscureText: true,
+                  autofillHints: const [AutofillHints.password],
+                  autocorrect: false,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) => _submit(),
+                  validator: (v) {
+                    final key = InputValidators.loginPassword(v);
+                    return key == null ? null : tr(context, key);
+                  },
+                ),
+                const SizedBox(height: 2),
+                // Wraps onto two lines instead of squeezing when the text is
+                // long (Arabic) or scaled up.
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    _RememberMe(
+                      value: _rememberMe,
+                      label: l10n.rememberMe,
+                      onChanged: (v) => setState(() => _rememberMe = v),
+                    ),
+                    TextButton(
+                      onPressed: () =>
+                          context.pushNamed(RouteNames.nForgotPassword),
+                      child: Text(l10n.forgotPassword),
+                    ),
+                  ],
+                ),
+                SizedBox(height: d.gap - 4),
+                AppButton(
+                  label: l10n.login,
+                  isLoading: state.isLoading,
+                  onPressed: _submit,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
-/// Checkbox + label as one 48dp-high tap target.
+/// Checkbox + label as one 44dp-high tap target.
 class _RememberMe extends StatelessWidget {
   const _RememberMe({
     required this.value,
@@ -258,7 +201,7 @@ class _RememberMe extends StatelessWidget {
         onTap: () => onChanged(!value),
         borderRadius: BorderRadius.circular(8),
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 48),
+          constraints: const BoxConstraints(minHeight: 44),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -277,26 +220,6 @@ class _RememberMe extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _OrDivider extends StatelessWidget {
-  const _OrDivider({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Expanded(child: Divider()),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Text(label, style: context.textTheme.bodySmall),
-        ),
-        const Expanded(child: Divider()),
-      ],
     );
   }
 }
