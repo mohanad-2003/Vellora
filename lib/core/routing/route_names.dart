@@ -5,7 +5,6 @@ class RouteNames {
 
   // Implemented in Phase 1.
   static const String splash = '/splash';
-  static const String languageSelect = '/language-select';
   static const String onboarding = '/onboarding';
   static const String welcome = '/welcome';
   static const String login = '/login';
@@ -42,7 +41,6 @@ class RouteNames {
 
   // Route names (used for context.goNamed).
   static const String nSplash = 'splash';
-  static const String nLanguageSelect = 'languageSelect';
   static const String nOnboarding = 'onboarding';
   static const String nWelcome = 'welcome';
   static const String nLogin = 'login';

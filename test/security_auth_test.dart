@@ -295,7 +295,6 @@ void main() {
       remote = _MockRemote();
       repo = AuthRepositoryImpl(remote, local, _MockFavorites(), _MockCart());
       SharedPreferences.setMockInitialValues({
-        AppConstants.prefLanguageSelected: true,
         AppConstants.prefOnboardingSeen: true,
       });
     });

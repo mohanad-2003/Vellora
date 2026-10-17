@@ -10,9 +10,10 @@ import '../../../../core/utils/safe_emit.dart';
 import '../../../auth/domain/usecases/get_cached_user_usecase.dart';
 
 /// Where the splash screen should route to once its checks complete.
-enum SplashDestination { languageSelect, onboarding, login, home }
+enum SplashDestination { onboarding, login, home }
 
-/// Resolves the initial destination: onboarding (first launch) → login
+/// Resolves the initial destination: onboarding (first launch, in the device's
+/// language) → login
 /// (returning, signed out) → home (valid session). Home is browsable as a
 /// guest, so a missing session is not an error, but a session only counts when
 /// the access token is in secure storage and the server still accepts it.
@@ -36,10 +37,6 @@ class SplashCubit extends Cubit<SplashDestination?>
   }
 
   Future<SplashDestination> _resolve() async {
-    final languageSelected =
-        _prefs.getBool(AppConstants.prefLanguageSelected) ?? false;
-    if (!languageSelected) return SplashDestination.languageSelect;
-
     final seenOnboarding =
         _prefs.getBool(AppConstants.prefOnboardingSeen) ?? false;
     if (!seenOnboarding) return SplashDestination.onboarding;

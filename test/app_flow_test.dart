@@ -52,10 +52,9 @@ void main() {
     hiveDir = await Directory.systemTemp.createTemp('hive_test');
     Hive.init(hiveDir.path);
 
-    // Language already chosen + onboarding already seen so splash routes
+    // Onboarding already seen so splash routes
     // straight to Login.
     SharedPreferences.setMockInitialValues({
-      AppConstants.prefLanguageSelected: true,
       AppConstants.prefOnboardingSeen: true,
     });
 

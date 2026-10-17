@@ -21,7 +21,6 @@ import 'package:vellora/features/auth/presentation/pages/password_reset_success_
 import 'package:vellora/features/auth/presentation/pages/register_page.dart';
 import 'package:vellora/features/auth/presentation/pages/terms_privacy_page.dart';
 import 'package:vellora/features/auth/presentation/pages/welcome_page.dart';
-import 'package:vellora/features/language_select/presentation/pages/language_select_page.dart';
 import 'package:vellora/features/onboarding/presentation/pages/onboarding_page.dart';
 
 /// Renders every new / redesigned pre-Home screen at multiple viewport aspect
@@ -105,7 +104,6 @@ void main() {
   ];
 
   final pages = <(String, Widget Function())>[
-    ('LanguageSelect', () => const LanguageSelectPage()),
     ('Onboarding', () => const OnboardingPage()),
     ('Welcome', () => const WelcomePage()),
     ('Login', () => const LoginPage()),

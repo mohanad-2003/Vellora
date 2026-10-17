@@ -80,8 +80,6 @@ import '../../features/home/domain/repositories/home_repository.dart' as _i0;
 import '../../features/home/domain/usecases/get_home_data_usecase.dart'
     as _i1033;
 import '../../features/home/presentation/bloc/home_bloc.dart' as _i202;
-import '../../features/language_select/presentation/cubit/language_select_cubit.dart'
-    as _i258;
 import '../../features/notifications/data/notifications_remote_datasource.dart'
     as _i31;
 import '../../features/notifications/presentation/cubit/notifications_cubit.dart'
@@ -280,12 +278,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i745.AuthInterceptor(
         gh<_i558.FlutterSecureStorage>(),
         gh<_i979.Box<dynamic>>(instanceName: 'user_box'),
-      ),
-    );
-    gh.factory<_i258.LanguageSelectCubit>(
-      () => _i258.LanguageSelectCubit(
-        gh<_i960.LocaleCubit>(),
-        gh<_i460.SharedPreferences>(),
       ),
     );
     gh.lazySingleton<_i667.DioClient>(
