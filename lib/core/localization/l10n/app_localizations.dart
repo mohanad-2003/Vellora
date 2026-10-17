@@ -278,24 +278,6 @@ abstract class AppLocalizations {
   /// **'Back to Log In'**
   String get backToLogin;
 
-  /// No description provided for @selectLanguage.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose Your Language'**
-  String get selectLanguage;
-
-  /// No description provided for @selectLanguageSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Select your preferred language to continue. You can change it later in settings.'**
-  String get selectLanguageSubtitle;
-
-  /// No description provided for @continueLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Continue'**
-  String get continueLabel;
-
   /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:

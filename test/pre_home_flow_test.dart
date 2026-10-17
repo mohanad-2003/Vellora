@@ -14,7 +14,6 @@ import 'package:vellora/features/auth/presentation/pages/otp_verification_page.d
 import 'package:vellora/features/auth/presentation/pages/password_reset_success_page.dart';
 import 'package:vellora/features/auth/presentation/pages/register_page.dart';
 import 'package:vellora/features/auth/presentation/pages/welcome_page.dart';
-import 'package:vellora/features/language_select/presentation/pages/language_select_page.dart';
 import 'package:vellora/features/onboarding/presentation/pages/onboarding_page.dart';
 
 /// Boots the real app (real DI, router, mock datasources) and drives the full
@@ -78,13 +77,8 @@ void main() {
     await tester.pumpWidget(const VelloraApp());
     await tester.pump();
 
-    // Splash decides (1.6s) → Language Select.
+    // Splash decides → Onboarding, in the device language (English here).
     await tester.pump(const Duration(seconds: 2));
-    await tester.pump();
-    expect(find.byType(LanguageSelectPage), findsOneWidget);
-
-    // Continue → Onboarding.
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Continue'));
     await tester.pumpAndSettle();
     expect(find.byType(OnboardingPage), findsOneWidget);
 

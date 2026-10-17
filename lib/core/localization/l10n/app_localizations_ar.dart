@@ -103,16 +103,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get backToLogin => 'العودة لتسجيل الدخول';
 
   @override
-  String get selectLanguage => 'اختر لغتك';
-
-  @override
-  String get selectLanguageSubtitle =>
-      'اختر لغتك المفضّلة للمتابعة. يمكنك تغييرها لاحقًا من الإعدادات.';
-
-  @override
-  String get continueLabel => 'متابعة';
-
-  @override
   String get welcomeTitle => 'أهلًا بك في Vellora';
 
   @override

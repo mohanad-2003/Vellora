@@ -21,7 +21,6 @@ import '../../features/checkout/presentation/pages/checkout_page.dart';
 import '../../features/checkout/presentation/pages/order_success_page.dart';
 import '../../features/explore/presentation/pages/explore_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
-import '../../features/language_select/presentation/pages/language_select_page.dart';
 import '../../features/notifications/presentation/pages/notifications_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../features/orders/domain/order_entity.dart';
@@ -66,11 +65,6 @@ class AppRouter {
         path: RouteNames.splash,
         name: RouteNames.nSplash,
         builder: (_, _) => const SplashPage(),
-      ),
-      GoRoute(
-        path: RouteNames.languageSelect,
-        name: RouteNames.nLanguageSelect,
-        pageBuilder: (_, state) => _fade(state, const LanguageSelectPage()),
       ),
       GoRoute(
         path: RouteNames.onboarding,

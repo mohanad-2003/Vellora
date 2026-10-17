@@ -20,8 +20,6 @@ class SplashPage extends StatelessWidget {
         listener: (context, destination) {
           if (destination == null) return;
           switch (destination) {
-            case SplashDestination.languageSelect:
-              context.goNamed(RouteNames.nLanguageSelect);
             case SplashDestination.onboarding:
               context.goNamed(RouteNames.nOnboarding);
             case SplashDestination.login:

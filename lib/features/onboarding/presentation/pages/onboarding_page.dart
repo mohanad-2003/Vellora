@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/responsive/responsive.dart';
 import '../../../../core/utils/haptics.dart';
 import '../../../../core/routing/route_names.dart';
@@ -157,9 +158,18 @@ class _OnboardingViewState extends State<_OnboardingView> {
             PositionedDirectional(
               top: MediaQuery.paddingOf(context).top + 8,
               end: gutter - 6,
-              child: Visibility(
-                visible: !cubit.isLastPage,
-                child: _SkipPill(label: l10n.skip, onTap: _finish),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const _LanguagePill(),
+                  Visibility(
+                    visible: !cubit.isLastPage,
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.only(start: 8),
+                      child: _SkipPill(label: l10n.skip, onTap: _finish),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -193,6 +203,49 @@ class _GoldButton extends StatelessWidget {
       // Directional arrows mirror automatically in RTL.
       icon: const Icon(Icons.arrow_forward_rounded, size: 20),
       label: Text(label),
+    );
+  }
+}
+
+/// Switches between Arabic and English; shows the language it will switch to.
+/// The app starts in the device language, so this is only for correcting it.
+class _LanguagePill extends StatelessWidget {
+  const _LanguagePill();
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = context.watch<LocaleCubit>().state;
+    final toArabic = locale.languageCode != 'ar';
+    return Semantics(
+      button: true,
+      label: toArabic ? 'العربية' : 'English',
+      excludeSemantics: true,
+      child: Material(
+        color: Colors.white.withValues(alpha: 0.16),
+        borderRadius: AppRadius.rPill,
+        child: InkWell(
+          onTap: () {
+            Haptics.selection();
+            sl<LocaleCubit>().toggle();
+          },
+          borderRadius: AppRadius.rPill,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 44, minWidth: 48),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Text(
+                  toArabic ? 'ع' : 'EN',
+                  style: context.textTheme.labelLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -103,16 +103,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backToLogin => 'Back to Log In';
 
   @override
-  String get selectLanguage => 'Choose Your Language';
-
-  @override
-  String get selectLanguageSubtitle =>
-      'Select your preferred language to continue. You can change it later in settings.';
-
-  @override
-  String get continueLabel => 'Continue';
-
-  @override
   String get welcomeTitle => 'Welcome to Vellora';
 
   @override
