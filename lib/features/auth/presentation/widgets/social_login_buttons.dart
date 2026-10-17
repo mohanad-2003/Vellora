@@ -13,7 +13,9 @@ import '../../../../core/widgets/custom_snackbar.dart';
 /// "Continue with Apple" is shown only on Apple platforms, as Apple's
 /// guidelines require it there and it has no meaning elsewhere.
 class SocialLoginButtons extends StatelessWidget {
-  const SocialLoginButtons({super.key});
+  const SocialLoginButtons({super.key, this.height = 52});
+
+  final double height;
 
   static bool get _showApple =>
       defaultTargetPlatform == TargetPlatform.iOS ||
@@ -33,7 +35,9 @@ class SocialLoginButtons extends StatelessWidget {
       children: [
         for (var i = 0; i < providers.length; i++) ...[
           if (i > 0) const SizedBox(width: AppSpacing.md),
-          Expanded(child: _SocialButton(provider: providers[i])),
+          Expanded(
+            child: _SocialButton(provider: providers[i], height: height),
+          ),
         ],
       ],
     );
@@ -51,9 +55,10 @@ class _Provider {
 }
 
 class _SocialButton extends StatelessWidget {
-  const _SocialButton({required this.provider});
+  const _SocialButton({required this.provider, required this.height});
 
   final _Provider provider;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +72,7 @@ class _SocialButton extends StatelessWidget {
         borderRadius: AppRadius.rMd,
         onTap: () => _notAvailable(context),
         child: Container(
-          height: 52,
+          height: height,
           decoration: BoxDecoration(
             borderRadius: AppRadius.rMd,
             border: Border.all(color: colors.outlineVariant, width: 1.2),
