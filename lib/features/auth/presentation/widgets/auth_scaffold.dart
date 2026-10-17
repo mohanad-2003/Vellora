@@ -178,6 +178,9 @@ class AuthScaffold extends StatelessWidget {
                               : null,
                         ),
                       ),
+                      // Spare height is split above and below the group, so the form
+                      // and the social row stay close together on tall phones.
+                      const Spacer(),
                       if (density.showLogo) ...[
                         Center(child: VelloraLogo(height: density.logoHeight)),
                         SizedBox(height: density.gap),
@@ -205,7 +208,13 @@ class AuthScaffold extends StatelessWidget {
                       ?banner,
                       SizedBox(height: density.gap + 2),
                       body(context, density),
-                      const Spacer(),
+                      // Room between the form and the social row grows only a little.
+                      Flexible(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxHeight: 28),
+                          child: const SizedBox.expand(),
+                        ),
+                      ),
                       if (density.showSocial && orLabel != null) ...[
                         SizedBox(height: density.gap),
                         Row(
@@ -235,6 +244,7 @@ class AuthScaffold extends StatelessWidget {
                           ),
                         ],
                       ),
+                      const Spacer(),
                     ],
                   ),
                 ),
