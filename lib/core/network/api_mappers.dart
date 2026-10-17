@@ -45,7 +45,16 @@ class ApiMappers {
     subtitle: j['subtitle'] as String,
     imagePath: j['imageUrl'] as String,
     color: j['color'] as String?,
+    link: _link(j['link']),
   );
+
+  static BannerLink? _link(Object? raw) {
+    if (raw is! Map) return null;
+    final type = raw['type'];
+    final value = raw['value'];
+    if (type is! String || value is! String) return null;
+    return BannerLink(type: type, value: value);
+  }
 
   static BrandEntity brand(Map<String, dynamic> j) => BrandEntity(
     name: j['name'] as String,

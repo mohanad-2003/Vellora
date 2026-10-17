@@ -5,6 +5,7 @@ import 'package:vellora/core/di/injection.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/extensions/num_extensions.dart';
 import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/localization/locale_cubit.dart';
 import 'package:vellora/core/responsive/responsive.dart';
 import 'package:vellora/core/routing/route_names.dart';
 import 'package:vellora/core/theme/app_spacing.dart';
@@ -39,7 +40,15 @@ class HomePage extends StatelessWidget {
         builder: (context) => FavoritesListener(
           onChanged: () =>
               context.read<HomeBloc>().add(const HomeFavoritesSynced()),
-          child: const _HomeView(),
+          // The feed (banner copy, category names) comes in the app's
+          // language, so a language switch fetches it again.
+          child: BlocListener<LocaleCubit, Locale>(
+            bloc: sl<LocaleCubit>(),
+            listenWhen: (a, b) => a.languageCode != b.languageCode,
+            listener: (context, _) =>
+                context.read<HomeBloc>().add(const HomeRefreshed()),
+            child: const _HomeView(),
+          ),
         ),
       ),
     );
@@ -148,12 +157,50 @@ class _HomeView extends StatelessWidget {
         );
 
     void openBanner(BannerEntity b) {
+      final link = b.link;
+      if (link != null) {
+        switch (link.type) {
+          case 'product':
+            context.pushNamed(
+              RouteNames.nProduct,
+              pathParameters: {'id': link.value},
+            );
+          case 'category':
+            final name = data.categories
+                .where((c) => c.id == link.value)
+                .map((c) => c.name)
+                .firstOrNull;
+            context.pushNamed(
+              RouteNames.nCatalog,
+              extra: CatalogArgs(
+                title: name ?? b.title,
+                categoryId: link.value,
+              ),
+            );
+          case 'collection':
+            final titles = <String, (String, CatalogCollection)>{
+              'flashSale': (l10n.flashSale, CatalogCollection.flashSale),
+              'featured': (l10n.featured, CatalogCollection.featured),
+              'newArrivals': (l10n.newArrivals, CatalogCollection.newArrivals),
+              'bestSellers': (l10n.bestSellers, CatalogCollection.bestSellers),
+              'topRated': (l10n.topRated, CatalogCollection.topRated),
+              'budgetPicks': (
+                l10n.budgetPicks(data.budgetLimit.toPrice()),
+                CatalogCollection.budgetPicks,
+              ),
+            };
+            final target = titles[link.value];
+            if (target != null) openCollection(target.$1, target.$2);
+        }
+        return;
+      }
+      // The built-in banners predate links.
       switch (b.id) {
         case 'flash':
           openCollection(l10n.flashSale, CatalogCollection.flashSale);
         case 'new':
           openCollection(l10n.newArrivals, CatalogCollection.newArrivals);
-        default:
+        case 'summer':
           openCollection(l10n.bannerSummerTitle, CatalogCollection.featured);
       }
     }
