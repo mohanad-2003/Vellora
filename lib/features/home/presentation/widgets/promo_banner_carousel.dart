@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/responsive/responsive.dart';
@@ -108,8 +110,38 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
     'plum': [Color(0xFF3B1740), Color(0xFF7A2E6B)],
   };
 
+  static final _hex = RegExp(r'^#[0-9a-fA-F]{6}$');
+
+  /// A colour picked in the back office (#rrggbb) becomes a gradient, darkened
+  /// until white text is readable on it. Keep in step with the admin.
+  static List<Color>? _custom(String? value) {
+    if (value == null || !_hex.hasMatch(value)) return null;
+    var r = int.parse(value.substring(1, 3), radix: 16).toDouble();
+    var g = int.parse(value.substring(3, 5), radix: 16).toDouble();
+    var bl = int.parse(value.substring(5, 7), radix: 16).toDouble();
+    double lum() {
+      double f(double v) {
+        v /= 255;
+        return v <= 0.03928
+            ? v / 12.92
+            : math.pow((v + 0.055) / 1.055, 2.4).toDouble();
+      }
+
+      return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(bl);
+    }
+
+    while (lum() > 0.18) {
+      r *= 0.92;
+      g *= 0.92;
+      bl *= 0.92;
+    }
+    Color rgb(double k) =>
+        Color.fromARGB(255, (r * k).round(), (g * k).round(), (bl * k).round());
+    return [rgb(0.6), rgb(1)];
+  }
+
   PromoBannerStyle _styleFor(BannerEntity b) {
-    final picked = _palette[b.color];
+    final picked = _palette[b.color] ?? _custom(b.color);
     if (picked != null) {
       return PromoBannerStyle(
         background: picked,
