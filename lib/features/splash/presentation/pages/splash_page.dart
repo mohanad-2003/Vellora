@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -42,12 +44,18 @@ class _SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<_SplashView>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   /// One calm entrance: mark → name → tagline → loader.
   late final AnimationController _entrance = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1400),
   )..forward();
+
+  /// Slow loop behind the mark: pulsing rings, drifting sparks and the loader.
+  late final AnimationController _ambient = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 2800),
+  );
 
   late final Animation<double> _markFade = _interval(0.00, 0.40);
   late final Animation<double> _markScale = Tween<double>(
@@ -62,6 +70,8 @@ class _SplashViewState extends State<_SplashView>
   late final Animation<double> _taglineFade = _interval(0.50, 0.85);
   late final Animation<double> _loaderFade = _interval(0.70, 1.00);
 
+  bool _reduceMotion = false;
+
   CurvedAnimation _interval(
     double begin,
     double end, [
@@ -72,26 +82,37 @@ class _SplashViewState extends State<_SplashView>
   );
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _reduceMotion = MediaQuery.disableAnimationsOf(context);
+    if (_reduceMotion) {
+      _entrance.value = 1;
+      _ambient.stop();
+    } else if (!_ambient.isAnimating) {
+      _ambient.repeat();
+    }
+  }
+
+  @override
   void dispose() {
     _entrance.dispose();
+    _ambient.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final text = context.textTheme;
-    final reduceMotion = MediaQuery.disableAnimationsOf(context);
-    if (reduceMotion && !_entrance.isCompleted) _entrance.value = 1;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0B0E4A),
+      backgroundColor: const Color(0xFF0A2620),
       body: DecoratedBox(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            // Brand navy into violet — the same family as the Vellora mark.
-            colors: [Color(0xFF0B0E4A), Color(0xFF1A0F5C), Color(0xFF2E1280)],
+            // Deep emerald, the same family as the app and the system splash.
+            colors: [Color(0xFF06150F), Color(0xFF0A2620), Color(0xFF0F4A3E)],
             stops: [0, 0.55, 1],
           ),
         ),
@@ -106,10 +127,27 @@ class _SplashViewState extends State<_SplashView>
                     opacity: _markFade,
                     child: ScaleTransition(
                       scale: _markScale,
-                      child: const VelloraMark(size: 112, glow: true),
+                      child: SizedBox.square(
+                        dimension: 220,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            AnimatedBuilder(
+                              animation: _ambient,
+                              builder: (_, _) => CustomPaint(
+                                size: const Size.square(220),
+                                painter: _HaloPainter(
+                                  t: _reduceMotion ? 0.35 : _ambient.value,
+                                ),
+                              ),
+                            ),
+                            const VelloraMark(size: 112, glow: true),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 8),
                   AnimatedBuilder(
                     animation: _entrance,
                     builder: (_, child) => Opacity(
@@ -139,13 +177,12 @@ class _SplashViewState extends State<_SplashView>
                       label: context.l10n.loading,
                       child: SizedBox(
                         width: 96,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(2),
-                          child: LinearProgressIndicator(
-                            minHeight: 3,
-                            color: Colors.white,
-                            backgroundColor: Colors.white.withValues(
-                              alpha: 0.22,
+                        height: 3,
+                        child: AnimatedBuilder(
+                          animation: _ambient,
+                          builder: (_, _) => CustomPaint(
+                            painter: _SweepPainter(
+                              t: _reduceMotion ? 0.5 : _ambient.value,
                             ),
                           ),
                         ),
@@ -160,4 +197,82 @@ class _SplashViewState extends State<_SplashView>
       ),
     );
   }
+}
+
+const _gold = Color(0xFFE9B861);
+
+/// Two gold rings that swell and fade out of the mark, and a few sparks that
+/// drift around it.
+class _HaloPainter extends CustomPainter {
+  const _HaloPainter({required this.t});
+
+  final double t;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = size.center(Offset.zero);
+    final base = size.width * 0.28;
+
+    for (final phase in const [0.0, 0.5]) {
+      final k = (t + phase) % 1;
+      final radius = base + (size.width * 0.5 - base) * k;
+      canvas.drawCircle(
+        c,
+        radius,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2
+          ..color = _gold.withValues(alpha: 0.32 * (1 - k)),
+      );
+    }
+
+    const sparks = [(0.0, 0.46, 3.0), (2.1, 0.40, 2.2), (4.2, 0.48, 2.6)];
+    for (final (angle, dist, r) in sparks) {
+      final a = angle + t * 2 * math.pi * 0.5;
+      final p = c + Offset(math.cos(a), math.sin(a)) * (size.width * dist);
+      final twinkle = 0.5 + 0.5 * math.sin(t * 2 * math.pi + angle);
+      canvas.drawCircle(
+        p,
+        r,
+        Paint()..color = _gold.withValues(alpha: 0.25 + 0.55 * twinkle),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_HaloPainter old) => old.t != t;
+}
+
+/// A thin track with a gold segment sweeping across it.
+class _SweepPainter extends CustomPainter {
+  const _SweepPainter({required this.t});
+
+  final double t;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final track = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      const Radius.circular(2),
+    );
+    canvas.drawRRect(
+      track,
+      Paint()..color = Colors.white.withValues(alpha: 0.18),
+    );
+    canvas.save();
+    canvas.clipRRect(track);
+    final seg = size.width * 0.38;
+    final x = -seg + (size.width + seg) * Curves.easeInOut.transform(t);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(x, 0, seg, size.height),
+        const Radius.circular(2),
+      ),
+      Paint()..color = _gold,
+    );
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_SweepPainter old) => old.t != t;
 }

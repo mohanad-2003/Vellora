@@ -17,39 +17,41 @@ enum SplashDestination { languageSelect, onboarding, login, home }
 /// guest, so a missing session is not an error, but a session only counts when
 /// the access token is in secure storage and the server still accepts it.
 @injectable
-class SplashCubit extends Cubit<SplashDestination?> with SafeEmit<SplashDestination?> {
+class SplashCubit extends Cubit<SplashDestination?>
+    with SafeEmit<SplashDestination?> {
   SplashCubit(this._prefs, this._getCachedUser, this._dio) : super(null);
 
   final SharedPreferences _prefs;
   final GetCachedUserUseCase _getCachedUser;
   final Dio _dio;
 
-  Future<void> decide() async {
-    await Future<void>.delayed(const Duration(milliseconds: 1600));
+  /// The checks run while the entrance animation plays; the screen stays at
+  /// least this long so the mark never just flashes by.
+  static const _minimumShow = Duration(milliseconds: 1200);
 
+  Future<void> decide() async {
+    final destination = _resolve();
+    await Future<void>.delayed(_minimumShow);
+    emit(await destination);
+  }
+
+  Future<SplashDestination> _resolve() async {
     final languageSelected =
         _prefs.getBool(AppConstants.prefLanguageSelected) ?? false;
-    if (!languageSelected) {
-      emit(SplashDestination.languageSelect);
-      return;
-    }
+    if (!languageSelected) return SplashDestination.languageSelect;
 
     final seenOnboarding =
         _prefs.getBool(AppConstants.prefOnboardingSeen) ?? false;
-    if (!seenOnboarding) {
-      emit(SplashDestination.onboarding);
-      return;
-    }
+    if (!seenOnboarding) return SplashDestination.onboarding;
 
     // Signed in means a token in secure storage, not just a profile in Hive:
     // the use case returns null (and drops a stray profile) without one.
     final result = await _getCachedUser(const NoParams());
     final signedIn = result.fold((_) => false, (user) => user != null);
     if (!signedIn || !await _sessionStillValid()) {
-      emit(SplashDestination.login);
-      return;
+      return SplashDestination.login;
     }
-    emit(SplashDestination.home);
+    return SplashDestination.home;
   }
 
   /// Asks the server whether the saved token is still accepted. Only an
