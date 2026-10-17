@@ -91,18 +91,21 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
     return _controller!;
   }
 
-  /// Three different hues so each banner stands apart from the others and from
-  /// the app's own indigo buttons. All are dark enough for white copy in both
-  /// themes. "New" uses the logo's navy and gold.
+  /// Every gradient is dark enough for white copy in both themes.
   /// Colours the back office can pick (keys match the API's BANNER_COLORS).
   static const _palette = <String, List<Color>>{
     'rose': [Color(0xFFE11D48), Color(0xFFFF7A45)],
     'orange': [Color(0xFFC2410C), Color(0xFFEA580C)],
-    'navy': [Color(0xFF1B1560), Color(0xFF3D2C9B)],
+    'navy': [Color(0xFF14213D), Color(0xFF2B4170)],
     'blue': [Color(0xFF1E40AF), Color(0xFF2563EB)],
     'teal': [Color(0xFF0A8F8A), Color(0xFF075E85)],
     'emerald': [Color(0xFF047857), Color(0xFF059669)],
     'purple': [Color(0xFF6D28D9), Color(0xFFA21CAF)],
+    'forest': [Color(0xFF0A2620), Color(0xFF0F5C4D)],
+    'gold': [Color(0xFF7A5A14), Color(0xFFB8923F)],
+    'charcoal': [Color(0xFF17191C), Color(0xFF3A3F45)],
+    'terracotta': [Color(0xFF8F3A1D), Color(0xFFC4633A)],
+    'plum': [Color(0xFF3B1740), Color(0xFF7A2E6B)],
   };
 
   PromoBannerStyle _styleFor(BannerEntity b) {
@@ -125,7 +128,7 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
         );
       case 'new':
         return const PromoBannerStyle(
-          background: [Color(0xFF1B1560), Color(0xFF3D2C9B)],
+          background: [Color(0xFF0A2620), Color(0xFF0F5C4D)],
           foreground: Colors.white,
           cta: Color(0xFFE9B861),
           ctaForeground: Color(0xFF2A1F00),
@@ -175,7 +178,7 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
     // the copy never clips.
     final width = MediaQuery.sizeOf(context).width.clamp(0.0, 720.0);
     final scale = MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 1.5);
-    final height = (width * 0.5).clamp(176.0, 240.0) * (0.85 + 0.15 * scale);
+    final height = (width * 0.54).clamp(188.0, 250.0) * (0.85 + 0.15 * scale);
 
     return LayoutBuilder(
       builder: (context, constraints) {

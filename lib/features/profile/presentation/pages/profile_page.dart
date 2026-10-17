@@ -283,7 +283,7 @@ class _ProfileHeader extends StatelessWidget {
   static const _gradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF1B1F5E), Color(0xFF4553D8), Color(0xFF7B5CE0)],
+    colors: [Color(0xFF0A2620), Color(0xFF0F5C4D), Color(0xFF1F8A72)],
     stops: [0, 0.65, 1],
   );
 
@@ -306,7 +306,7 @@ class _ProfileHeader extends StatelessWidget {
         borderRadius: AppRadius.rXl,
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF4553D8).withValues(alpha: 0.28),
+            color: const Color(0xFF0F5C4D).withValues(alpha: 0.28),
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),

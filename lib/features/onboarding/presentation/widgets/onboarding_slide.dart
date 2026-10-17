@@ -6,7 +6,7 @@ import '../../domain/entities/onboarding_page_entity.dart';
 
 /// Brand navy the artwork fades into. Onboarding is a brand moment, so it stays
 /// dark in both light and dark themes.
-const Color kOnboardingNavy = Color(0xFF0B0E2E);
+const Color kOnboardingNavy = Color(0xFF0A2620);
 
 /// One immersive onboarding page: full-bleed artwork, a soft scrim that melts
 /// into brand navy, and the copy on top of it. In wide/landscape windows the

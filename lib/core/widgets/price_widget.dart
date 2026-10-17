@@ -87,7 +87,7 @@ class DiscountBadge extends StatelessWidget {
           vertical: large ? 5 : 3,
         ),
         decoration: BoxDecoration(
-          color: context.colors.tertiary,
+          color: context.vellora.sale,
           borderRadius: large ? AppRadius.rSm : AppRadius.rSm,
         ),
         child: Text(

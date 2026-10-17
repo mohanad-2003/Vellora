@@ -51,7 +51,7 @@ class _LanguageSelectView extends StatelessWidget {
             gradient: RadialGradient(
               center: Alignment(0, -0.75),
               radius: 1.1,
-              colors: [Color(0xFF2A1B7A), kBrandNavy],
+              colors: [Color(0xFF12493E), kBrandNavy],
             ),
           ),
           child: SafeArea(

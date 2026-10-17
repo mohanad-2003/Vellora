@@ -71,7 +71,7 @@ class FavoriteButton extends StatelessWidget {
                     key: ValueKey(isFavorite),
                     size: size * 0.5,
                     color: isFavorite
-                        ? context.vellora.accent
+                        ? context.vellora.sale
                         : colors.onSurfaceVariant,
                   ),
                 ),

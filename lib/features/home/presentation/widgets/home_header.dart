@@ -138,7 +138,7 @@ class _Dot extends StatelessWidget {
       width: 10,
       height: 10,
       decoration: BoxDecoration(
-        color: context.vellora.accent,
+        color: context.vellora.sale,
         shape: BoxShape.circle,
         border: Border.all(color: context.colors.surface, width: 1.5),
       ),

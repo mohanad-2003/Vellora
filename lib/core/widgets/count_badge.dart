@@ -24,7 +24,7 @@ class CountBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 5),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: context.vellora.accent,
+        color: context.vellora.sale,
         borderRadius: BorderRadius.circular(9),
         border: Border.all(color: context.colors.surface, width: 1.5),
       ),

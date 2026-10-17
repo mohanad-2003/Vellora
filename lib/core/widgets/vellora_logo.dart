@@ -121,7 +121,7 @@ class _Fallback extends StatelessWidget {
       height: size,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: const Color(0xFF1B1560),
+        color: const Color(0xFF0F3D33),
         borderRadius: BorderRadius.circular(size * 0.26),
       ),
       child: Text(

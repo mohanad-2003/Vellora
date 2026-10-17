@@ -192,8 +192,8 @@ class _CouponCard extends StatelessWidget {
   final int index;
 
   static const _palettes = [
-    [Color(0xFF4553D8), Color(0xFF7B5CE0)],
-    [Color(0xFFFF5A5F), Color(0xFFFF8A5B)],
+    [Color(0xFF0F5C4D), Color(0xFF1F8A72)],
+    [Color(0xFFB8923F), Color(0xFFD9B46A)],
     [Color(0xFF0E9F8F), Color(0xFF39C29A)],
   ];
 
@@ -574,7 +574,7 @@ class CatalogueStatsCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF1B1F5E), Color(0xFF4553D8)],
+            colors: [Color(0xFF0A2620), Color(0xFF0F5C4D)],
           ),
         ),
         child: Column(
@@ -607,7 +607,7 @@ class CatalogueStatsCard extends StatelessWidget {
               onPressed: onExplore,
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFF1B1F5E),
+                foregroundColor: const Color(0xFF0A2620),
                 minimumSize: const Size.fromHeight(48),
                 shape: const RoundedRectangleBorder(
                   borderRadius: AppRadius.rMd,
