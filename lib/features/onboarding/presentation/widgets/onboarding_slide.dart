@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/brand_backdrop.dart';
 import '../../domain/entities/onboarding_page_entity.dart';
 
-/// Brand navy the artwork fades into. Onboarding is a brand moment, so it stays
+/// Brand colour the slides sit on. Onboarding is a brand moment, so it stays
 /// dark in both light and dark themes.
-const Color kOnboardingNavy = Color(0xFF0A2620);
+const Color kOnboardingNavy = kBrandNavy;
 
-/// One immersive onboarding page: full-bleed artwork, a soft scrim that melts
-/// into brand navy, and the copy on top of it. In wide/landscape windows the
-/// artwork takes one half and the copy sits in the other.
+/// One immersive onboarding page: transparent artwork floating over the brand
+/// backdrop, and the copy underneath. In wide/landscape windows the artwork
+/// takes one half and the copy sits in the other.
 ///
-/// The page-level controls (indicator, button) live outside this widget and
-/// float above its bottom edge; [bottomInset] reserves their space.
+/// The artwork is a cut-out (PNG with alpha), so the colours come only from
+/// [BrandBackdrop]. The page-level controls (indicator, button) live outside
+/// this widget and float above its bottom edge; [bottomInset] reserves their
+/// space.
 class OnboardingSlide extends StatelessWidget {
   const OnboardingSlide({
     super.key,
@@ -36,20 +40,15 @@ class OnboardingSlide extends StatelessWidget {
     final distance = pageOffset.abs().clamp(0.0, 1.0);
     final text = context.textTheme;
 
-    // Lifted ~7% so the podium sits clear of the copy; the navy backdrop and
-    // scrim cover whatever the lift uncovers at the bottom.
     final artwork = FractionalTranslation(
-      translation: Offset(-pageOffset * 0.05, -0.07),
+      translation: Offset(-pageOffset * 0.05, 0),
       child: Transform.scale(
-        scale: 1.06 - distance * 0.02,
-        child: SizedBox.expand(
-          child: Image.asset(
-            page.imagePath,
-            fit: BoxFit.cover,
-            alignment: const Alignment(0, -0.35),
-            filterQuality: FilterQuality.high,
-            errorBuilder: (_, _, _) => const ColoredBox(color: kOnboardingNavy),
-          ),
+        scale: 1 - distance * 0.04,
+        child: Image.asset(
+          page.imagePath,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.high,
+          errorBuilder: (_, _, _) => const SizedBox.shrink(),
         ),
       ),
     );
@@ -84,11 +83,19 @@ class OnboardingSlide extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final landscape = constraints.maxWidth > constraints.maxHeight * 1.15;
+        final top = MediaQuery.paddingOf(context).top;
 
         if (landscape) {
           return Row(
             children: [
-              Expanded(child: ClipRect(child: artwork)),
+              Expanded(
+                child: BrandBackdrop(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(24, top + 24, 24, 24),
+                    child: Center(child: ClipRect(child: artwork)),
+                  ),
+                ),
+              ),
               Expanded(
                 child: ColoredBox(
                   color: kOnboardingNavy,
@@ -102,37 +109,22 @@ class OnboardingSlide extends StatelessWidget {
           );
         }
 
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            ClipRect(child: artwork),
-            // Scrim: clear over the artwork, solid navy behind the copy.
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0x66000000),
-                    Color(0x00000000),
-                    Color(0x00000000),
-                    Color(0xE60A2620),
-                    kOnboardingNavy,
-                  ],
-                  stops: [0, 0.18, 0.5, 0.78, 0.92],
+        return BrandBackdrop(
+          child: Column(
+            children: [
+              // Room above for the logo and the Skip / language pills.
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(28, top + 64, 28, 12),
+                  child: Center(child: artwork),
                 ),
               ),
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: bottomInset,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+              Padding(
+                padding: EdgeInsets.fromLTRB(24, 0, 24, bottomInset),
                 child: copy,
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
