@@ -154,6 +154,12 @@ class _ProfileContent extends StatelessWidget {
               onTap: () => _openOrders(context),
             ),
             _QuickAction(
+              icon: Icons.favorite_border_rounded,
+              label: l10n.wishlist,
+              color: context.vellora.sale,
+              onTap: () => context.pushNamed(RouteNames.nWishlist),
+            ),
+            _QuickAction(
               icon: Icons.location_on_outlined,
               label: l10n.addresses,
               color: const Color(0xFF0E9F8F),
@@ -510,7 +516,11 @@ class _ProfileStats extends StatelessWidget {
               label: l10n.ordersLabel,
             ),
             divider,
-            _Stat(value: '$wishlistCount', label: l10n.wishlist),
+            _Stat(
+              value: '$wishlistCount',
+              label: l10n.wishlist,
+              onTap: () => context.pushNamed(RouteNames.nWishlist),
+            ),
             divider,
             // Read the app-wide badge directly so the page also works where
             // no provider sits above it.
@@ -526,43 +536,50 @@ class _ProfileStats extends StatelessWidget {
   }
 }
 
-/// One figure in the profile header. Display only: Orders, Wishlist and Cart
-/// each have their own entry elsewhere (quick actions and the bottom bar).
+/// One figure in the profile header. Wishlist opens its screen; Orders and Cart
+/// have their own entry elsewhere (quick actions and the bottom bar).
 class _Stat extends StatelessWidget {
-  const _Stat({required this.value, required this.label});
+  const _Stat({required this.value, required this.label, this.onTap});
 
   final String value;
   final String label;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final text = context.textTheme;
     return Expanded(
       child: Semantics(
+        button: onTap != null,
         label: '$label: $value',
         excludeSemantics: true,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                value,
-                maxLines: 1,
-                style: text.titleLarge?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
+        onTap: onTap,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: AppRadius.rMd,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  value,
+                  maxLines: 1,
+                  style: text.titleLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
-              ),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: text.labelMedium?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.85),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: text.labelMedium?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.85),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

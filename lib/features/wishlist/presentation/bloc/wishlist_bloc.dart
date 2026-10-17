@@ -11,7 +11,7 @@ part 'wishlist_state.dart';
 @injectable
 class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
   WishlistBloc(this._getProducts, this._removeItem)
-      : super(const WishlistState()) {
+    : super(const WishlistState()) {
     on<WishlistStarted>(_onStarted);
     on<WishlistItemRemoved>(_onItemRemoved);
     on<WishlistRefreshed>((event, emit) => _load(emit));
@@ -23,16 +23,20 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
   Future<void> _load(Emitter<WishlistState> emit) async {
     final result = await _getProducts();
     result.match(
-      (failure) => emit(state.copyWith(
-        status: WishlistStatus.error,
-        failureKey: failure.l10nKey,
-      )),
-      (products) => emit(state.copyWith(
-        status: products.isEmpty
-            ? WishlistStatus.empty
-            : WishlistStatus.loaded,
-        products: products,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: WishlistStatus.error,
+          failureKey: failure.l10nKey,
+        ),
+      ),
+      (products) => emit(
+        state.copyWith(
+          status: products.isEmpty
+              ? WishlistStatus.empty
+              : WishlistStatus.loaded,
+          products: products,
+        ),
+      ),
     );
   }
 

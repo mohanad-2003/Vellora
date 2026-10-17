@@ -7,6 +7,7 @@ import 'package:vellora/core/localization/l10n_lookup.dart';
 import 'package:vellora/core/responsive/responsive.dart';
 import 'package:vellora/core/routing/route_names.dart';
 import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/widgets/app_bar_widget.dart';
 import 'package:vellora/core/widgets/empty_state_widget.dart';
 import 'package:vellora/core/widgets/error_state_widget.dart';
 import 'package:vellora/core/widgets/favorites_listener.dart';
@@ -43,6 +44,7 @@ class _WishlistView extends StatelessWidget {
     final gutter = context.pageGutter;
 
     return Scaffold(
+      appBar: const AppBarWidget(),
       body: SafeArea(
         bottom: false,
         child: ResponsiveCenter(
@@ -57,7 +59,7 @@ class _WishlistView extends StatelessWidget {
                     : null,
                 padding: EdgeInsets.fromLTRB(
                   gutter,
-                  AppSpacing.lg,
+                  AppSpacing.xs,
                   gutter,
                   AppSpacing.lg,
                 ),

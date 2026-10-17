@@ -25,8 +25,9 @@ class WishlistRepositoryImpl implements WishlistRepository {
         if (set.isEmpty) return const Right(<ProductEntity>[]);
         final result = await _catalog.getProductsByIds(set.toList());
         return result.map(
-          (products) =>
-              [for (final p in products) p.copyWith(isFavorite: true)],
+          (products) => [
+            for (final p in products) p.copyWith(isFavorite: true),
+          ],
         );
       },
     );

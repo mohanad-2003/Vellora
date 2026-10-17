@@ -41,13 +41,14 @@ import '../widgets/not_found_page.dart';
 import 'main_shell.dart';
 import 'route_names.dart';
 
-final GlobalKey<NavigatorState> _rootKey =
-    GlobalKey<NavigatorState>(debugLabel: 'root');
+final GlobalKey<NavigatorState> _rootKey = GlobalKey<NavigatorState>(
+  debugLabel: 'root',
+);
 
 /// Central go_router configuration.
 ///
 /// * Splash decides the real destination.
-/// * The five main tabs (Home, Explore, Wishlist, Cart, Profile) live in a
+/// * The four main tabs (Home, Explore, Cart, Profile) live in a
 ///   [StatefulShellRoute.indexedStack], so each keeps its own state and scroll
 ///   position.
 /// * Everything else (product, catalog, search, checkout, orders…) is pushed
@@ -100,10 +101,8 @@ class AppRouter {
       // Password-reset chain shares a single AuthBloc so pendingEmail /
       // resetToken persist across ForgotPassword → OTP → CreateNewPassword.
       ShellRoute(
-        builder: (_, _, child) => BlocProvider(
-          create: (_) => sl<AuthBloc>(),
-          child: child,
-        ),
+        builder: (_, _, child) =>
+            BlocProvider(create: (_) => sl<AuthBloc>(), child: child),
         routes: [
           GoRoute(
             path: RouteNames.forgotPassword,
@@ -157,15 +156,6 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: RouteNames.wishlist,
-                name: RouteNames.nWishlist,
-                builder: (_, _) => const WishlistPage(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
                 path: RouteNames.cart,
                 name: RouteNames.nCart,
                 builder: (_, _) => const CartPage(),
@@ -185,6 +175,12 @@ class AppRouter {
       ),
 
       // ── Pushed over the tabs ───────────────────────────────────────────
+      GoRoute(
+        parentNavigatorKey: _rootKey,
+        path: RouteNames.wishlist,
+        name: RouteNames.nWishlist,
+        pageBuilder: (_, state) => _slide(state, const WishlistPage()),
+      ),
       GoRoute(
         parentNavigatorKey: _rootKey,
         path: RouteNames.product,
@@ -246,10 +242,8 @@ class AppRouter {
         // sense — send the user home instead.
         redirect: (_, state) =>
             state.extra is OrderEntity ? null : RouteNames.home,
-        pageBuilder: (_, state) => _fade(
-          state,
-          OrderSuccessPage(order: state.extra! as OrderEntity),
-        ),
+        pageBuilder: (_, state) =>
+            _fade(state, OrderSuccessPage(order: state.extra! as OrderEntity)),
       ),
       GoRoute(
         parentNavigatorKey: _rootKey,
@@ -311,10 +305,7 @@ class AppRouter {
     errorBuilder: (_, _) => const NotFoundPage(),
   );
 
-  static CustomTransitionPage<void> _fade(
-    GoRouterState state,
-    Widget child,
-  ) {
+  static CustomTransitionPage<void> _fade(GoRouterState state, Widget child) {
     return CustomTransitionPage(
       key: state.pageKey,
       child: child,
@@ -324,10 +315,7 @@ class AppRouter {
     );
   }
 
-  static CustomTransitionPage<void> _slide(
-    GoRouterState state,
-    Widget child,
-  ) {
+  static CustomTransitionPage<void> _slide(GoRouterState state, Widget child) {
     return CustomTransitionPage(
       key: state.pageKey,
       child: child,
@@ -341,12 +329,13 @@ class AppRouter {
         final offset = Tween<Offset>(begin: begin, end: Offset.zero).animate(
           CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
         );
-        final under = Tween<Offset>(
-          begin: Offset.zero,
-          end: Offset(isRtl ? 0.25 : -0.25, 0),
-        ).animate(
-          CurvedAnimation(parent: secondary, curve: Curves.easeOutCubic),
-        );
+        final under =
+            Tween<Offset>(
+              begin: Offset.zero,
+              end: Offset(isRtl ? 0.25 : -0.25, 0),
+            ).animate(
+              CurvedAnimation(parent: secondary, curve: Curves.easeOutCubic),
+            );
         return SlideTransition(
           position: under,
           child: SlideTransition(position: offset, child: child),

@@ -7,7 +7,8 @@ import '../extensions/context_extensions.dart';
 import '../responsive/responsive.dart';
 import '../widgets/vellora_nav_bar.dart';
 
-/// Hosts the five top-level tabs (Home · Explore · Wishlist · Cart · Profile).
+/// Hosts the four top-level tabs (Home · Explore · Cart · Profile). The
+/// wishlist is opened from the profile.
 ///
 /// Built on [StatefulNavigationShell] (`indexedStack`), so each tab keeps its
 /// own navigation stack, scroll position and loaded data while the user moves
@@ -18,7 +19,7 @@ class MainShell extends StatelessWidget {
 
   final StatefulNavigationShell navigationShell;
 
-  static const int cartIndex = 3;
+  static const int cartIndex = 2;
 
   void _select(BuildContext context, int index) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -41,11 +42,6 @@ class MainShell extends StatelessWidget {
         icon: Icons.explore_outlined,
         selectedIcon: Icons.explore_rounded,
         label: l10n.explore,
-      ),
-      NavDestinationItem(
-        icon: Icons.favorite_border_rounded,
-        selectedIcon: Icons.favorite_rounded,
-        label: l10n.wishlist,
       ),
       NavDestinationItem(
         icon: Icons.shopping_bag_outlined,
@@ -79,7 +75,11 @@ class MainShell extends StatelessWidget {
             return Scaffold(
               body: Row(
                 children: [
-                  _Rail(items: items, current: current, onSelected: (i) => _select(context, i)),
+                  _Rail(
+                    items: items,
+                    current: current,
+                    onSelected: (i) => _select(context, i),
+                  ),
                   VerticalDivider(
                     width: 1,
                     color: context.colors.outlineVariant,
