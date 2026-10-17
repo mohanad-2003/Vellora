@@ -116,7 +116,7 @@ class OnboardingSlide extends StatelessWidget {
                     Color(0x66000000),
                     Color(0x00000000),
                     Color(0x00000000),
-                    Color(0xE60B0E2E),
+                    Color(0xE60A2620),
                     kOnboardingNavy,
                   ],
                   stops: [0, 0.18, 0.5, 0.78, 0.92],

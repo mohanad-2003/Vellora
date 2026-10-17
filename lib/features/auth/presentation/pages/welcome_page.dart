@@ -60,8 +60,8 @@ class _WelcomePageState extends State<WelcomePage> {
                   colors: [
                     Color(0x99000000),
                     Color(0x00000000),
-                    Color(0x660B0E2E),
-                    Color(0xF20B0E2E),
+                    Color(0x660A2620),
+                    Color(0xF20A2620),
                   ],
                   stops: [0, 0.28, 0.55, 1],
                 ),
@@ -197,7 +197,7 @@ class _LightButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: kBrandGold,
-          foregroundColor: const Color(0xFF14102E),
+          foregroundColor: const Color(0xFF0A2620),
           shape: const RoundedRectangleBorder(borderRadius: AppRadius.rMd),
         ),
         child: Text(label, textAlign: TextAlign.center),
