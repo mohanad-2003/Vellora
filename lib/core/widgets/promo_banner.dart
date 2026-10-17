@@ -29,19 +29,23 @@ class PromoBanner extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    required this.ctaLabel,
     required this.imagePath,
     required this.style,
-    required this.onTap,
+    this.ctaLabel,
+    this.onTap,
     this.eyebrow,
   });
 
   final String title;
   final String subtitle;
-  final String ctaLabel;
+
+  /// The call-to-action pill; left out for a banner that opens nothing.
+  final String? ctaLabel;
   final String imagePath;
   final PromoBannerStyle style;
-  final VoidCallback onTap;
+
+  /// Null for a banner that opens nothing: no press effect either.
+  final VoidCallback? onTap;
   final String? eyebrow;
 
   static const _cut = BorderRadiusDirectional.horizontal(
@@ -173,41 +177,43 @@ class PromoBanner extends StatelessWidget {
                                 color: fg.withValues(alpha: 0.88),
                               ),
                             ),
-                            const SizedBox(height: 12),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: style.cta,
-                                borderRadius: AppRadius.rPill,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      ctaLabel,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: text.labelMedium?.copyWith(
-                                        color: style.ctaForeground,
-                                        fontWeight: FontWeight.w700,
+                            if (ctaLabel != null) ...[
+                              const SizedBox(height: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: style.cta,
+                                  borderRadius: AppRadius.rPill,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        ctaLabel!,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: text.labelMedium?.copyWith(
+                                          color: style.ctaForeground,
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Icon(
-                                    Icons.arrow_forward_rounded,
-                                    size: 16,
-                                    color: style.ctaForeground,
-                                    // Points the way the text reads (flips in RTL).
-                                    textDirection: Directionality.of(context),
-                                  ),
-                                ],
+                                    const SizedBox(width: 6),
+                                    Icon(
+                                      Icons.arrow_forward_rounded,
+                                      size: 16,
+                                      color: style.ctaForeground,
+                                      // Points the way the text reads (flips in RTL).
+                                      textDirection: Directionality.of(context),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
+                            ],
                           ],
                         ),
                       ),
@@ -250,7 +256,7 @@ class _Ring extends StatelessWidget {
 class _PressScale extends StatefulWidget {
   const _PressScale({required this.onTap, required this.child});
 
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final Widget child;
 
   @override
@@ -264,13 +270,17 @@ class _PressScaleState extends State<_PressScale> {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTapDown: (_) => setState(() => _down = true),
+      onTapDown: widget.onTap == null
+          ? null
+          : (_) => setState(() => _down = true),
       onTapCancel: () => setState(() => _down = false),
       onTapUp: (_) => setState(() => _down = false),
-      onTap: () {
-        Haptics.selection();
-        widget.onTap();
-      },
+      onTap: widget.onTap == null
+          ? null
+          : () {
+              Haptics.selection();
+              widget.onTap!();
+            },
       child: AnimatedScale(
         scale: _down ? 0.97 : 1,
         duration: const Duration(milliseconds: 120),

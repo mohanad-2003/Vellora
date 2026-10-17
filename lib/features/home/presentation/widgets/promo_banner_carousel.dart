@@ -269,10 +269,12 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
                           title: copy.title,
                           subtitle: copy.subtitle,
                           eyebrow: copy.badge,
-                          ctaLabel: l10n.shopNow,
+                          ctaLabel: b.opensSomething ? l10n.shopNow : null,
                           imagePath: b.imagePath,
                           style: _styleFor(b),
-                          onTap: () => widget.onBannerTap(b),
+                          onTap: b.opensSomething
+                              ? () => widget.onBannerTap(b)
+                              : null,
                         ),
                       ),
                     );
