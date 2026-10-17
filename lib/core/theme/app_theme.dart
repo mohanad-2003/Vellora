@@ -138,6 +138,7 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: scheme.surface,
         elevation: 0,
+        shadowColor: Colors.black.withValues(alpha: isDark ? 0.5 : 0.08),
         margin: EdgeInsets.zero,
         shape: const RoundedRectangleBorder(borderRadius: AppRadius.rLg),
       ),
@@ -181,8 +182,10 @@ class AppTheme {
         style: IconButton.styleFrom(minimumSize: const Size(44, 44)),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        // Unfilled and outlined: the field reads as an input on the page colour.
-        filled: false,
+        // A white (surface) field with a hairline border lifts off the warm page
+        // colour; the border turns brand-coloured on focus.
+        filled: true,
+        fillColor: scheme.surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
@@ -193,9 +196,9 @@ class AppTheme {
         errorStyle: textTheme.bodySmall?.copyWith(color: scheme.error),
         prefixIconColor: textSecondary,
         suffixIconColor: textSecondary,
-        border: border(scheme.outline, 1.2),
-        enabledBorder: border(scheme.outline, 1.2),
-        disabledBorder: border(scheme.outlineVariant, 1.2),
+        border: border(scheme.outlineVariant, 1.2),
+        enabledBorder: border(scheme.outlineVariant, 1.2),
+        disabledBorder: border(scheme.outlineVariant.withValues(alpha: 0.6), 1.2),
         focusedBorder: border(scheme.primary, 1.8),
         errorBorder: border(scheme.error, 1.2),
         focusedErrorBorder: border(scheme.error, 1.8),
@@ -216,8 +219,10 @@ class AppTheme {
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: scheme.surface,
         surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.black.withValues(alpha: isDark ? 0.5 : 0.12),
         indicatorColor: scheme.primaryContainer,
-        elevation: 0,
+        indicatorShape: const StadiumBorder(),
+        elevation: 8,
         height: 68,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => textTheme.labelSmall?.copyWith(
