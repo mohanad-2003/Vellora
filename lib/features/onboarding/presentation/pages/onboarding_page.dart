@@ -195,7 +195,7 @@ class _GoldButton extends StatelessWidget {
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: kBrandGold,
-        foregroundColor: const Color(0xFF14102E),
+        foregroundColor: const Color(0xFF0A2620),
         minimumSize: const Size(0, 56),
         padding: const EdgeInsets.symmetric(horizontal: 28),
       ),

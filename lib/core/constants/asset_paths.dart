@@ -29,13 +29,13 @@ class AssetPaths {
   static const String brandWordmarkLight = '$_brand/vellora_wordmark_light.png';
 
   // Onboarding / welcome imagery.
-  static const String onboardingRack = '$_img/onboarding/onboarding_rack.jpg';
+  static const String onboardingRack = '$_img/onboarding/onboarding_rack.png';
   static const String onboardingDiscover =
-      '$_img/onboarding/onboarding_discover.jpg';
+      '$_img/onboarding/onboarding_discover.png';
   static const String onboardingShopping =
-      '$_img/onboarding/onboarding_shopping.jpg';
+      '$_img/onboarding/onboarding_shopping.png';
   static const String onboardingDelivery =
-      '$_img/onboarding/onboarding_delivery.jpg';
+      '$_img/onboarding/onboarding_delivery.png';
 
   // Social login brand marks.
   static const String socialFacebook = '$_img/social/facebook.png';

@@ -10,6 +10,7 @@ import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/brand_backdrop.dart';
 import '../../../../core/widgets/vellora_logo.dart';
 import '../../../../core/widgets/staggered_reveal.dart';
 
@@ -46,24 +47,34 @@ class _WelcomePageState extends State<WelcomePage> {
         body: Stack(
           fit: StackFit.expand,
           children: [
-            Image.asset(
-              AssetPaths.onboardingRack,
-              fit: BoxFit.cover,
+            const BrandBackdrop(),
+            // The cut-out sits in the upper part; the copy below it.
+            Align(
               alignment: Alignment.topCenter,
-              errorBuilder: (_, _, _) => const ColoredBox(color: kBrandNavy),
+              child: FractionallySizedBox(
+                heightFactor: 0.52,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    32,
+                    MediaQuery.paddingOf(context).top + 72,
+                    32,
+                    8,
+                  ),
+                  child: Image.asset(
+                    AssetPaths.onboardingRack,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                  ),
+                ),
+              ),
             ),
             const DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0x99000000),
-                    Color(0x00000000),
-                    Color(0x660B0E2E),
-                    Color(0xF20B0E2E),
-                  ],
-                  stops: [0, 0.28, 0.55, 1],
+                  colors: [Color(0x00000000), Color(0xE60A2620)],
+                  stops: [0.45, 0.8],
                 ),
               ),
             ),
@@ -197,7 +208,7 @@ class _LightButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: kBrandGold,
-          foregroundColor: const Color(0xFF14102E),
+          foregroundColor: const Color(0xFF0A2620),
           shape: const RoundedRectangleBorder(borderRadius: AppRadius.rMd),
         ),
         child: Text(label, textAlign: TextAlign.center),
