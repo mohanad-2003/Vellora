@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -40,11 +41,7 @@ class CartFlight {
   /// The latest add; the chip listens.
   static final ValueNotifier<CartAdded?> added = ValueNotifier(null);
 
-  static Rect? get targetRect {
-    final box = navCartKey.currentContext?.findRenderObject();
-    if (box is! RenderBox || !box.attached || !box.hasSize) return null;
-    return box.localToGlobal(Offset.zero) & box.size;
-  }
+  static Rect? get targetRect => rectOf(navCartKey);
 
   /// Remembers where the tap came from: [context] is the add button's.
   static void markSource(BuildContext context, String imagePath) {
@@ -68,28 +65,55 @@ class CartFlight {
     pending = null;
     if (to == null) return false;
 
-    final overlay = Overlay.maybeOf(context, rootOverlay: true);
-    final reduce = MediaQuery.disableAnimationsOf(context);
     final shown = CartAdded(name: name, imagePath: imagePath);
-    if (source == null || overlay == null || reduce) {
+    if (source == null) {
       added.value = shown;
       return true;
     }
+    fly(
+      context,
+      from: source.rect,
+      to: to,
+      imagePath: source.imagePath,
+    ).whenComplete(() => added.value = shown);
+    return true;
+  }
 
+  /// The rectangle of the widget [key] marks, or null while it is not on
+  /// screen.
+  static Rect? rectOf(GlobalKey key) {
+    final box = key.currentContext?.findRenderObject();
+    if (box is! RenderBox || !box.attached || !box.hasSize) return null;
+    return box.localToGlobal(Offset.zero) & box.size;
+  }
+
+  /// Flies a small round picture from [from] to [to] and completes when it has
+  /// landed (at once under reduced motion, or without an overlay).
+  static Future<void> fly(
+    BuildContext context, {
+    required Rect from,
+    required Rect to,
+    required String imagePath,
+  }) {
+    final overlay = Overlay.maybeOf(context, rootOverlay: true);
+    if (overlay == null || MediaQuery.disableAnimationsOf(context)) {
+      return Future.value();
+    }
+    final done = Completer<void>();
     late final OverlayEntry entry;
     entry = OverlayEntry(
       builder: (_) => _Flight(
-        from: source.rect,
+        from: from,
         to: to,
-        imagePath: source.imagePath,
+        imagePath: imagePath,
         onDone: () {
           entry.remove();
-          added.value = shown;
+          done.complete();
         },
       ),
     );
     overlay.insert(entry);
-    return true;
+    return done.future;
   }
 }
 
