@@ -15,6 +15,7 @@ class NavDestinationItem {
     required this.label,
     this.badgeCount = 0,
     this.showDot = false,
+    this.iconKey,
   });
 
   final IconData icon;
@@ -24,6 +25,9 @@ class NavDestinationItem {
 
   /// A small red dot (something is waiting there), when there is no count.
   final bool showDot;
+
+  /// Marks the icon so something can be flown to it (the cart's).
+  final Key? iconKey;
 }
 
 /// Bottom navigation: a floating pill of frosted deep-emerald glass. The page
@@ -204,6 +208,7 @@ class _Icon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      key: item.iconKey,
       clipBehavior: Clip.none,
       children: [
         AnimatedSwitcher(

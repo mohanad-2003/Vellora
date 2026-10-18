@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../extensions/context_extensions.dart';
 import '../theme/app_radius.dart';
 import '../utils/haptics.dart';
+import 'cart_flight.dart';
 import 'favorite_button.dart';
 import 'price_widget.dart';
 import 'product_image.dart';
@@ -205,11 +206,14 @@ class _ProductCardState extends State<ProductCard> {
               ),
             ),
             if (widget.onAddToCart != null)
-              _AddButton(
-                onTap: () {
-                  Haptics.light();
-                  widget.onAddToCart!();
-                },
+              Builder(
+                builder: (buttonContext) => _AddButton(
+                  onTap: () {
+                    Haptics.light();
+                    CartFlight.markSource(buttonContext, widget.imagePath);
+                    widget.onAddToCart!();
+                  },
+                ),
               ),
           ],
         ),

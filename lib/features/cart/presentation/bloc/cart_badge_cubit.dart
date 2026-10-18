@@ -14,7 +14,7 @@ import '../../../../core/constants/app_constants.dart';
 @lazySingleton
 class CartBadgeCubit extends Cubit<int> {
   CartBadgeCubit(@Named(AppConstants.cartBox) this._box)
-      : super(_countOf(_box)) {
+    : super(_countOf(_box)) {
     _subscription = _box.watch().listen((_) => emit(_countOf(_box)));
   }
 
@@ -32,6 +32,23 @@ class CartBadgeCubit extends Cubit<int> {
       }
     }
     return total;
+  }
+
+  /// What the cart holds, at the prices it was added with (for the "added"
+  /// chip; the cart page and checkout price from the server's summary).
+  double get total {
+    var sum = 0.0;
+    for (final raw in _box.values) {
+      try {
+        final json = jsonDecode(raw as String) as Map<String, dynamic>;
+        sum +=
+            ((json['price'] as num?)?.toDouble() ?? 0) *
+            ((json['quantity'] as num?)?.toInt() ?? 0);
+      } catch (_) {
+        // Skipped, like in the count.
+      }
+    }
+    return sum;
   }
 
   @override
