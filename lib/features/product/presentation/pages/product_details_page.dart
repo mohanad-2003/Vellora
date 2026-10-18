@@ -16,6 +16,7 @@ import 'package:vellora/core/widgets/app_button.dart';
 import 'package:vellora/core/widgets/app_icon_button.dart';
 import 'package:vellora/core/widgets/count_badge.dart';
 import 'package:vellora/core/widgets/custom_bottom_sheet.dart';
+import 'package:vellora/core/widgets/cart_flight.dart';
 import 'package:vellora/core/widgets/custom_snackbar.dart';
 import 'package:vellora/core/widgets/failure_state_view.dart';
 import 'package:vellora/core/widgets/favorite_button.dart';
@@ -55,11 +56,55 @@ class ProductDetailsPage extends StatelessWidget {
   }
 }
 
-class _ProductDetailView extends StatelessWidget {
+class _ProductDetailView extends StatefulWidget {
   const _ProductDetailView({required this.productId, this.heroTag});
 
   final String productId;
   final Object? heroTag;
+
+  @override
+  State<_ProductDetailView> createState() => _ProductDetailViewState();
+}
+
+class _ProductDetailViewState extends State<_ProductDetailView> {
+  // Where the picture starts and lands when the product is added to the cart.
+  final _imageKey = GlobalKey(debugLabel: 'productImage');
+  final _addKey = GlobalKey(debugLabel: 'productAdd');
+
+  String get productId => widget.productId;
+  Object? get heroTag => widget.heroTag;
+
+  /// The product's picture flies into the Add to Cart button, and the message
+  /// shows once it has landed. Without a visible picture (scrolled away) it
+  /// starts from the middle of the screen.
+  Future<void> _added(BuildContext context, ProductDetailState state) async {
+    final l10n = context.l10n;
+    final router = GoRouter.of(context);
+    final target = CartFlight.rectOf(_addKey);
+    final image = CartFlight.rectOf(_imageKey);
+    final screen = MediaQuery.sizeOf(context);
+    final visible =
+        image != null && image.bottom > 120 && image.top < screen.height - 120;
+    final from = visible
+        ? Rect.fromCenter(center: image.center, width: 56, height: 56)
+        : Rect.fromCenter(
+            center: Offset(screen.width / 2, screen.height * 0.4),
+            width: 56,
+            height: 56,
+          );
+    final path = state.detail?.product.imagePath;
+    if (target != null && path != null) {
+      await CartFlight.fly(context, from: from, to: target, imagePath: path);
+    }
+    if (!context.mounted) return;
+    AppSnackbar.show(
+      context,
+      message: l10n.addedToCart,
+      type: SnackType.success,
+      actionLabel: l10n.viewCart,
+      onAction: () => router.goNamed(RouteNames.nCart),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,13 +120,7 @@ class _ProductDetailView extends StatelessWidget {
               state.buyNowTick >= state.addedToCartTick) {
             context.pushNamed(RouteNames.nCheckout);
           } else if (state.addedToCartTick > 0) {
-            AppSnackbar.show(
-              context,
-              message: l10n.addedToCart,
-              type: SnackType.success,
-              actionLabel: l10n.viewCart,
-              onAction: () => context.goNamed(RouteNames.nCart),
-            );
+            _added(context, state);
           }
         },
         builder: (context, state) {
@@ -104,6 +143,8 @@ class _ProductDetailView extends StatelessWidget {
             ProductDetailStatus.loaded => _LoadedView(
               state: state,
               heroTag: heroTag,
+              imageKey: _imageKey,
+              addKey: _addKey,
             ),
           };
         },
@@ -164,10 +205,17 @@ class _DetailSkeleton extends StatelessWidget {
 }
 
 class _LoadedView extends StatelessWidget {
-  const _LoadedView({required this.state, this.heroTag});
+  const _LoadedView({
+    required this.state,
+    required this.imageKey,
+    required this.addKey,
+    this.heroTag,
+  });
 
   final ProductDetailState state;
   final Object? heroTag;
+  final GlobalKey imageKey;
+  final GlobalKey addKey;
 
   void _openRelated(BuildContext context, ProductEntity p, String tag) {
     context.pushReplacementNamed(
@@ -189,6 +237,7 @@ class _LoadedView extends StatelessWidget {
       originalPrice: product.hasDiscount
           ? product.originalPrice! * state.quantity
           : null,
+      addKey: addKey,
       onAddToCart: () => bloc.add(const ProductAddToCartRequested()),
       onBuyNow: () => bloc.add(const ProductBuyNowRequested()),
       stockAlert: detail.stockAlert,
@@ -212,10 +261,13 @@ class _LoadedView extends StatelessWidget {
                   child: Stack(
                     children: [
                       Positioned.fill(
-                        child: ProductGallery(
-                          images: detail.gallery,
-                          heroTag: heroTag,
-                          semanticLabel: detail.product.name,
+                        child: KeyedSubtree(
+                          key: imageKey,
+                          child: ProductGallery(
+                            images: detail.gallery,
+                            heroTag: heroTag,
+                            semanticLabel: detail.product.name,
+                          ),
                         ),
                       ),
                       SafeArea(
@@ -233,12 +285,13 @@ class _LoadedView extends StatelessWidget {
                     left: false,
                     bottom: false,
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.xxl,
-                      ).copyWith(
-                        top: AppSpacing.lg,
-                        bottom: ProductActionsBar.clearance,
-                      ),
+                      padding:
+                          const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.xxl,
+                          ).copyWith(
+                            top: AppSpacing.lg,
+                            bottom: ProductActionsBar.clearance,
+                          ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -292,10 +345,13 @@ class _LoadedView extends StatelessWidget {
                 ],
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.pin,
-                  background: ProductGallery(
-                    images: detail.gallery,
-                    heroTag: heroTag,
-                    semanticLabel: detail.product.name,
+                  background: KeyedSubtree(
+                    key: imageKey,
+                    child: ProductGallery(
+                      images: detail.gallery,
+                      heroTag: heroTag,
+                      semanticLabel: detail.product.name,
+                    ),
                   ),
                 ),
               ),

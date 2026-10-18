@@ -20,6 +20,7 @@ class ProductActionsBar extends StatelessWidget {
     this.originalPrice,
     this.stockAlert = false,
     this.onStockAlert,
+    this.addKey,
   });
 
   final bool inStock;
@@ -39,6 +40,9 @@ class ProductActionsBar extends StatelessWidget {
   /// Asks (or cancels the ask) to be told when it returns; shown instead of the
   /// purchase buttons while the product is sold out.
   final VoidCallback? onStockAlert;
+
+  /// Marks the Add to Cart button so the product's picture can fly to it.
+  final GlobalKey? addKey;
 
   /// Height the page keeps free at its end for the bar and its margins.
   static const double clearance = 104;
@@ -91,6 +95,7 @@ class ProductActionsBar extends StatelessWidget {
                               ),
                             ],
                             _RoundAction(
+                              key: addKey,
                               icon: Icons.add_shopping_cart_rounded,
                               label: l10n.addToCart,
                               onTap: inStock ? onAddToCart : null,
@@ -167,6 +172,7 @@ class _TotalBlock extends StatelessWidget {
 /// A round glass button with an icon (Add to Cart).
 class _RoundAction extends StatelessWidget {
   const _RoundAction({
+    super.key,
     required this.icon,
     required this.label,
     required this.onTap,
