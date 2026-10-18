@@ -119,7 +119,7 @@ class _ProfileContent extends StatelessWidget {
         context.pageGutter,
         AppSpacing.lg,
         context.pageGutter,
-        AppSpacing.xxl,
+        AppSpacing.xxl + context.navClearance,
       ),
       children: [
         Padding(

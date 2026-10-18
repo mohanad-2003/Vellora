@@ -158,8 +158,10 @@ class _HomeViewState extends State<_HomeView> {
                           ],
                         ),
                       ),
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: AppSpacing.xxl),
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: AppSpacing.xxl + context.navClearance,
+                      ),
                     ),
                   ],
                 ),

@@ -367,7 +367,9 @@ class _LoadedExplore extends StatelessWidget {
             ),
           ),
         ],
-        const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl)),
+        SliverToBoxAdapter(
+          child: SizedBox(height: AppSpacing.xxl + context.navClearance),
+        ),
       ],
     );
   }
