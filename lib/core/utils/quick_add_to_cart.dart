@@ -8,6 +8,7 @@ import '../../features/product/domain/usecases/get_product_details_usecase.dart'
 import '../di/injection.dart';
 import '../extensions/context_extensions.dart';
 import '../routing/route_names.dart';
+import '../widgets/cart_flight.dart';
 import '../widgets/custom_snackbar.dart';
 
 /// The "add to bag" button on a product card.
@@ -56,7 +57,17 @@ Future<void> quickAddToCart(BuildContext context, ProductEntity product) async {
   );
   if (!context.mounted) return;
   if (added.isLeft()) {
+    CartFlight.pending = null;
     AppSnackbar.error(context, l10n.somethingWentWrong);
+    return;
+  }
+  // With the floating bar on screen the picture flies to the cart and a chip
+  // says what is in it; otherwise (wide windows) the plain message.
+  if (CartFlight.announce(
+    context,
+    name: product.name,
+    imagePath: product.imagePath,
+  )) {
     return;
   }
   AppSnackbar.show(

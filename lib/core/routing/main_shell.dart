@@ -12,6 +12,8 @@ import '../extensions/context_extensions.dart';
 import '../responsive/responsive.dart';
 import '../theme/app_colors.dart';
 import '../usecases/usecase.dart';
+import '../widgets/cart_added_chip.dart';
+import '../widgets/cart_flight.dart';
 import '../widgets/vellora_nav_bar.dart';
 import 'tab_reselect.dart';
 
@@ -99,6 +101,7 @@ class _MainShellState extends State<MainShell> {
         selectedIcon: Icons.shopping_bag_rounded,
         label: l10n.cart,
         badgeCount: cartCount,
+        iconKey: CartFlight.navCartKey,
       ),
       NavDestinationItem(
         icon: Icons.person_outline_rounded,
@@ -146,7 +149,27 @@ class _MainShellState extends State<MainShell> {
             return Scaffold(
               // The pages scroll under the glass bar and leave their own room.
               extendBody: true,
-              body: _shell,
+              body: Stack(
+                children: [
+                  Positioned.fill(child: _shell),
+                  // Over the bar: what was just added, with a way to the cart.
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Builder(
+                      builder: (context) => Padding(
+                        padding: EdgeInsets.only(bottom: context.navClearance),
+                        child: CartAddedChip(
+                          hidden: current == MainShell.cartIndex,
+                          onViewCart: () =>
+                              _select(context, MainShell.cartIndex),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               bottomNavigationBar: VelloraNavBar(
                 items: items,
                 currentIndex: current,
