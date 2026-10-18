@@ -5,7 +5,7 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/num_extensions.dart';
 import '../../../../core/responsive/responsive.dart';
 import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_radius.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../orders/domain/order_entity.dart';
@@ -50,7 +50,6 @@ class _OrderSuccessPageState extends State<OrderSuccessPage>
     final l10n = context.l10n;
     final text = context.textTheme;
     final colors = context.colors;
-    final success = context.vellora.success;
     final order = widget.order;
     final reduce = MediaQuery.disableAnimationsOf(context);
     if (reduce && !_controller.isCompleted) _controller.value = 1;
@@ -80,7 +79,7 @@ class _OrderSuccessPageState extends State<OrderSuccessPage>
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: success.withValues(alpha: 0.12),
+                            color: kBrandGold.withValues(alpha: 0.18),
                           ),
                           child: Container(
                             width: 92,
@@ -88,11 +87,11 @@ class _OrderSuccessPageState extends State<OrderSuccessPage>
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: success,
+                              color: kBrandGold,
                             ),
                             child: const Icon(
                               Icons.check_rounded,
-                              color: Colors.white,
+                              color: kBrandNavy,
                               size: 52,
                             ),
                           ),
@@ -121,35 +120,23 @@ class _OrderSuccessPageState extends State<OrderSuccessPage>
                               ),
                             ),
                             const SizedBox(height: AppSpacing.xxl),
-                            Container(
-                              padding: const EdgeInsets.all(AppSpacing.lg),
-                              decoration: BoxDecoration(
-                                color: colors.surfaceContainerHighest,
-                                borderRadius: AppRadius.rLg,
-                              ),
-                              child: Column(
-                                children: [
-                                  _row(
-                                    context,
-                                    l10n.orderNumber,
-                                    order.number,
-                                    emphasize: true,
-                                  ),
-                                  const SizedBox(height: AppSpacing.sm),
-                                  _row(
-                                    context,
-                                    l10n.estimatedDelivery,
-                                    l10n.deliveryWindow,
-                                  ),
-                                  const SizedBox(height: AppSpacing.sm),
-                                  _row(
-                                    context,
-                                    l10n.total,
-                                    order.total.toPrice(),
-                                  ),
-                                ],
-                              ),
+                            // On the page itself, separated by hairlines.
+                            Divider(height: 1, color: colors.outlineVariant),
+                            _row(
+                              context,
+                              l10n.orderNumber,
+                              order.number,
+                              emphasize: true,
                             ),
+                            Divider(height: 1, color: colors.outlineVariant),
+                            _row(
+                              context,
+                              l10n.estimatedDelivery,
+                              l10n.deliveryWindow,
+                            ),
+                            Divider(height: 1, color: colors.outlineVariant),
+                            _row(context, l10n.total, order.total.toPrice()),
+                            Divider(height: 1, color: colors.outlineVariant),
                             const SizedBox(height: AppSpacing.xxxl),
                             AppButton(
                               label: l10n.trackOrder,
@@ -188,20 +175,23 @@ class _OrderSuccessPageState extends State<OrderSuccessPage>
     bool emphasize = false,
   }) {
     final text = context.textTheme;
-    return Row(
-      children: [
-        Expanded(child: Text(label, style: text.bodyMedium)),
-        const SizedBox(width: AppSpacing.md),
-        Flexible(
-          child: Text(
-            value,
-            textAlign: TextAlign.end,
-            style: (emphasize ? text.titleMedium : text.titleSmall)?.copyWith(
-              color: emphasize ? context.colors.primary : null,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+      child: Row(
+        children: [
+          Expanded(child: Text(label, style: text.bodyMedium)),
+          const SizedBox(width: AppSpacing.md),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: (emphasize ? text.titleMedium : text.titleSmall)?.copyWith(
+                color: emphasize ? context.colors.primary : null,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
