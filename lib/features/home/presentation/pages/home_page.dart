@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +10,7 @@ import 'package:vellora/core/localization/l10n_lookup.dart';
 import 'package:vellora/core/localization/locale_cubit.dart';
 import 'package:vellora/core/responsive/responsive.dart';
 import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/routing/tab_reselect.dart';
 import 'package:vellora/core/theme/app_spacing.dart';
 import 'package:vellora/core/utils/quick_add_to_cart.dart';
 import 'package:vellora/core/widgets/failure_state_view.dart';
@@ -55,8 +58,39 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _HomeView extends StatelessWidget {
+class _HomeView extends StatefulWidget {
   const _HomeView();
+
+  @override
+  State<_HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<_HomeView> {
+  final _scroll = ScrollController();
+  StreamSubscription<int>? _reselect;
+
+  @override
+  void initState() {
+    super.initState();
+    // Tapping Home while on Home goes back to the top.
+    _reselect = TabReselect.stream.where((i) => i == TabReselect.home).listen((
+      _,
+    ) {
+      if (!_scroll.hasClients) return;
+      _scroll.animateTo(
+        0,
+        duration: const Duration(milliseconds: 450),
+        curve: Curves.easeOutCubic,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _reselect?.cancel();
+    _scroll.dispose();
+    super.dispose();
+  }
 
   Future<void> _refresh(BuildContext context) async {
     final bloc = context.read<HomeBloc>();
@@ -81,6 +115,7 @@ class _HomeView extends StatelessWidget {
               return RefreshIndicator(
                 onRefresh: () => _refresh(context),
                 child: CustomScrollView(
+                  controller: _scroll,
                   physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
                     SliverToBoxAdapter(
