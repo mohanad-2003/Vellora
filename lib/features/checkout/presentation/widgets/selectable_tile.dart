@@ -6,8 +6,9 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/haptics.dart';
 
 /// Radio-style selectable row used for address, delivery and payment choices.
-/// The border highlights only when selected; a leading widget, title, optional
-/// subtitle and trailing widget are all optional building blocks.
+/// It sits on the page itself (no card): the radio, the bolder title and the
+/// emerald icon mark the chosen one. A leading widget, title, optional subtitle
+/// and trailing widget are all optional building blocks.
 class SelectableTile extends StatelessWidget {
   const SelectableTile({
     super.key,
@@ -49,20 +50,9 @@ class SelectableTile extends StatelessWidget {
                 onTap!();
               },
         borderRadius: AppRadius.rLg,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.all(AppSpacing.md),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           constraints: const BoxConstraints(minHeight: 64),
-          decoration: BoxDecoration(
-            color: selected
-                ? colors.primaryContainer.withValues(alpha: 0.5)
-                : colors.surface,
-            borderRadius: AppRadius.rLg,
-            border: Border.all(
-              color: selected ? colors.primary : colors.outlineVariant,
-              width: selected ? 1.6 : 1,
-            ),
-          ),
           child: Row(
             children: [
               if (leading != null) ...[
@@ -74,7 +64,12 @@ class SelectableTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(title, style: text.titleSmall),
+                    Text(
+                      title,
+                      style: text.titleSmall?.copyWith(
+                        fontWeight: selected ? FontWeight.w800 : null,
+                      ),
+                    ),
                     if (subtitle != null)
                       Text(subtitle!, style: text.bodySmall),
                   ],
@@ -119,7 +114,7 @@ class TileIcon extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: context.colors.surfaceContainerHighest,
-        borderRadius: AppRadius.rMd,
+        shape: BoxShape.circle,
       ),
       child: child ?? Icon(icon, color: context.colors.primary, size: 22),
     );
