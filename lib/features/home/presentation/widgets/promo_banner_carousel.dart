@@ -198,7 +198,11 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
           badge: l10n.bannerBadgeSeason,
         );
       default:
-        return (title: b.title, subtitle: b.subtitle, badge: null);
+        return (
+          title: b.title,
+          subtitle: b.subtitle,
+          badge: b.badge.isEmpty ? null : b.badge,
+        );
     }
   }
 
@@ -269,7 +273,10 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
                           title: copy.title,
                           subtitle: copy.subtitle,
                           eyebrow: copy.badge,
-                          ctaLabel: b.opensSomething ? l10n.shopNow : null,
+                          ctaLabel: b.opensSomething
+                              ? (b.cta.isEmpty ? l10n.shopNow : b.cta)
+                              : null,
+                          deadline: b.endsAt,
                           imagePath: b.imagePath,
                           style: _styleFor(b),
                           onTap: b.opensSomething
