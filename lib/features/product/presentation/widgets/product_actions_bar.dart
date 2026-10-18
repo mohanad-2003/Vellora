@@ -136,14 +136,14 @@ class _TotalBlock extends StatelessWidget {
             Text(
               context.l10n.total,
               style: text.labelSmall?.copyWith(
-                color: Colors.white.withValues(alpha: 0.7),
+                color: GlassPanel.inkMuted(context),
               ),
             ),
             Text(
               price.toPrice(),
               maxLines: 1,
               style: text.titleMedium?.copyWith(
-                color: Colors.white,
+                color: GlassPanel.ink(context),
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -152,9 +152,9 @@ class _TotalBlock extends StatelessWidget {
                 originalPrice!.toPrice(),
                 maxLines: 1,
                 style: text.labelSmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.6),
+                  color: GlassPanel.inkMuted(context),
                   decoration: TextDecoration.lineThrough,
-                  decorationColor: Colors.white.withValues(alpha: 0.6),
+                  decorationColor: GlassPanel.inkMuted(context),
                 ),
               ),
           ],
@@ -188,9 +188,11 @@ class _RoundAction extends StatelessWidget {
       child: Opacity(
         opacity: enabled ? 1 : 0.4,
         child: Material(
-          color: Colors.white.withValues(alpha: 0.10),
+          color: GlassPanel.ink(context).withValues(alpha: 0.08),
           shape: CircleBorder(
-            side: BorderSide(color: Colors.white.withValues(alpha: 0.28)),
+            side: BorderSide(
+              color: GlassPanel.ink(context).withValues(alpha: 0.24),
+            ),
           ),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
@@ -202,7 +204,7 @@ class _RoundAction extends StatelessWidget {
                   },
             child: SizedBox.square(
               dimension: 52,
-              child: Icon(icon, color: Colors.white, size: 24),
+              child: Icon(icon, color: GlassPanel.ink(context), size: 24),
             ),
           ),
         ),
@@ -229,7 +231,8 @@ class _GoldButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final enabled = onTap != null;
-    final fg = outlined ? kBrandGold : kBrandNavy;
+    final edge = context.isDark ? kBrandGold : kBrandNavy;
+    final fg = outlined ? edge : kBrandNavy;
     return Semantics(
       button: true,
       enabled: enabled,
@@ -242,7 +245,7 @@ class _GoldButton extends StatelessWidget {
           color: outlined ? Colors.transparent : kBrandGold,
           shape: StadiumBorder(
             side: outlined
-                ? const BorderSide(color: kBrandGold, width: 1.4)
+                ? BorderSide(color: edge, width: 1.4)
                 : BorderSide.none,
           ),
           clipBehavior: Clip.antiAlias,
