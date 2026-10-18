@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_colors.dart';
 import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/widgets/glass_panel.dart';
 import 'package:vellora/core/widgets/app_icon_button.dart';
 import 'package:vellora/core/widgets/product_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -71,20 +73,34 @@ class _ProductGalleryState extends State<ProductGallery> {
             bottom: 14,
             start: 0,
             end: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                widget.images.length,
-                (i) => AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  width: i == _index ? 20 : 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: i == _index
-                        ? context.colors.primary
-                        : context.colors.onSurface.withValues(alpha: 0.25),
-                    borderRadius: AppRadius.rPill,
+            child: Center(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: GlassPanel.glass.withValues(alpha: 0.72),
+                  borderRadius: AppRadius.rPill,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 7,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                      widget.images.length,
+                      (i) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        width: i == _index ? 20 : 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: i == _index
+                              ? kBrandGold
+                              : Colors.white.withValues(alpha: 0.5),
+                          borderRadius: AppRadius.rPill,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),

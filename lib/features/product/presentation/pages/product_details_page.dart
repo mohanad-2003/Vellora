@@ -182,8 +182,13 @@ class _LoadedView extends StatelessWidget {
     final detail = state.detail!;
     final bloc = context.read<ProductDetailBloc>();
 
+    final product = detail.product;
     final actions = ProductActionsBar(
       inStock: detail.inStock,
+      price: product.price * state.quantity,
+      originalPrice: product.hasDiscount
+          ? product.originalPrice! * state.quantity
+          : null,
       onAddToCart: () => bloc.add(const ProductAddToCartRequested()),
       onBuyNow: () => bloc.add(const ProductBuyNowRequested()),
       stockAlert: detail.stockAlert,
@@ -197,9 +202,9 @@ class _LoadedView extends StatelessWidget {
 
     final wide = context.screenWidth >= Breakpoints.medium;
     if (wide) {
-      return Column(
+      return Stack(
         children: [
-          Expanded(
+          Positioned.fill(
             child: Row(
               children: [
                 Expanded(
@@ -230,7 +235,10 @@ class _LoadedView extends StatelessWidget {
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.xxl,
-                      ).copyWith(top: AppSpacing.lg),
+                      ).copyWith(
+                        top: AppSpacing.lg,
+                        bottom: ProductActionsBar.clearance,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -253,7 +261,7 @@ class _LoadedView extends StatelessWidget {
               ],
             ),
           ),
-          actions,
+          Positioned(left: 0, right: 0, bottom: 0, child: actions),
         ],
       );
     }
@@ -262,9 +270,9 @@ class _LoadedView extends StatelessWidget {
     final galleryHeight = (width * 1.02).clamp(280.0, 460.0);
     final gutter = context.pageGutter;
 
-    return Column(
+    return Stack(
       children: [
-        Expanded(
+        Positioned.fill(
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
@@ -315,10 +323,14 @@ class _LoadedView extends StatelessWidget {
                   ),
                 ),
               ),
+              // The purchase bar floats over the foot of the page.
+              const SliverToBoxAdapter(
+                child: SizedBox(height: ProductActionsBar.clearance),
+              ),
             ],
           ),
         ),
-        actions,
+        Positioned(left: 0, right: 0, bottom: 0, child: actions),
       ],
     );
   }

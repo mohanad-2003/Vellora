@@ -80,7 +80,7 @@ class ShareProductSheet extends StatefulWidget {
 class _ShareProductSheetState extends State<ShareProductSheet> {
   bool _copied = false;
   Timer? _reset;
-
+  
   String get _link => AppConstants.productUrl(widget.product.id);
 
   String _message(BuildContext context) => shareMessage(
