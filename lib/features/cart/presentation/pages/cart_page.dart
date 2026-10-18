@@ -50,8 +50,9 @@ class _CartView extends StatelessWidget {
     final gutter = context.pageGutter;
 
     return Scaffold(
+      // Bottom inset on: the floating tab bar covers the bottom, so the page
+      // (its checkout bar included) stops above it.
       body: SafeArea(
-        bottom: false,
         child: ResponsiveCenter(
           maxWidth: 720,
           child: BlocBuilder<CartBloc, CartState>(

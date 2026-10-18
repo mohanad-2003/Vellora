@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/theme/app_colors.dart';
@@ -25,9 +27,14 @@ class NavDestinationItem {
   final bool showDot;
 }
 
-/// Bottom navigation: a floating pill. The chosen destination opens into an
-/// emerald capsule with its icon and name; the others are icons. A count badge
-/// pulses when it grows, and a dot can mark a destination that needs a look.
+/// Bottom navigation: a floating pill of frosted deep-emerald glass. The page
+/// scrolls under it (blurred and tinted), so it is clear glass, not a white
+/// slab. The chosen destination opens into a champagne capsule with its icon
+/// and name; the others are pale icons. A count badge pulses when it grows, and
+/// a dot can mark a destination that needs a look.
+///
+/// The body must extend behind the bar (`Scaffold.extendBody`) and tab pages
+/// leave `context.navClearance` at the end of their scrolling content.
 ///
 /// Every item is at least 48dp tall, the name is one line and scales down
 /// instead of overflowing, and the bar never grows wider than a phone.
@@ -48,8 +55,8 @@ class VelloraNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
     final dark = context.isDark;
+    final radius = BorderRadius.circular(barHeight / 2);
     return SafeArea(
       top: false,
       minimum: const EdgeInsets.only(bottom: 10),
@@ -59,50 +66,83 @@ class VelloraNavBar extends StatelessWidget {
           heightFactor: 1,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 480),
+            // The shadow sits outside the clip so it is not cut off.
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: colors.surface,
-                borderRadius: BorderRadius.circular(barHeight / 2),
-                border: Border.all(
-                  color: dark
-                      ? kBrandGold.withValues(alpha: 0.22)
-                      : colors.outlineVariant.withValues(alpha: 0.7),
-                ),
+                borderRadius: radius,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: dark ? 0.5 : 0.12),
-                    blurRadius: 28,
-                    offset: const Offset(0, 10),
+                    color: Colors.black.withValues(alpha: dark ? 0.55 : 0.28),
+                    blurRadius: 30,
+                    offset: const Offset(0, 12),
                   ),
                 ],
               ),
-              child: SizedBox(
-                height: barHeight,
-                child: Padding(
-                  padding: const EdgeInsets.all(_inset),
-                  child: LayoutBuilder(
-                    builder: (context, c) {
-                      final width = c.maxWidth;
-                      final selectedWidth = (width * 0.4).clamp(104.0, 160.0);
-                      final others = items.length > 1 ? items.length - 1 : 1;
-                      final otherWidth = (width - selectedWidth) / others;
-                      return Row(
-                        children: [
-                          for (var i = 0; i < items.length; i++)
-                            _NavItem(
-                              item: items[i],
-                              selected: i == currentIndex,
-                              width: i == currentIndex
-                                  ? selectedWidth
-                                  : otherWidth,
-                              onTap: () {
-                                if (i != currentIndex) Haptics.selection();
-                                onSelected(i);
-                              },
-                            ),
+              child: ClipRRect(
+                borderRadius: radius,
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: (dark ? glassDark : _glass).withValues(
+                        alpha: dark ? 0.78 : 0.74,
+                      ),
+                      borderRadius: radius,
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.14),
+                      ),
+                    ),
+                    // A faint light from the top edge, like polished glass. It
+                    // is the foreground: a gradient in `decoration` would
+                    // replace the tint instead of sitting on it.
+                    foregroundDecoration: BoxDecoration(
+                      borderRadius: radius,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.white.withValues(alpha: 0.10),
+                          Colors.white.withValues(alpha: 0),
                         ],
-                      );
-                    },
+                      ),
+                    ),
+                    child: SizedBox(
+                      height: barHeight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(_inset),
+                        child: LayoutBuilder(
+                          builder: (context, c) {
+                            final width = c.maxWidth;
+                            final selectedWidth = (width * 0.4).clamp(
+                              104.0,
+                              160.0,
+                            );
+                            final others = items.length > 1
+                                ? items.length - 1
+                                : 1;
+                            final otherWidth = (width - selectedWidth) / others;
+                            return Row(
+                              children: [
+                                for (var i = 0; i < items.length; i++)
+                                  _NavItem(
+                                    item: items[i],
+                                    selected: i == currentIndex,
+                                    width: i == currentIndex
+                                        ? selectedWidth
+                                        : otherWidth,
+                                    onTap: () {
+                                      if (i != currentIndex) {
+                                        Haptics.selection();
+                                      }
+                                      onSelected(i);
+                                    },
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -112,6 +152,13 @@ class VelloraNavBar extends StatelessWidget {
       ),
     );
   }
+
+  /// Deep emerald, a little lighter than the brand's darkest green so the bar
+  /// still reads as green over a light page.
+  static const Color _glass = Color(0xFF0B3A30);
+
+  /// The darker glass of dark mode; also the ring around badges and dots.
+  static const Color glassDark = Color(0xFF071F1A);
 }
 
 class _NavItem extends StatelessWidget {
@@ -129,16 +176,14 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
-    final dark = context.isDark;
-
-    // Light: an emerald capsule with a gold icon. Dark: a deep capsule with a
-    // mint icon, so the contrast holds in both.
-    final capsule = dark ? colors.primaryContainer : colors.primary;
+    // Champagne capsule with deep emerald content on the glass; pale icons for
+    // the rest. The same in light and dark, so the bar is one brand object.
+    const capsule = kBrandGold;
+    const onCapsule = kBrandNavy;
     final iconColor = selected
-        ? (dark ? colors.primary : kBrandGold)
-        : colors.onSurfaceVariant;
-    final labelColor = dark ? colors.primary : Colors.white;
+        ? onCapsule
+        : Colors.white.withValues(alpha: 0.74);
+    const labelColor = onCapsule;
 
     return Semantics(
       button: true,
@@ -156,9 +201,6 @@ class _NavItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected ? capsule : Colors.transparent,
           borderRadius: AppRadius.rPill,
-          border: selected && dark
-              ? Border.all(color: colors.primary.withValues(alpha: 0.35))
-              : null,
         ),
         child: InkWell(
           onTap: onTap,
@@ -239,7 +281,10 @@ class _Icon extends StatelessWidget {
             end: -10,
             child: PulseOnChange(
               value: item.badgeCount,
-              child: CountBadge(count: item.badgeCount),
+              child: CountBadge(
+                count: item.badgeCount,
+                borderColor: VelloraNavBar.glassDark,
+              ),
             ),
           )
         else if (item.showDot)
@@ -252,7 +297,7 @@ class _Icon extends StatelessWidget {
               decoration: BoxDecoration(
                 color: context.vellora.sale,
                 shape: BoxShape.circle,
-                border: Border.all(color: context.colors.surface, width: 1.5),
+                border: Border.all(color: VelloraNavBar.glassDark, width: 1.5),
               ),
             ),
           ),

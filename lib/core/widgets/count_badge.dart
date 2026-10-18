@@ -7,10 +7,19 @@ import '../extensions/context_extensions.dart';
 /// Hidden at 0 and capped at "99+". Digits are laid out left-to-right in every
 /// locale so "99+" never reads as "+99" in Arabic.
 class CountBadge extends StatelessWidget {
-  const CountBadge({super.key, required this.count, this.maxCount = 99});
+  const CountBadge({
+    super.key,
+    required this.count,
+    this.maxCount = 99,
+    this.borderColor,
+  });
 
   final int count;
   final int maxCount;
+
+  /// The ring around the badge; the surface colour unless set (use the colour
+  /// of what the badge sits on).
+  final Color? borderColor;
 
   static String format(int count, {int maxCount = 99}) =>
       count > maxCount ? '$maxCount+' : '$count';
@@ -26,7 +35,10 @@ class CountBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.vellora.sale,
         borderRadius: BorderRadius.circular(9),
-        border: Border.all(color: context.colors.surface, width: 1.5),
+        border: Border.all(
+          color: borderColor ?? context.colors.surface,
+          width: 1.5,
+        ),
       ),
       child: Directionality(
         textDirection: TextDirection.ltr,

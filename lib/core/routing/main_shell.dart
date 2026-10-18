@@ -144,6 +144,8 @@ class _MainShellState extends State<MainShell> {
               );
             }
             return Scaffold(
+              // The pages scroll under the glass bar and leave their own room.
+              extendBody: true,
               body: _shell,
               bottomNavigationBar: VelloraNavBar(
                 items: items,

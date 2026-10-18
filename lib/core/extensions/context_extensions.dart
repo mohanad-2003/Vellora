@@ -15,6 +15,10 @@ extension ContextX on BuildContext {
   /// Extra brand colours (accent, success, skeleton).
   VelloraColors get vellora => Theme.of(this).vellora;
 
+  /// Room to leave at the bottom of a tab's scrolling content so the floating
+  /// bar does not cover its last item (the bar floats over the body).
+  double get navClearance => MediaQuery.paddingOf(this).bottom;
+
   bool get isDark => Theme.of(this).brightness == Brightness.dark;
   bool get isRtl => Directionality.of(this) == TextDirection.rtl;
 
