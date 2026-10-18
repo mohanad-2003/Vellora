@@ -991,6 +991,32 @@ class AppLocalizationsAr extends AppLocalizations {
   String get copyLink => 'نسخ الرابط';
 
   @override
+  String get shareProduct => 'مشاركة المنتج';
+
+  @override
+  String get shareWhatsApp => 'واتساب';
+
+  @override
+  String get shareTelegram => 'تيليجرام';
+
+  @override
+  String get shareMessages => 'الرسائل';
+
+  @override
+  String get shareMore => 'المزيد';
+
+  @override
+  String get copy => 'نسخ';
+
+  @override
+  String get copied => 'تم النسخ';
+
+  @override
+  String shareMessage(String name, String price, String link) {
+    return '$name بسعر $price على Vellora\n$link';
+  }
+
+  @override
   String get linkCopied => 'تم نسخ الرابط';
 
   @override

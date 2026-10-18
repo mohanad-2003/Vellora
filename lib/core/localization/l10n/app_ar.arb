@@ -391,6 +391,14 @@
     }
   },
   "copyLink": "نسخ الرابط",
+  "shareProduct": "مشاركة المنتج",
+  "shareWhatsApp": "واتساب",
+  "shareTelegram": "تيليجرام",
+  "shareMessages": "الرسائل",
+  "shareMore": "المزيد",
+  "copy": "نسخ",
+  "copied": "تم النسخ",
+  "shareMessage": "{name} بسعر {price} على Vellora\n{link}",
   "linkCopied": "تم نسخ الرابط",
   "youSave": "وفّرت {amount}",
   "@youSave": {

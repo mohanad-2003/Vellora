@@ -984,6 +984,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copyLink => 'Copy link';
 
   @override
+  String get shareProduct => 'Share this product';
+
+  @override
+  String get shareWhatsApp => 'WhatsApp';
+
+  @override
+  String get shareTelegram => 'Telegram';
+
+  @override
+  String get shareMessages => 'Messages';
+
+  @override
+  String get shareMore => 'More';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get copied => 'Copied';
+
+  @override
+  String shareMessage(String name, String price, String link) {
+    return '$name for $price on Vellora\n$link';
+  }
+
+  @override
   String get linkCopied => 'Link copied to clipboard';
 
   @override
