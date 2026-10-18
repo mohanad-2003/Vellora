@@ -46,6 +46,9 @@ class ApiMappers {
     imagePath: j['imageUrl'] as String,
     color: j['color'] as String?,
     link: _link(j['link']),
+    badge: j['badge'] as String? ?? '',
+    cta: j['cta'] as String? ?? '',
+    endsAt: DateTime.tryParse(j['endsAt'] as String? ?? '')?.toLocal(),
   );
 
   static BannerLink? _link(Object? raw) {

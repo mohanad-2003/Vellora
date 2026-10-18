@@ -36,4 +36,23 @@ void main() {
       );
     }
   });
+
+  test('badge, button words and the end time are read from the feed', () {
+    final b = ApiMappers.banner({
+      ...json(),
+      'badge': 'Hot',
+      'cta': 'Grab it',
+      'endsAt': '2030-01-02T03:04:05.000Z',
+    });
+    expect([b.badge, b.cta], ['Hot', 'Grab it']);
+    expect(
+      b.endsAt!.isAtSameMomentAs(DateTime.utc(2030, 1, 2, 3, 4, 5)),
+      isTrue,
+    );
+  });
+
+  test('without them the banner has none', () {
+    final b = ApiMappers.banner(json());
+    expect([b.badge, b.cta, b.endsAt], ['', '', null]);
+  });
 }

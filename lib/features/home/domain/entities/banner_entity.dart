@@ -22,6 +22,9 @@ class BannerEntity extends Equatable {
     required this.imagePath,
     this.color,
     this.link,
+    this.badge = '',
+    this.cta = '',
+    this.endsAt,
   });
 
   final String id;
@@ -36,6 +39,15 @@ class BannerEntity extends Equatable {
   /// Where a tap goes; null for a banner that is only to look at.
   final BannerLink? link;
 
+  /// The small pill above the title, empty for none.
+  final String badge;
+
+  /// The words on the button, empty for the app's own "Shop now".
+  final String cta;
+
+  /// When the banner stops showing, for a countdown; null when it has no end.
+  final DateTime? endsAt;
+
   /// The three built-in banners predate links and open their own lists.
   static const _legacyIds = {'summer', 'flash', 'new'};
 
@@ -43,5 +55,15 @@ class BannerEntity extends Equatable {
   bool get opensSomething => link != null || _legacyIds.contains(id);
 
   @override
-  List<Object?> get props => [id, title, subtitle, imagePath, color, link];
+  List<Object?> get props => [
+    id,
+    title,
+    subtitle,
+    imagePath,
+    color,
+    link,
+    badge,
+    cta,
+    endsAt,
+  ];
 }

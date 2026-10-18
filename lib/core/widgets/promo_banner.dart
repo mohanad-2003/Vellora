@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/theme/app_radius.dart';
@@ -34,6 +36,7 @@ class PromoBanner extends StatelessWidget {
     this.ctaLabel,
     this.onTap,
     this.eyebrow,
+    this.deadline,
   });
 
   final String title;
@@ -47,6 +50,12 @@ class PromoBanner extends StatelessWidget {
   /// Null for a banner that opens nothing: no press effect either.
   final VoidCallback? onTap;
   final String? eyebrow;
+
+  /// When the offer ends. A countdown shows over the picture while it is
+  /// within [countdownWithin] of ending.
+  final DateTime? deadline;
+
+  static const countdownWithin = Duration(hours: 72);
 
   static const _cut = BorderRadiusDirectional.horizontal(
     start: Radius.circular(30),
@@ -126,6 +135,12 @@ class PromoBanner extends StatelessWidget {
                           ),
                         ),
                       ),
+                      if (deadline != null)
+                        PositionedDirectional(
+                          top: 12,
+                          end: 12,
+                          child: BannerCountdown(deadline: deadline!),
+                        ),
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(
                           20,
@@ -221,6 +236,84 @@ class PromoBanner extends StatelessWidget {
                   );
                 },
               ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// "02 : 14 : 33" over the picture, ticking each second; nothing while the end
+/// is far off, and nothing once it has passed.
+class BannerCountdown extends StatefulWidget {
+  const BannerCountdown({super.key, required this.deadline, this.now});
+
+  final DateTime deadline;
+
+  /// The clock; replaced in tests.
+  final DateTime Function()? now;
+
+  @override
+  State<BannerCountdown> createState() => _BannerCountdownState();
+}
+
+class _BannerCountdownState extends State<BannerCountdown> {
+  Timer? _ticker;
+  late Duration _left = _compute();
+
+  Duration _compute() =>
+      widget.deadline.difference((widget.now ?? DateTime.now)());
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() => _left = _compute());
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
+  String _two(int n) => n.toString().padLeft(2, '0');
+
+  @override
+  Widget build(BuildContext context) {
+    if (_left <= Duration.zero || _left > PromoBanner.countdownWithin) {
+      return const SizedBox.shrink();
+    }
+    final label =
+        '${_two(_left.inHours)}:${_two(_left.inMinutes.remainder(60))}:'
+        '${_two(_left.inSeconds.remainder(60))}';
+    return ExcludeSemantics(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.55),
+          borderRadius: AppRadius.rPill,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+          child: Directionality(
+            // Digits read left to right in Arabic too.
+            textDirection: TextDirection.ltr,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.timer_outlined, size: 13, color: Colors.white),
+                const SizedBox(width: 4),
+                Text(
+                  label,
+                  style: context.textTheme.labelSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
