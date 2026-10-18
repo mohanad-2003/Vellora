@@ -17,8 +17,10 @@ class GlassPanel extends StatelessWidget {
   /// still reads as green over a light page.
   static const Color glass = Color(0xFF0B3A30);
 
-  /// The darker glass of dark mode; also the ring around badges and dots.
-  static const Color glassDark = Color(0xFF071F1A);
+  /// The glass of dark mode: a neutral charcoal in the page's own family (the
+  /// dark background is 0B0F0E), so the bar melts into it instead of reading as
+  /// a green slab. Also the ring around badges and dots.
+  static const Color glassDark = Color(0xFF161C1B);
 
   @override
   Widget build(BuildContext context) {
