@@ -13,7 +13,11 @@ enum ShopEvent {
   viewProduct('view_product'),
   addToCart('add_to_cart'),
   beginCheckout('begin_checkout'),
-  purchase('purchase');
+  purchase('purchase'),
+
+  /// A promotional banner came up on Home / the shopper tapped it.
+  bannerView('banner_view'),
+  bannerClick('banner_click');
 
   const ShopEvent(this.wire);
 
@@ -41,16 +45,33 @@ class EventTracker {
     ).join();
   }
 
-  static void track(ShopEvent event, {String? productId}) {
-    unawaited(_send(event, productId));
+  static void track(ShopEvent event, {String? productId, String? bannerId}) {
+    unawaited(_send(event, productId, bannerId));
   }
 
-  static Future<void> _send(ShopEvent event, String? productId) async {
+  static final Set<String> _bannersSeen = {};
+
+  /// A banner counts as seen once per launch, however often it comes round
+  /// in the carousel or Home reloads.
+  static void trackBannerView(String bannerId) {
+    if (_bannersSeen.add(bannerId)) {
+      track(ShopEvent.bannerView, bannerId: bannerId);
+    }
+  }
+
+  /// Forgets which banners were seen (tests).
+  static void resetBannersSeen() => _bannersSeen.clear();
+
+  static Future<void> _send(
+    ShopEvent event,
+    String? productId,
+    String? bannerId,
+  ) async {
     try {
       final body = <String, dynamic>{
         'sessionId': sessionId,
         'events': [
-          {'kind': event.wire, 'productId': ?productId},
+          {'kind': event.wire, 'productId': ?productId, 'bannerId': ?bannerId},
         ],
       };
       final custom = sender;
