@@ -48,131 +48,118 @@ class CartItemTile extends StatelessWidget {
       background: Container(
         alignment: AlignmentDirectional.centerEnd,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-        decoration: BoxDecoration(
-          color: colors.error,
-          borderRadius: AppRadius.rXl,
-        ),
+        color: colors.error,
         child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
       ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: AppRadius.rXl,
-          border: Border.all(
-            color: colors.outlineVariant.withValues(alpha: 0.7),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.sm),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: onTap,
-                child: ClipRRect(
-                  borderRadius: AppRadius.rLg,
-                  child: SizedBox.square(
-                    dimension: 92,
-                    child: ProductImage(
-                      path: item.imagePath,
-                      semanticLabel: item.name,
-                    ),
+      // On the page itself, no card: the list's dividers separate the rows.
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: onTap,
+              child: ClipRRect(
+                borderRadius: AppRadius.rLg,
+                child: SizedBox.square(
+                  dimension: 92,
+                  child: ProductImage(
+                    path: item.imagePath,
+                    semanticLabel: item.name,
                   ),
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Text(
-                              item.name,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: text.titleSmall,
-                            ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            item.name,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: text.titleSmall,
                           ),
                         ),
-                        AppIconButton(
-                          icon: Icons.delete_outline_rounded,
-                          iconSize: 20,
-                          size: 36,
-                          filled: false,
-                          color: colors.onSurfaceVariant,
-                          semanticLabel: '${l10n.removeItem}: ${item.name}',
-                          onPressed: onRemoved,
+                      ),
+                      AppIconButton(
+                        icon: Icons.delete_outline_rounded,
+                        iconSize: 20,
+                        size: 36,
+                        filled: false,
+                        color: colors.onSurfaceVariant,
+                        semanticLabel: '${l10n.removeItem}: ${item.name}',
+                        onPressed: onRemoved,
+                      ),
+                    ],
+                  ),
+                  if (variantParts.isNotEmpty)
+                    Row(
+                      children: [
+                        if (item.color != null && item.color!.isNotEmpty) ...[
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: ProductColors.swatch(item.color!),
+                              shape: BoxShape.circle,
+                              border: Border.all(color: colors.outlineVariant),
+                            ),
+                            child: const SizedBox.square(dimension: 12),
+                          ),
+                          const SizedBox(width: 6),
+                        ],
+                        Expanded(
+                          child: Text(
+                            variantParts.join(' · '),
+                            style: text.bodySmall,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),
-                    if (variantParts.isNotEmpty)
-                      Row(
+                  const SizedBox(height: AppSpacing.sm),
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    runSpacing: AppSpacing.sm,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          if (item.color != null && item.color!.isNotEmpty) ...[
-                            DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: ProductColors.swatch(item.color!),
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: colors.outlineVariant,
-                                ),
-                              ),
-                              child: const SizedBox.square(dimension: 12),
-                            ),
-                            const SizedBox(width: 6),
-                          ],
-                          Expanded(
-                            child: Text(
-                              variantParts.join(' · '),
-                              style: text.bodySmall,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                          Text(
+                            item.lineTotal.toPrice(),
+                            style: text.titleMedium?.copyWith(
+                              color: colors.onSurface,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
+                          if (item.quantity > 1)
+                            Text(
+                              '${item.price.toPrice()} ${l10n.each}',
+                              style: text.labelSmall,
+                            ),
                         ],
                       ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      runSpacing: AppSpacing.sm,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              item.lineTotal.toPrice(),
-                              style: text.titleMedium?.copyWith(
-                                color: colors.onSurface,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            if (item.quantity > 1)
-                              Text(
-                                '${item.price.toPrice()} ${l10n.each}',
-                                style: text.labelSmall,
-                              ),
-                          ],
-                        ),
-                        QuantitySelector(
-                          compact: true,
-                          max: AppConstants.maxLineQuantity,
-                          quantity: item.quantity,
-                          onChanged: onQuantityChanged,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      QuantitySelector(
+                        compact: true,
+                        max: AppConstants.maxLineQuantity,
+                        quantity: item.quantity,
+                        onChanged: onQuantityChanged,
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

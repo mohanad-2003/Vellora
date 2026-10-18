@@ -152,7 +152,7 @@ class _LoadedCart extends StatelessWidget {
                       bloc.add(CartQuantityChanged(item.id, q)),
                   onRemoved: () => _remove(context, item),
                 ),
-                const SizedBox(height: AppSpacing.md),
+                Divider(height: 1, color: context.colors.outlineVariant),
               ],
               const SizedBox(height: AppSpacing.md),
               PromoCodeInput(
