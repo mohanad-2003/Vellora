@@ -1,5 +1,3 @@
-import 'dart:ui' show ImageFilter;
-
 import 'package:flutter/material.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/theme/app_colors.dart';
@@ -7,6 +5,7 @@ import 'package:vellora/core/theme/app_radius.dart';
 import 'package:vellora/core/utils/haptics.dart';
 
 import 'count_badge.dart';
+import 'glass_panel.dart';
 
 /// One destination in the main navigation.
 class NavDestinationItem {
@@ -55,8 +54,6 @@ class VelloraNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = context.isDark;
-    final radius = BorderRadius.circular(barHeight / 2);
     return SafeArea(
       top: false,
       minimum: const EdgeInsets.only(bottom: 10),
@@ -66,83 +63,35 @@ class VelloraNavBar extends StatelessWidget {
           heightFactor: 1,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 480),
-            // The shadow sits outside the clip so it is not cut off.
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: radius,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: dark ? 0.55 : 0.28),
-                    blurRadius: 30,
-                    offset: const Offset(0, 12),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: radius,
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: (dark ? glassDark : _glass).withValues(
-                        alpha: dark ? 0.78 : 0.74,
-                      ),
-                      borderRadius: radius,
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.14),
-                      ),
-                    ),
-                    // A faint light from the top edge, like polished glass. It
-                    // is the foreground: a gradient in `decoration` would
-                    // replace the tint instead of sitting on it.
-                    foregroundDecoration: BoxDecoration(
-                      borderRadius: radius,
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.10),
-                          Colors.white.withValues(alpha: 0),
+            child: GlassPanel(
+              radius: barHeight / 2,
+              child: SizedBox(
+                height: barHeight,
+                child: Padding(
+                  padding: const EdgeInsets.all(_inset),
+                  child: LayoutBuilder(
+                    builder: (context, c) {
+                      final width = c.maxWidth;
+                      final selectedWidth = (width * 0.4).clamp(104.0, 160.0);
+                      final others = items.length > 1 ? items.length - 1 : 1;
+                      final otherWidth = (width - selectedWidth) / others;
+                      return Row(
+                        children: [
+                          for (var i = 0; i < items.length; i++)
+                            _NavItem(
+                              item: items[i],
+                              selected: i == currentIndex,
+                              width: i == currentIndex
+                                  ? selectedWidth
+                                  : otherWidth,
+                              onTap: () {
+                                if (i != currentIndex) Haptics.selection();
+                                onSelected(i);
+                              },
+                            ),
                         ],
-                      ),
-                    ),
-                    child: SizedBox(
-                      height: barHeight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(_inset),
-                        child: LayoutBuilder(
-                          builder: (context, c) {
-                            final width = c.maxWidth;
-                            final selectedWidth = (width * 0.4).clamp(
-                              104.0,
-                              160.0,
-                            );
-                            final others = items.length > 1
-                                ? items.length - 1
-                                : 1;
-                            final otherWidth = (width - selectedWidth) / others;
-                            return Row(
-                              children: [
-                                for (var i = 0; i < items.length; i++)
-                                  _NavItem(
-                                    item: items[i],
-                                    selected: i == currentIndex,
-                                    width: i == currentIndex
-                                        ? selectedWidth
-                                        : otherWidth,
-                                    onTap: () {
-                                      if (i != currentIndex) {
-                                        Haptics.selection();
-                                      }
-                                      onSelected(i);
-                                    },
-                                  ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -153,12 +102,8 @@ class VelloraNavBar extends StatelessWidget {
     );
   }
 
-  /// Deep emerald, a little lighter than the brand's darkest green so the bar
-  /// still reads as green over a light page.
-  static const Color _glass = Color(0xFF0B3A30);
-
-  /// The darker glass of dark mode; also the ring around badges and dots.
-  static const Color glassDark = Color(0xFF071F1A);
+  /// The glass colours (shared with the other glass panels).
+  static const Color glassDark = GlassPanel.glassDark;
 }
 
 class _NavItem extends StatelessWidget {
