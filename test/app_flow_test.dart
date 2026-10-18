@@ -113,8 +113,10 @@ void main() {
 
     // Home renders inside the tab shell: the greeting header and the
     // bottom navigation are visible.
-    expect(find.text('Explore'), findsOneWidget,
+    // (Only the chosen tab shows its name; the others are icons.)
+    expect(find.byIcon(Icons.explore_outlined), findsOneWidget,
         reason: 'Bottom navigation should render after login');
+    expect(find.text('Home'), findsWidgets);
     expect(find.text('Guest'), findsNothing,
         reason: 'A signed-in user is greeted by name, not as a guest');
 
