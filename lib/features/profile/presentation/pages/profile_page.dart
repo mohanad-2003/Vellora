@@ -162,13 +162,13 @@ class _ProfileContent extends StatelessWidget {
             _QuickAction(
               icon: Icons.location_on_outlined,
               label: l10n.addresses,
-              color: const Color(0xFF0E9F8F),
+              color: context.colors.primary,
               onTap: () => context.pushNamed(RouteNames.nSavedAddresses),
             ),
             _QuickAction(
               icon: Icons.credit_card_rounded,
               label: l10n.payments,
-              color: const Color(0xFFE08A1E),
+              color: context.vellora.accent,
               onTap: () => context.pushNamed(RouteNames.nPaymentMethods),
             ),
             _QuickAction(
@@ -312,7 +312,11 @@ class _ProfileHeader extends StatelessWidget {
         borderRadius: AppRadius.rXl,
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F5C4D).withValues(alpha: 0.28),
+            // A coloured glow reads as a green haze on the dark page: only the
+            // light theme gets one.
+            color: const Color(
+              0xFF0F5C4D,
+            ).withValues(alpha: context.isDark ? 0 : 0.28),
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),
