@@ -5,6 +5,7 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/num_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
 import '../../../../core/theme/app_radius.dart';
+import '../../../../core/theme/product_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_icon_button.dart';
 import '../../../../core/widgets/product_image.dart';
@@ -47,101 +48,131 @@ class CartItemTile extends StatelessWidget {
       background: Container(
         alignment: AlignmentDirectional.centerEnd,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-        color: colors.error,
+        decoration: BoxDecoration(
+          color: colors.error,
+          borderRadius: AppRadius.rXl,
+        ),
         child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
       ),
-      // Same colour as the page: no card, the list's dividers separate rows.
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: onTap,
-              child: ClipRRect(
-                borderRadius: AppRadius.rMd,
-                child: SizedBox.square(
-                  dimension: 92,
-                  child: ProductImage(
-                    path: item.imagePath,
-                    semanticLabel: item.name,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: AppRadius.rXl,
+          border: Border.all(
+            color: colors.outlineVariant.withValues(alpha: 0.7),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onTap: onTap,
+                child: ClipRRect(
+                  borderRadius: AppRadius.rLg,
+                  child: SizedBox.square(
+                    dimension: 92,
+                    child: ProductImage(
+                      path: item.imagePath,
+                      semanticLabel: item.name,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            item.name,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: text.titleSmall,
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              item.name,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: text.titleSmall,
+                            ),
                           ),
                         ),
-                      ),
-                      AppIconButton(
-                        icon: Icons.delete_outline_rounded,
-                        iconSize: 20,
-                        size: 36,
-                        filled: false,
-                        color: colors.onSurfaceVariant,
-                        semanticLabel: '${l10n.removeItem}: ${item.name}',
-                        onPressed: onRemoved,
-                      ),
-                    ],
-                  ),
-                  if (variantParts.isNotEmpty)
-                    Text(
-                      variantParts.join(' · '),
-                      style: text.bodySmall,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                        AppIconButton(
+                          icon: Icons.delete_outline_rounded,
+                          iconSize: 20,
+                          size: 36,
+                          filled: false,
+                          color: colors.onSurfaceVariant,
+                          semanticLabel: '${l10n.removeItem}: ${item.name}',
+                          onPressed: onRemoved,
+                        ),
+                      ],
                     ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    runSpacing: AppSpacing.sm,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
+                    if (variantParts.isNotEmpty)
+                      Row(
                         children: [
-                          Text(
-                            item.lineTotal.toPrice(),
-                            style: text.titleMedium?.copyWith(
-                              color: colors.onSurface,
-                              fontWeight: FontWeight.w700,
+                          if (item.color != null && item.color!.isNotEmpty) ...[
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: ProductColors.swatch(item.color!),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: colors.outlineVariant,
+                                ),
+                              ),
+                              child: const SizedBox.square(dimension: 12),
+                            ),
+                            const SizedBox(width: 6),
+                          ],
+                          Expanded(
+                            child: Text(
+                              variantParts.join(' · '),
+                              style: text.bodySmall,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          if (item.quantity > 1)
-                            Text(
-                              '${item.price.toPrice()} ${l10n.each}',
-                              style: text.labelSmall,
-                            ),
                         ],
                       ),
-                      QuantitySelector(
-                        compact: true,
-                        max: AppConstants.maxLineQuantity,
-                        quantity: item.quantity,
-                        onChanged: onQuantityChanged,
-                      ),
-                    ],
-                  ),
-                ],
+                    const SizedBox(height: AppSpacing.sm),
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      runSpacing: AppSpacing.sm,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              item.lineTotal.toPrice(),
+                              style: text.titleMedium?.copyWith(
+                                color: colors.onSurface,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            if (item.quantity > 1)
+                              Text(
+                                '${item.price.toPrice()} ${l10n.each}',
+                                style: text.labelSmall,
+                              ),
+                          ],
+                        ),
+                        QuantitySelector(
+                          compact: true,
+                          max: AppConstants.maxLineQuantity,
+                          quantity: item.quantity,
+                          onChanged: onQuantityChanged,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

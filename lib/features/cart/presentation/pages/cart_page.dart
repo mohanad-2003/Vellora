@@ -9,15 +9,14 @@ import 'package:vellora/core/widgets/shimmer_widgets.dart';
 import 'package:vellora/core/widgets/tab_page_header.dart';
 import 'package:vellora/features/cart/presentation/bloc/cart_badge_cubit.dart';
 import 'package:vellora/features/cart/presentation/bloc/cart_bloc.dart';
-import 'package:vellora/core/extensions/num_extensions.dart';
 import 'package:vellora/core/routing/route_names.dart';
 import 'package:vellora/core/theme/app_spacing.dart';
-import 'package:vellora/core/widgets/app_button.dart';
 import 'package:vellora/core/widgets/custom_snackbar.dart';
 import 'package:vellora/core/widgets/empty_state_widget.dart';
 import 'package:vellora/core/widgets/error_state_widget.dart';
 import 'package:vellora/features/cart/domain/entities/cart_item_entity.dart';
 import 'package:vellora/features/cart/presentation/widgets/cart_item_tile.dart';
+import 'package:vellora/features/cart/presentation/widgets/glass_total_bar.dart';
 import 'package:vellora/features/cart/presentation/widgets/free_shipping_progress.dart';
 import 'package:vellora/features/cart/presentation/widgets/price_summary_card.dart';
 import 'package:vellora/features/cart/presentation/widgets/available_coupons.dart';
@@ -127,15 +126,15 @@ class _LoadedCart extends StatelessWidget {
     final summary = state.summary;
     final gutter = context.pageGutter;
 
-    return Column(
+    return Stack(
       children: [
-        Expanded(
+        Positioned.fill(
           child: ListView(
             padding: EdgeInsets.fromLTRB(
               gutter,
               AppSpacing.sm,
               gutter,
-              AppSpacing.xl,
+              AppSpacing.xl + GlassTotalBar.clearance,
             ),
             children: [
               if (summary != null) ...[
@@ -153,7 +152,7 @@ class _LoadedCart extends StatelessWidget {
                       bloc.add(CartQuantityChanged(item.id, q)),
                   onRemoved: () => _remove(context, item),
                 ),
-                Divider(height: 1, color: context.colors.outlineVariant),
+                const SizedBox(height: AppSpacing.md),
               ],
               const SizedBox(height: AppSpacing.md),
               PromoCodeInput(
@@ -172,63 +171,20 @@ class _LoadedCart extends StatelessWidget {
             ],
           ),
         ),
-        _CheckoutBar(
-          total: summary?.total ?? 0,
-          onCheckout: () =>
-              context.pushNamed(RouteNames.nCheckout, extra: state.promo),
-        ),
-      ],
-    );
-  }
-}
-
-class _CheckoutBar extends StatelessWidget {
-  const _CheckoutBar({required this.total, required this.onCheckout});
-
-  final double total;
-  final VoidCallback onCheckout;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final text = context.textTheme;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: context.colors.surface,
-        border: Border(top: BorderSide(color: context.colors.outlineVariant)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(l10n.total, style: text.bodySmall),
-                  Text(
-                    total.toPrice(),
-                    style: text.titleLarge?.copyWith(
-                      color: context.colors.primary,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: AppSpacing.lg),
-              Expanded(
-                child: AppButton(
-                  label: l10n.checkout,
-                  trailingIcon: Icons.arrow_forward_rounded,
-                  haptic: true,
-                  onPressed: onCheckout,
-                ),
-              ),
-            ],
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: GlassTotalBar(
+            total: summary?.total ?? 0,
+            savings: summary?.discount,
+            label: context.l10n.checkout,
+            icon: Icons.arrow_forward_rounded,
+            onPressed: () =>
+                context.pushNamed(RouteNames.nCheckout, extra: state.promo),
           ),
         ),
-      ),
+      ],
     );
   }
 }

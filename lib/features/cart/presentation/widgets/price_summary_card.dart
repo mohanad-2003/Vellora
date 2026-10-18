@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/num_extensions.dart';
+import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/cart_summary_entity.dart';
 
@@ -18,37 +19,49 @@ class PriceSummaryCard extends StatelessWidget {
     final text = context.textTheme;
     final colors = context.colors;
 
-    return Column(
-      children: [
-        _row(context, l10n.subtotal, summary.subtotal.toPrice()),
-        if (summary.discount > 0)
-          _row(
-            context,
-            l10n.discount,
-            '-${summary.discount.toPrice()}',
-            valueColor: context.vellora.success,
-          ),
-        _row(
-          context,
-          l10n.shipping,
-          summary.shipping == 0 ? l10n.free : summary.shipping.toPrice(),
-          valueColor: summary.shipping == 0 ? context.vellora.success : null,
-        ),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
-          child: Divider(),
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: AppRadius.rXl,
+        border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.7)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
           children: [
-            Expanded(child: Text(l10n.total, style: text.titleLarge)),
-            Text(
-              summary.total.toPrice(),
-              style: text.headlineMedium?.copyWith(color: colors.primary),
+            _row(context, l10n.subtotal, summary.subtotal.toPrice()),
+            if (summary.discount > 0)
+              _row(
+                context,
+                l10n.discount,
+                '-${summary.discount.toPrice()}',
+                valueColor: context.vellora.success,
+              ),
+            _row(
+              context,
+              l10n.shipping,
+              summary.shipping == 0 ? l10n.free : summary.shipping.toPrice(),
+              valueColor: summary.shipping == 0
+                  ? context.vellora.success
+                  : null,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+              child: Divider(),
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(child: Text(l10n.total, style: text.titleLarge)),
+                Text(
+                  summary.total.toPrice(),
+                  style: text.headlineMedium?.copyWith(color: colors.primary),
+                ),
+              ],
             ),
           ],
         ),
-      ],
+      ),
     );
   }
 
@@ -64,10 +77,7 @@ class PriceSummaryCard extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: Text(label, style: text.bodyMedium)),
-          Text(
-            value,
-            style: text.titleSmall?.copyWith(color: valueColor),
-          ),
+          Text(value, style: text.titleSmall?.copyWith(color: valueColor)),
         ],
       ),
     );
