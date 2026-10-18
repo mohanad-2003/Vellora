@@ -3,6 +3,7 @@ import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/localization/l10n_lookup.dart';
 import 'package:vellora/core/theme/app_radius.dart';
 import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/theme/product_colors.dart';
 import 'package:vellora/core/utils/haptics.dart';
 
 /// Size (or any text option) picker: wrapping chips with a 48dp touch target.
@@ -99,24 +100,7 @@ class ColorSwatchSelector extends StatelessWidget {
   final String? selected;
   final ValueChanged<String> onSelected;
 
-  static Color swatch(String name) {
-    switch (name.toLowerCase()) {
-      case 'black':
-        return const Color(0xFF16181F);
-      case 'white':
-        return const Color(0xFFFFFFFF);
-      case 'red':
-        return const Color(0xFFE5484D);
-      case 'navy':
-        return const Color(0xFF1F2A5A);
-      case 'sand':
-        return const Color(0xFFD9C5A0);
-      case 'olive':
-        return const Color(0xFF6B7A3A);
-      default:
-        return const Color(0xFF9AA1B0);
-    }
-  }
+  static Color swatch(String name) => ProductColors.swatch(name);
 
   @override
   Widget build(BuildContext context) {
