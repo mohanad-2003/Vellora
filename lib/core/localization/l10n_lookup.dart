@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../extensions/context_extensions.dart';
+import '../theme/product_colors.dart';
 import 'l10n/app_localizations.dart';
 
 /// Resolves a stable string key (from failures / validators / onboarding
@@ -139,7 +140,11 @@ String colorLabel(BuildContext context, String name) {
     case 'olive':
       return l.colorOlive;
     default:
-      return name;
+      // Other colours (Burgundy, Glacier, Rose Gold…) are named by the shop.
+      return ProductColors.label(
+        name,
+        Localizations.localeOf(context).languageCode,
+      );
   }
 }
 
