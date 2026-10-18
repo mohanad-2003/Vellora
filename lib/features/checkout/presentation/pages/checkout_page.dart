@@ -5,18 +5,18 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/di/injection.dart';
 import '../../../notifications/presentation/cubit/notifications_cubit.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/extensions/num_extensions.dart';
 import '../../../../core/localization/l10n_lookup.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/responsive/responsive.dart';
 import '../../../../core/routing/route_names.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/haptics.dart';
 import '../../../../core/widgets/app_bar_widget.dart';
-import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../../cart/domain/entities/promo_code_entity.dart';
+import '../../../cart/presentation/widgets/glass_total_bar.dart';
 import '../../../cart/presentation/widgets/price_summary_card.dart';
 import '../cubit/checkout_cubit.dart';
 import '../widgets/checkout_tiles.dart';
@@ -104,13 +104,14 @@ class _CheckoutBody extends StatelessWidget {
                   height: 26,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: context.colors.primary,
+                    color: kBrandGold,
                     shape: BoxShape.circle,
                   ),
                   child: Text(
                     '$step',
                     style: context.textTheme.labelMedium?.copyWith(
-                      color: context.colors.onPrimary,
+                      color: kBrandNavy,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),
@@ -131,9 +132,9 @@ class _CheckoutBody extends StatelessWidget {
       );
     }
 
-    return Column(
+    return Stack(
       children: [
-        Expanded(
+        Positioned.fill(
           child: ResponsiveCenter(
             maxWidth: 720,
             child: ListView(
@@ -141,7 +142,7 @@ class _CheckoutBody extends StatelessWidget {
                 gutter,
                 AppSpacing.lg,
                 gutter,
-                AppSpacing.lg,
+                AppSpacing.lg + GlassTotalBar.clearance,
               ),
               children: [
                 section(
@@ -169,16 +170,15 @@ class _CheckoutBody extends StatelessWidget {
                   l10n.deliveryMethod,
                   Column(
                     children: [
-                      for (final d in state.deliveryOptions)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                          child: DeliveryTile(
-                            option: d,
-                            selected: d.id == state.selectedDeliveryId,
-                            shippingFee: cubit.shippingFor(d),
-                            onTap: () => cubit.selectDelivery(d.id),
-                          ),
+                      for (final d in state.deliveryOptions) ...[
+                        DeliveryTile(
+                          option: d,
+                          selected: d.id == state.selectedDeliveryId,
+                          shippingFee: cubit.shippingFor(d),
+                          onTap: () => cubit.selectDelivery(d.id),
                         ),
+                        _rowDivider(context),
+                      ],
                     ],
                   ),
                 ),
@@ -187,15 +187,14 @@ class _CheckoutBody extends StatelessWidget {
                   l10n.paymentMethod,
                   Column(
                     children: [
-                      for (final m in state.paymentMethods)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                          child: PaymentTile(
-                            method: m,
-                            selected: m.id == state.selectedPaymentId,
-                            onTap: () => cubit.selectPayment(m.id),
-                          ),
+                      for (final m in state.paymentMethods) ...[
+                        PaymentTile(
+                          method: m,
+                          selected: m.id == state.selectedPaymentId,
+                          onTap: () => cubit.selectPayment(m.id),
                         ),
+                        _rowDivider(context),
+                      ],
                       if (state.cardsOffered)
                         _AddPrompt(
                           icon: Icons.add_card_rounded,
@@ -229,14 +228,28 @@ class _CheckoutBody extends StatelessWidget {
             ),
           ),
         ),
-        _PlaceOrderBar(
-          total: state.summary?.total ?? 0,
-          isPlacing: isPlacing,
-          onPlaceOrder: cubit.placeOrder,
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: SafeArea(
+            top: false,
+            child: GlassTotalBar(
+              total: state.summary?.total ?? 0,
+              savings: state.summary?.discount,
+              label: l10n.placeOrder,
+              icon: Icons.lock_outline_rounded,
+              loading: isPlacing,
+              onPressed: cubit.placeOrder,
+            ),
+          ),
         ),
       ],
     );
   }
+
+  Widget _rowDivider(BuildContext context) =>
+      Divider(height: 1, color: context.colors.outlineVariant);
 
   /// Opens an account screen (addresses or cards) and, when the user comes
   /// back, picks up whatever they added there.
@@ -291,63 +304,6 @@ class _AddPrompt extends StatelessWidget {
         onPressed: onTap,
         icon: Icon(icon),
         label: Text(label),
-      ),
-    );
-  }
-}
-
-class _PlaceOrderBar extends StatelessWidget {
-  const _PlaceOrderBar({
-    required this.total,
-    required this.isPlacing,
-    required this.onPlaceOrder,
-  });
-
-  final double total;
-  final bool isPlacing;
-  final VoidCallback onPlaceOrder;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final text = context.textTheme;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: context.colors.surface,
-        border: Border(top: BorderSide(color: context.colors.outlineVariant)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(l10n.total, style: text.bodySmall),
-                  Text(
-                    total.toPrice(),
-                    style: text.titleLarge?.copyWith(
-                      color: context.colors.primary,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: AppSpacing.lg),
-              Expanded(
-                child: AppButton(
-                  label: l10n.placeOrder,
-                  icon: Icons.lock_outline_rounded,
-                  isLoading: isPlacing,
-                  haptic: true,
-                  onPressed: onPlaceOrder,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

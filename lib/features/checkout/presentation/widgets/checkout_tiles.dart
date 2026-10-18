@@ -45,15 +45,7 @@ class AddressTile extends StatelessWidget {
         onTap: onTap,
         borderRadius: AppRadius.rLg,
         child: Container(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          decoration: BoxDecoration(
-            color: colors.surface,
-            borderRadius: AppRadius.rLg,
-            border: Border.all(
-              color: selected ? colors.primary : colors.outlineVariant,
-              width: selected ? 1.6 : 1,
-            ),
-          ),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
