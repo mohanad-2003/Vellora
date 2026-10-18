@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vellora/core/constants/app_constants.dart';
@@ -32,6 +31,7 @@ import 'package:vellora/features/product/presentation/bloc/product_detail_bloc.d
 import 'package:vellora/features/product/presentation/widgets/product_actions_bar.dart';
 import 'package:vellora/features/product/presentation/widgets/product_gallery.dart';
 import 'package:vellora/features/product/presentation/widgets/rating_summary.dart';
+import 'package:vellora/features/product/presentation/widgets/share_product_sheet.dart';
 import 'package:vellora/features/product/presentation/widgets/related_products_list.dart';
 import 'package:vellora/features/product/presentation/widgets/variant_selector.dart';
 import 'package:vellora/features/product/presentation/widgets/write_review_sheet.dart';
@@ -342,7 +342,7 @@ class _CircleBack extends StatelessWidget {
   }
 }
 
-/// Favorite, share (copy link) and cart shortcuts.
+/// Favorite, share (opens the share sheet) and cart shortcuts.
 class _HeaderActions extends StatelessWidget {
   const _HeaderActions({required this.state});
 
@@ -365,15 +365,8 @@ class _HeaderActions extends StatelessWidget {
         ),
         AppIconButton(
           icon: Icons.ios_share_rounded,
-          semanticLabel: l10n.copyLink,
-          onPressed: () async {
-            await Clipboard.setData(
-              ClipboardData(text: AppConstants.productUrl(product.id)),
-            );
-            if (context.mounted) {
-              AppSnackbar.show(context, message: l10n.linkCopied);
-            }
-          },
+          semanticLabel: l10n.shareProduct,
+          onPressed: () => showShareProductSheet(context, product),
         ),
         BlocBuilder<CartBadgeCubit, int>(
           builder: (context, count) => AppIconButton(

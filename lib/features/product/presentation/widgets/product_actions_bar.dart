@@ -44,7 +44,9 @@ class ProductActionsBar extends StatelessWidget {
           ),
           child: !inStock && onStockAlert != null
               ? AppButton(
-                  label: stockAlert ? l10n.cancelNotify : l10n.notifyWhenAvailable,
+                  label: stockAlert
+                      ? l10n.cancelNotify
+                      : l10n.notifyWhenAvailable,
                   icon: stockAlert
                       ? Icons.notifications_off_outlined
                       : Icons.notifications_active_outlined,
@@ -55,26 +57,26 @@ class ProductActionsBar extends StatelessWidget {
                   onPressed: onStockAlert,
                 )
               : Row(
-            children: [
-              Expanded(
-                child: AppButton(
-                  label: l10n.addToCart,
-                  icon: Icons.shopping_bag_outlined,
-                  variant: AppButtonVariant.outline,
-                  haptic: true,
-                  onPressed: inStock ? onAddToCart : null,
+                  children: [
+                    Expanded(
+                      child: AppButton(
+                        label: l10n.addToCart,
+                        icon: Icons.shopping_bag_outlined,
+                        variant: AppButtonVariant.outline,
+                        haptic: true,
+                        onPressed: inStock ? onAddToCart : null,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: AppButton(
+                        label: l10n.buyNow,
+                        haptic: true,
+                        onPressed: inStock ? onBuyNow : null,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: AppButton(
-                  label: l10n.buyNow,
-                  haptic: true,
-                  onPressed: inStock ? onBuyNow : null,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

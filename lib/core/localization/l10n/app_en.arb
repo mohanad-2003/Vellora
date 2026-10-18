@@ -403,6 +403,21 @@
     }
   },
   "copyLink": "Copy link",
+  "shareProduct": "Share this product",
+  "shareWhatsApp": "WhatsApp",
+  "shareTelegram": "Telegram",
+  "shareMessages": "Messages",
+  "shareMore": "More",
+  "copy": "Copy",
+  "copied": "Copied",
+  "shareMessage": "{name} for {price} on Vellora\n{link}",
+  "@shareMessage": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "price": { "type": "String" },
+      "link": { "type": "String" }
+    }
+  },
   "linkCopied": "Link copied to clipboard",
   "youSave": "You save {amount}",
   "@youSave": {

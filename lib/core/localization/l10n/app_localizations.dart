@@ -1874,6 +1874,54 @@ abstract class AppLocalizations {
   /// **'Copy link'**
   String get copyLink;
 
+  /// No description provided for @shareProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Share this product'**
+  String get shareProduct;
+
+  /// No description provided for @shareWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get shareWhatsApp;
+
+  /// No description provided for @shareTelegram.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram'**
+  String get shareTelegram;
+
+  /// No description provided for @shareMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get shareMessages;
+
+  /// No description provided for @shareMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get shareMore;
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// No description provided for @copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copied;
+
+  /// No description provided for @shareMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} for {price} on Vellora\n{link}'**
+  String shareMessage(String name, String price, String link);
+
   /// No description provided for @linkCopied.
   ///
   /// In en, this message translates to:
