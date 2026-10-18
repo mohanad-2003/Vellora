@@ -125,9 +125,7 @@ class _NavItem extends StatelessWidget {
     // the rest. The same in light and dark, so the bar is one brand object.
     const capsule = kBrandGold;
     const onCapsule = kBrandNavy;
-    final iconColor = selected
-        ? onCapsule
-        : Colors.white.withValues(alpha: 0.74);
+    final iconColor = selected ? onCapsule : GlassPanel.inkMuted(context);
     const labelColor = onCapsule;
 
     return Semantics(
@@ -228,7 +226,7 @@ class _Icon extends StatelessWidget {
               value: item.badgeCount,
               child: CountBadge(
                 count: item.badgeCount,
-                borderColor: VelloraNavBar.glassDark,
+                borderColor: GlassPanel.surface(context),
               ),
             ),
           )
@@ -242,7 +240,10 @@ class _Icon extends StatelessWidget {
               decoration: BoxDecoration(
                 color: context.vellora.sale,
                 shape: BoxShape.circle,
-                border: Border.all(color: VelloraNavBar.glassDark, width: 1.5),
+                border: Border.all(
+                  color: GlassPanel.surface(context),
+                  width: 1.5,
+                ),
               ),
             ),
           ),

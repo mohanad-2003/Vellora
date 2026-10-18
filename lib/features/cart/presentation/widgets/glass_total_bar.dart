@@ -70,14 +70,14 @@ class GlassTotalBar extends StatelessWidget {
                               Text(
                                 context.l10n.total,
                                 style: text.labelSmall?.copyWith(
-                                  color: Colors.white.withValues(alpha: 0.7),
+                                  color: GlassPanel.inkMuted(context),
                                 ),
                               ),
                               Text(
                                 total.toPrice(),
                                 maxLines: 1,
                                 style: text.titleMedium?.copyWith(
-                                  color: Colors.white,
+                                  color: GlassPanel.ink(context),
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),
@@ -86,7 +86,9 @@ class GlassTotalBar extends StatelessWidget {
                                   '-${savings!.toPrice()}',
                                   maxLines: 1,
                                   style: text.labelSmall?.copyWith(
-                                    color: kBrandGold,
+                                    color: context.isDark
+                                        ? kBrandGold
+                                        : context.vellora.success,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
