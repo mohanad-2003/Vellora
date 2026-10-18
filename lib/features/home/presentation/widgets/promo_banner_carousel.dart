@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:vellora/core/analytics/event_tracker.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/responsive/responsive.dart';
 import 'package:vellora/core/widgets/promo_banner.dart';
@@ -46,6 +47,13 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
   bool _reduceMotion = false;
 
   int get _count => widget.banners.length;
+
+  @override
+  void initState() {
+    super.initState();
+    // The first banner is up as soon as the carousel is.
+    if (_count > 0) EventTracker.trackBannerView(widget.banners[0].id);
+  }
 
   @override
   void didChangeDependencies() {
@@ -243,6 +251,7 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
                 child: PageView.builder(
                   controller: controller,
                   onPageChanged: (i) {
+                    EventTracker.trackBannerView(widget.banners[i % _count].id);
                     setState(() => _page = i);
                     _restart();
                   },
@@ -280,7 +289,13 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
                           imagePath: b.imagePath,
                           style: _styleFor(b),
                           onTap: b.opensSomething
-                              ? () => widget.onBannerTap(b)
+                              ? () {
+                                  EventTracker.track(
+                                    ShopEvent.bannerClick,
+                                    bannerId: b.id,
+                                  );
+                                  widget.onBannerTap(b);
+                                }
                               : null,
                         ),
                       ),
