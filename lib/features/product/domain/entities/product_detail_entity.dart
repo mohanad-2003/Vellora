@@ -29,14 +29,14 @@ class ProductDetailEntity extends Equatable {
 
   ProductDetailEntity copyWith({ProductEntity? product, bool? stockAlert}) =>
       ProductDetailEntity(
-        product: product ?? this.product,
-        gallery: gallery,
-        description: description,
-        variant: variant,
-        reviews: reviews,
-        inStock: inStock,
-        stockAlert: stockAlert ?? this.stockAlert,
-      );
+    product: product ?? this.product,
+    gallery: gallery,
+    description: description,
+    variant: variant,
+    reviews: reviews,
+    inStock: inStock,
+    stockAlert: stockAlert ?? this.stockAlert,
+  );
 
   @override
   List<Object?> get props => [
