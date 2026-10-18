@@ -77,7 +77,10 @@ class PromoBanner extends StatelessWidget {
             borderRadius: AppRadius.rXl,
             boxShadow: [
               BoxShadow(
-                color: style.background.last.withValues(alpha: 0.28),
+                // No coloured glow on the dark page (it reads as a haze).
+                color: style.background.last.withValues(
+                  alpha: context.isDark ? 0 : 0.28,
+                ),
                 blurRadius: 18,
                 offset: const Offset(0, 8),
               ),

@@ -198,19 +198,19 @@ class _QuickCollections extends StatelessWidget {
         Icons.local_fire_department_outlined,
         l10n.bestSellers,
         CatalogCollection.bestSellers,
-        const Color(0xFFE08A1E),
+        context.vellora.accent,
       ),
       (
         Icons.star_outline_rounded,
         l10n.topRated,
         CatalogCollection.topRated,
-        const Color(0xFFD99A00),
+        context.vellora.accent,
       ),
       (
         Icons.sell_outlined,
         budget,
         CatalogCollection.budgetPicks,
-        const Color(0xFF0E9F8F),
+        context.colors.primary,
       ),
     ];
 
