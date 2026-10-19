@@ -25,6 +25,7 @@ class BannerEntity extends Equatable {
     this.badge = '',
     this.cta = '',
     this.endsAt,
+    this.showWholePicture = false,
   });
 
   final String id;
@@ -48,6 +49,9 @@ class BannerEntity extends Equatable {
   /// When the banner stops showing, for a countdown; null when it has no end.
   final DateTime? endsAt;
 
+  /// Whether the picture is shown whole rather than cropped to the panel.
+  final bool showWholePicture;
+
   /// The three built-in banners predate links and open their own lists.
   static const _legacyIds = {'summer', 'flash', 'new'};
 
@@ -65,5 +69,6 @@ class BannerEntity extends Equatable {
     badge,
     cta,
     endsAt,
+    showWholePicture,
   ];
 }

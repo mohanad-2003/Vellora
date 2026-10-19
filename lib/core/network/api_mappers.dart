@@ -49,6 +49,7 @@ class ApiMappers {
     badge: j['badge'] as String? ?? '',
     cta: j['cta'] as String? ?? '',
     endsAt: DateTime.tryParse(j['endsAt'] as String? ?? '')?.toLocal(),
+    showWholePicture: j['imageFit'] == 'contain',
   );
 
   static BannerLink? _link(Object? raw) {
@@ -116,7 +117,9 @@ class ApiMappers {
       items: [
         for (final i in j['items'] as List)
           OrderItemEntity(
-            name: (i as Map<String, dynamic>)['name'] as String,
+            productId:
+                (i as Map<String, dynamic>)['productId'] as String? ?? '',
+            name: i['name'] as String,
             imagePath: i['imageUrl'] as String,
             quantity: (i['quantity'] as num).toInt(),
             price: (i['price'] as num).toDouble(),

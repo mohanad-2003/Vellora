@@ -85,7 +85,8 @@ class OrderDetailState extends Equatable {
 }
 
 @injectable
-class OrderDetailCubit extends Cubit<OrderDetailState> with SafeEmit<OrderDetailState> {
+class OrderDetailCubit extends Cubit<OrderDetailState>
+    with SafeEmit<OrderDetailState> {
   OrderDetailCubit(this._remote) : super(const OrderDetailState());
 
   final OrdersRemoteDataSource _remote;

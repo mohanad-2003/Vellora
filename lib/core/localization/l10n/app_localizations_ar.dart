@@ -766,6 +766,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shopNow => 'تسوّق الآن';
 
   @override
+  String get orderAgain => 'اطلب مجددًا';
+
+  @override
   String get viewCart => 'عرض السلة';
 
   @override

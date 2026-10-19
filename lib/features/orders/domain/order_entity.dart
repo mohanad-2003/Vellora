@@ -13,8 +13,11 @@ class OrderItemEntity extends Equatable {
     required this.price,
     this.color,
     this.size,
+    this.productId = '',
   });
 
+  /// The shop's product id, so the line can go back into the bag; empty when unknown.
+  final String productId;
   final String name;
   final String imagePath;
   final int quantity;
@@ -25,7 +28,15 @@ class OrderItemEntity extends Equatable {
   double get lineTotal => price * quantity;
 
   @override
-  List<Object?> get props => [name, imagePath, quantity, price, color, size];
+  List<Object?> get props => [
+    productId,
+    name,
+    imagePath,
+    quantity,
+    price,
+    color,
+    size,
+  ];
 }
 
 /// A placed order. Display-oriented snapshot: everything the Orders screens

@@ -19,8 +19,9 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<Either<Failure, HomeDataEntity>> getHomeData() async {
     try {
       final data = await _remote.getHomeData();
-      final favoriteIds =
-          _favorites.getFavoriteIds().getOrElse((_) => <String>{});
+      final favoriteIds = _favorites.getFavoriteIds().getOrElse(
+        (_) => <String>{},
+      );
       return Right(data.withFavorites(favoriteIds));
     } catch (e) {
       return Left(mapExceptionToFailure(e));

@@ -287,6 +287,7 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
                               : null,
                           deadline: b.endsAt,
                           imagePath: b.imagePath,
+                          showWholePicture: b.showWholePicture,
                           style: _styleFor(b),
                           onTap: b.opensSomething
                               ? () {

@@ -37,7 +37,11 @@ class PromoBanner extends StatelessWidget {
     this.onTap,
     this.eyebrow,
     this.deadline,
+    this.showWholePicture = false,
   });
+
+  /// Show the picture whole instead of cropping it to the panel.
+  final bool showWholePicture;
 
   final String title;
   final String subtitle;
@@ -72,7 +76,16 @@ class PromoBanner extends StatelessWidget {
       onTap: onTap,
       child: _PressScale(
         onTap: onTap,
-        child: DecoratedBox(
+        child: Container(
+          // A hairline on the dark page, so the panel does not melt into the background.
+          foregroundDecoration: context.isDark
+              ? BoxDecoration(
+                  borderRadius: AppRadius.rXl,
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.14),
+                  ),
+                )
+              : null,
           decoration: BoxDecoration(
             borderRadius: AppRadius.rXl,
             boxShadow: [
@@ -132,7 +145,9 @@ class PromoBanner extends StatelessWidget {
                             borderRadius: _cut,
                             child: ProductImage(
                               path: imagePath,
-                              fit: BoxFit.cover,
+                              fit: showWholePicture
+                                  ? BoxFit.contain
+                                  : BoxFit.cover,
                               padding: EdgeInsets.zero,
                             ),
                           ),
