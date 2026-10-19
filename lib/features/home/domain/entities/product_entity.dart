@@ -29,29 +29,29 @@ class ProductEntity extends Equatable {
   bool get hasDiscount => originalPrice != null && originalPrice! > price;
 
   ProductEntity copyWith({bool? isFavorite}) => ProductEntity(
-    id: id,
-    name: name,
-    brand: brand,
-    imagePath: imagePath,
-    price: price,
-    originalPrice: originalPrice,
-    rating: rating,
-    reviewCount: reviewCount,
-    category: category,
-    isFavorite: isFavorite ?? this.isFavorite,
-  );
+        id: id,
+        name: name,
+        brand: brand,
+        imagePath: imagePath,
+        price: price,
+        originalPrice: originalPrice,
+        rating: rating,
+        reviewCount: reviewCount,
+        category: category,
+        isFavorite: isFavorite ?? this.isFavorite,
+      );
 
   @override
   List<Object?> get props => [
-    id,
-    name,
-    brand,
-    imagePath,
-    price,
-    originalPrice,
-    rating,
-    reviewCount,
-    category,
-    isFavorite,
-  ];
+        id,
+        name,
+        brand,
+        imagePath,
+        price,
+        originalPrice,
+        rating,
+        reviewCount,
+        category,
+        isFavorite,
+      ];
 }

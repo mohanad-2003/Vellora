@@ -155,8 +155,7 @@ class ApiHomeRemoteDataSource implements HomeRemoteDataSource {
       return json;
     } on DioException catch (e) {
       final cause = e.error;
-      final unreachable =
-          cause is NetworkException ||
+      final unreachable = cause is NetworkException ||
           cause is ServerException ||
           cause is UnexpectedFallback;
       final saved = unreachable ? await _cache.read() : null;
