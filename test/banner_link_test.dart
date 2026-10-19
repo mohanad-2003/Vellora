@@ -55,4 +55,16 @@ void main() {
     final b = ApiMappers.banner(json());
     expect([b.badge, b.cta, b.endsAt], ['', '', null]);
   });
+
+  test('a banner shows its picture whole only when the shop says so', () {
+    expect(ApiMappers.banner(json()).showWholePicture, isFalse);
+    expect(
+      ApiMappers.banner({...json(), 'imageFit': 'contain'}).showWholePicture,
+      isTrue,
+    );
+    expect(
+      ApiMappers.banner({...json(), 'imageFit': 'cover'}).showWholePicture,
+      isFalse,
+    );
+  });
 }

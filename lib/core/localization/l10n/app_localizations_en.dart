@@ -764,6 +764,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shopNow => 'Shop now';
 
   @override
+  String get orderAgain => 'Order again';
+
+  @override
   String get viewCart => 'View cart';
 
   @override

@@ -7,6 +7,7 @@ import 'package:vellora/core/theme/app_radius.dart';
 import 'package:vellora/core/theme/app_spacing.dart';
 import 'package:vellora/core/widgets/product_image.dart';
 import 'package:vellora/features/orders/domain/order_entity.dart';
+import 'package:vellora/features/orders/presentation/reorder.dart';
 
 String orderStatusLabel(BuildContext context, OrderStatus status) {
   final l10n = context.l10n;
@@ -182,6 +183,14 @@ class OrderCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.md),
                 _StatusProgress(status: order.status),
               ],
+              Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: TextButton.icon(
+                  onPressed: () => reorder(context, order),
+                  icon: const Icon(Icons.replay_rounded, size: 18),
+                  label: Text(l10n.orderAgain),
+                ),
+              ),
             ],
           ),
         ),

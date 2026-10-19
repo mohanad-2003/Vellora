@@ -1502,6 +1502,12 @@ abstract class AppLocalizations {
   /// **'Shop now'**
   String get shopNow;
 
+  /// No description provided for @orderAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Order again'**
+  String get orderAgain;
+
   /// No description provided for @viewCart.
   ///
   /// In en, this message translates to:

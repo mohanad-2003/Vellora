@@ -307,6 +307,7 @@ class CheckoutCubit extends Cubit<CheckoutState> with SafeEmit<CheckoutState> {
       items: [
         for (final i in state.items)
           OrderItemEntity(
+            productId: i.productId,
             name: i.name,
             imagePath: i.imagePath,
             quantity: i.quantity,
