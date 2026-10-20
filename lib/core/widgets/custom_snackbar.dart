@@ -86,9 +86,7 @@ class AppSnackbar {
                 Text(
                   message,
                   textDirection: directionOf(message),
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: onColor,
-                  ),
+                  style: context.textTheme.bodyMedium?.copyWith(color: onColor),
                 ),
               ],
             ),

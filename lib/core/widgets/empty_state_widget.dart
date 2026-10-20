@@ -180,6 +180,7 @@ class _Medallion extends StatelessWidget {
         dimension: 148,
         child: Stack(
           alignment: Alignment.center,
+
           children: [
             Container(
               width: 148,

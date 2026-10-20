@@ -1,8 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-
-import '../constants/app_constants.dart';
+import 'package:vellora/core/constants/app_constants.dart';
 
 /// Sends one picture to the shop's Cloudinary account and returns its address.
 ///
@@ -27,7 +26,10 @@ class ReviewPhotoUploader {
       'https://api.cloudinary.com/v1_1/${AppConstants.cloudinaryCloud}/image/upload';
 
   /// Throws if the upload fails or the answer has no address.
-  Future<String> upload(Uint8List bytes, {String filename = 'photo.jpg'}) async {
+  Future<String> upload(
+    Uint8List bytes, {
+    String filename = 'photo.jpg',
+  }) async {
     final res = await _dio.post<Map<String, dynamic>>(
       endpoint,
       data: FormData.fromMap({
