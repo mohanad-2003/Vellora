@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../extensions/context_extensions.dart';
+import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import 'app_button.dart';
 
@@ -116,8 +117,8 @@ class EmptyStateWidget extends StatelessWidget {
   }
 }
 
-/// One of the [EmptyArt] pictures. Its pale disc is dimmed a little in dark
-/// mode so it does not glare against the dark page.
+/// One of the [EmptyArt] pictures. They are drawn for the light page; in dark
+/// mode their colours are swapped for the dark palette so the lines stay clear.
 class _Illustration extends StatelessWidget {
   const _Illustration({required this.path, required this.fallback});
 
@@ -129,24 +130,37 @@ class _Illustration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final picture = SvgPicture.asset(
-      path,
-      width: 200,
-      height: 200,
-      errorBuilder: (_, _, _) => fallback,
-    );
     return ExcludeSemantics(
-      child: dark
-          ? ColorFiltered(
-              colorFilter: ColorFilter.mode(
-                Colors.black.withValues(alpha: 0.3),
-                BlendMode.srcATop,
-              ),
-              child: picture,
-            )
-          : picture,
+      child: SvgPicture.asset(
+        path,
+        width: 200,
+        height: 200,
+        colorMapper: dark ? const _DarkArtColors() : null,
+        errorBuilder: (_, _, _) => fallback,
+      ),
     );
   }
+}
+
+/// Light colours used in the pictures, and what each becomes in dark mode.
+class _DarkArtColors extends ColorMapper {
+  const _DarkArtColors();
+
+  static const Map<int, Color> _swap = {
+    0xFF0F5C4D: AppColors.primaryDark, // lines and pins
+    0xFFE4F1EC: AppColors.primarySoftDark, // the disc behind the picture
+    0xFFCFE5DE: Color(0xFF1F4A40), // soft fills on the object
+    0xFF1F2A27: Color(0xFFCFE5DE), // small dark dots
+    0xFFB8923F: Color(0xFFD9B15E), // champagne accents, a little brighter
+  };
+
+  @override
+  Color substitute(
+    String? id,
+    String elementName,
+    String attributeName,
+    Color color,
+  ) => _swap[color.toARGB32()] ?? color;
 }
 
 /// Icon on a gradient disc inside two soft rings, with a few champagne sparks —
