@@ -20,6 +20,7 @@ class ComingSoonPage extends StatelessWidget {
         title: context.l10n.comingSoon,
         message: context.l10n.comingSoonBody,
         icon: Icons.rocket_launch_outlined,
+        illustration: EmptyArt.comingSoon,
         actionLabel: context.l10n.home,
         onAction: () => context.pop(),
       ),

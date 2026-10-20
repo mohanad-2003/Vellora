@@ -55,6 +55,7 @@ class _PaymentMethodsView extends StatelessWidget {
                 title: l10n.noPaymentTitle,
                 message: l10n.noPaymentBody,
                 icon: Icons.credit_card_off_outlined,
+                illustration: EmptyArt.payment,
                 actionLabel: l10n.addCard,
                 onAction: () => _openForm(context),
               );

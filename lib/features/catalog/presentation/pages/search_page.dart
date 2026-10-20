@@ -12,6 +12,7 @@ import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_icon_button.dart';
+import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/favorites_listener.dart';
 import '../../data/recent_searches_store.dart';
 import '../cubit/catalog_cubit.dart';
@@ -226,7 +227,7 @@ class _SearchViewState extends State<_SearchView> {
                       ),
                       emptyTitle: l10n.noResultsTitle,
                       emptyMessage: l10n.noResultsBody(state.query),
-                      emptyIcon: Icons.search_off_rounded,
+                      emptyArt: EmptyArt.search,
                     );
                   },
                 ),

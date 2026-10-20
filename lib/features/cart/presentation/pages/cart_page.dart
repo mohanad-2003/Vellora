@@ -70,6 +70,7 @@ class _CartView extends StatelessWidget {
                   title: l10n.emptyCartTitle,
                   message: l10n.emptyCartBody,
                   icon: Icons.shopping_bag_outlined,
+                  illustration: EmptyArt.cart,
                   actionLabel: l10n.startShopping,
                   onAction: () => context.goNamed(RouteNames.nExplore),
                 ),
