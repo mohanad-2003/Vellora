@@ -174,6 +174,25 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, UserEntity>> updateAvatar(String? url) async {
+    try {
+      final existing = await _local.getCachedUser();
+      if (existing == null) {
+        return const Left(
+          Failure.unauthorized(message: 'Sign in to change your picture'),
+        );
+      }
+      // The server checks the address; only a saved picture is kept on the phone.
+      await _remote.updateAvatar(url: url);
+      final updated = existing.copyWith(avatarUrl: url);
+      await _local.cacheUser(updated);
+      return Right(updated.toEntity());
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
   Future<Either<Failure, UserEntity>> updateProfile({
     required String name,
     String? phone,

@@ -59,6 +59,10 @@ class AppConstants {
   static const String cloudinaryCloud = 'oswjzdto';
   static const String reviewUploadPreset = 'vellora_reviews';
 
+  /// Same account, its own unsigned preset for profile pictures (pictures only,
+  /// small size limit, folder `avatars`).
+  static const String avatarUploadPreset = 'vellora_avatars';
+
   /// Photos allowed on one review (the API enforces the same limit).
   static const int maxReviewPhotos = 3;
 

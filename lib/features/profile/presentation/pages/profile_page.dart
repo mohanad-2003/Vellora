@@ -75,11 +75,12 @@ class _ProfileContent extends StatelessWidget {
 
   Future<void> _openEditProfile(BuildContext context) async {
     final cubit = context.read<ProfileCubit>();
-    final changed = await context.pushNamed<bool>(
+    await context.pushNamed<bool>(
       RouteNames.nEditProfile,
       extra: user,
     );
-    if (changed == true) cubit.loadUser();
+    // The picture can change without pressing Save, so always read the user again.
+    cubit.loadUser();
   }
 
   Future<void> _openOrders(BuildContext context) async {

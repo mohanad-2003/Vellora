@@ -406,6 +406,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get changePhoto => 'تغيير الصورة';
 
   @override
+  String get chooseFromGallery => 'اختيار من المعرض';
+
+  @override
+  String get takePhoto => 'التقاط صورة';
+
+  @override
+  String get removePhoto => 'حذف الصورة';
+
+  @override
+  String get photoUpdated => 'تم تحديث صورة الملف الشخصي';
+
+  @override
+  String get photoRemoved => 'تم حذف صورة الملف الشخصي';
+
+  @override
   String get itemRemoved => 'تمت إزالة العنصر من السلة';
 
   @override
@@ -1307,9 +1322,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get photosHint => 'حتى 3 صور';
-
-  @override
-  String get removePhoto => 'إزالة الصورة';
 
   @override
   String get photoUploadFailed =>

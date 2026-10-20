@@ -489,6 +489,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i474.ResetPasswordUseCase>(
       () => _i474.ResetPasswordUseCase(gh<_i787.AuthRepository>()),
     );
+    gh.factory<_i798.UpdateAvatarUseCase>(
+      () => _i798.UpdateAvatarUseCase(gh<_i787.AuthRepository>()),
+    );
     gh.factory<_i798.UpdateProfileUseCase>(
       () => _i798.UpdateProfileUseCase(gh<_i787.AuthRepository>()),
     );
@@ -502,7 +505,10 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i990.EditProfileCubit>(
-      () => _i990.EditProfileCubit(gh<_i798.UpdateProfileUseCase>()),
+      () => _i990.EditProfileCubit(
+        gh<_i798.UpdateProfileUseCase>(),
+        gh<_i798.UpdateAvatarUseCase>(),
+      ),
     );
     gh.factory<_i527.SecurityCubit>(
       () => _i527.SecurityCubit(
