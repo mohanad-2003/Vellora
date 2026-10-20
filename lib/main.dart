@@ -9,6 +9,7 @@ import 'app.dart';
 import 'core/di/injection.dart';
 import 'core/localization/locale_cubit.dart';
 import 'core/monitoring/crash_reporting.dart';
+import 'core/network/server_warmup.dart';
 import 'core/push/push_gateway.dart';
 import 'core/push/push_navigation.dart';
 import 'core/push/push_registrar.dart';
@@ -19,6 +20,7 @@ import 'features/product/domain/repositories/favorites_repository.dart';
 
 Future<void> main() => CrashReporting.run(() async {
       WidgetsFlutterBinding.ensureInitialized();
+      _warmUpServer();
       await Hive.initFlutter();
       await configureDependencies();
 
@@ -28,6 +30,14 @@ Future<void> main() => CrashReporting.run(() async {
       runApp(const VelloraApp());
       _startPush();
     });
+
+/// Starts waking the hosted API now, so the first screen is not the one that
+/// waits for it. Never with mock data.
+void _warmUpServer() {
+  const useMocks = bool.fromEnvironment('USE_MOCKS');
+  if (useMocks || kIsWeb) return;
+  ServerWarmup().start();
+}
 
 /// Notifications while the app is closed: this phone is registered with the shop
 /// for as long as someone is signed in. Only on phones, and never with mock data.
