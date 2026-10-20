@@ -116,8 +116,8 @@ class EmptyStateWidget extends StatelessWidget {
   }
 }
 
-/// One of the [EmptyArt] pictures. Its pale disc is dimmed a little in dark
-/// mode so it does not glare against the dark page.
+/// One of the [EmptyArt] pictures, drawn for the light page and recoloured in
+/// dark mode (see [_DarkArtColors]).
 class _Illustration extends StatelessWidget {
   const _Illustration({required this.path, required this.fallback});
 
@@ -129,24 +129,39 @@ class _Illustration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final picture = SvgPicture.asset(
-      path,
-      width: 200,
-      height: 200,
-      errorBuilder: (_, _, _) => fallback,
-    );
     return ExcludeSemantics(
-      child: dark
-          ? ColorFiltered(
-              colorFilter: ColorFilter.mode(
-                Colors.black.withValues(alpha: 0.3),
-                BlendMode.srcATop,
-              ),
-              child: picture,
-            )
-          : picture,
+      child: SvgPicture.asset(
+        path,
+        width: 200,
+        height: 200,
+        colorMapper: dark ? const _DarkArtColors() : null,
+        errorBuilder: (_, _, _) => fallback,
+      ),
     );
   }
+}
+
+/// The pictures are drawn in pale greens for the light page. In dark mode the
+/// whole set is recoloured together (disc, fills, lines, accents) so it stays one
+/// matching family instead of a light disc glaring on a dark page.
+class _DarkArtColors extends ColorMapper {
+  const _DarkArtColors();
+
+  static const Map<int, Color> _swap = {
+    0xFF0F5C4D: Color(0xFF6FE0BC), // lines and pins
+    0xFFE4F1EC: Color(0xFF17382F), // the disc behind the picture
+    0xFFCFE5DE: Color(0xFF24574A), // soft fills on the object
+    0xFF1F2A27: Color(0xFFE4F1EC), // small dark dots
+    0xFFB8923F: Color(0xFFDDB865), // champagne accents
+  };
+
+  @override
+  Color substitute(
+    String? id,
+    String elementName,
+    String attributeName,
+    Color color,
+  ) => _swap[color.toARGB32()] ?? color;
 }
 
 /// Icon on a gradient disc inside two soft rings, with a few champagne sparks —
