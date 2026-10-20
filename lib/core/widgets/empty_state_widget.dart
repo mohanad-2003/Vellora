@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../extensions/context_extensions.dart';
-import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import 'app_button.dart';
 
@@ -117,8 +116,8 @@ class EmptyStateWidget extends StatelessWidget {
   }
 }
 
-/// One of the [EmptyArt] pictures. They are drawn for the light page; in dark
-/// mode their colours are swapped for the dark palette so the lines stay clear.
+/// One of the [EmptyArt] pictures, drawn for the light page; in dark mode only
+/// the disc behind the picture changes (see [_DarkArtColors]).
 class _Illustration extends StatelessWidget {
   const _Illustration({required this.path, required this.fallback});
 
@@ -142,17 +141,12 @@ class _Illustration extends StatelessWidget {
   }
 }
 
-/// Light colours used in the pictures, and what each becomes in dark mode.
+/// In dark mode the pale disc behind each picture turns white, so the dark
+/// green lines drawn on it stay clear against the dark page.
 class _DarkArtColors extends ColorMapper {
   const _DarkArtColors();
 
-  static const Map<int, Color> _swap = {
-    0xFF0F5C4D: AppColors.primaryDark, // lines and pins
-    0xFFE4F1EC: AppColors.primarySoftDark, // the disc behind the picture
-    0xFFCFE5DE: Color(0xFF1F4A40), // soft fills on the object
-    0xFF1F2A27: Color(0xFFCFE5DE), // small dark dots
-    0xFFB8923F: Color(0xFFD9B15E), // champagne accents, a little brighter
-  };
+  static const int _disc = 0xFFE4F1EC;
 
   @override
   Color substitute(
@@ -160,7 +154,7 @@ class _DarkArtColors extends ColorMapper {
     String elementName,
     String attributeName,
     Color color,
-  ) => _swap[color.toARGB32()] ?? color;
+  ) => color.toARGB32() == _disc ? Colors.white : color;
 }
 
 /// Icon on a gradient disc inside two soft rings, with a few champagne sparks —
