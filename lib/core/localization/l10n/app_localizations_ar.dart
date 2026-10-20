@@ -397,6 +397,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get removeItem => 'إزالة';
 
   @override
+  String get showPassword => 'إظهار كلمة المرور';
+
+  @override
+  String get hidePassword => 'إخفاء كلمة المرور';
+
+  @override
+  String get changePhoto => 'تغيير الصورة';
+
+  @override
   String get itemRemoved => 'تمت إزالة العنصر من السلة';
 
   @override

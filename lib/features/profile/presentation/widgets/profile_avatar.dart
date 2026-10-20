@@ -58,10 +58,15 @@ class ProfileAvatar extends StatelessWidget {
           textDirection: Directionality.of(context),
           end: 0,
           bottom: 0,
-          child: GestureDetector(
+          child: Semantics(
+            button: true,
+            label: context.l10n.changePhoto,
+            excludeSemantics: true,
             onTap: onEdit,
-            child: Container(
-              padding: EdgeInsets.all(6),
+            child: GestureDetector(
+              onTap: onEdit,
+              child: Container(
+                padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: colors.primary,
                 shape: BoxShape.circle,
@@ -73,6 +78,7 @@ class ProfileAvatar extends StatelessWidget {
                 color: colors.onPrimary,
               ),
             ),
+          ),
           ),
         ),
       ],

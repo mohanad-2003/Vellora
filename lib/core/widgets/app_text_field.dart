@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../extensions/context_extensions.dart';
+
 /// Reusable form field with label, optional prefix/suffix and password toggle.
 class AppTextField extends StatefulWidget {
   const AppTextField({
@@ -103,6 +105,9 @@ class _AppTextFieldState extends State<AppTextField> {
                 : null,
             suffixIcon: widget.obscureText
                 ? IconButton(
+                    tooltip: _obscured
+                        ? context.l10n.showPassword
+                        : context.l10n.hidePassword,
                     icon: Icon(
                       _obscured
                           ? Icons.visibility_off_outlined
