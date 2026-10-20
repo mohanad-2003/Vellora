@@ -1,11 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../extensions/context_extensions.dart';
 import '../theme/app_spacing.dart';
 import 'app_button.dart';
 
-/// Empty-state placeholder: soft icon medallion, title, short message and an
-/// optional call to action. Scrolls when space is tight (landscape, large
+/// The drawn pictures for empty states, in `assets/images/empty/`.
+class EmptyArt {
+  EmptyArt._();
+
+  static const String _dir = 'assets/images/empty/';
+  static const String cart = '${_dir}empty_cart.svg';
+  static const String wishlist = '${_dir}empty_wishlist.svg';
+  static const String orders = '${_dir}empty_orders.svg';
+  static const String notifications = '${_dir}empty_notifications.svg';
+  static const String addresses = '${_dir}empty_addresses.svg';
+  static const String payment = '${_dir}empty_payment.svg';
+  static const String search = '${_dir}empty_search.svg';
+  static const String products = '${_dir}empty_products.svg';
+  static const String filters = '${_dir}empty_filters.svg';
+  static const String signInRequired = '${_dir}sign_in_required.svg';
+  static const String notFound = '${_dir}not_found.svg';
+  static const String comingSoon = '${_dir}coming_soon.svg';
+}
+
+/// Empty-state placeholder: a drawn picture (or a soft icon medallion when none
+/// is given), title, short message and an optional call to action. Scrolls when space is tight (landscape, large
 /// text) so it can never overflow.
 class EmptyStateWidget extends StatelessWidget {
   const EmptyStateWidget({
@@ -13,6 +33,7 @@ class EmptyStateWidget extends StatelessWidget {
     required this.title,
     this.message,
     this.icon = Icons.inbox_outlined,
+    this.illustration,
     this.actionLabel,
     this.onAction,
     this.secondaryLabel,
@@ -22,6 +43,9 @@ class EmptyStateWidget extends StatelessWidget {
   final String title;
   final String? message;
   final IconData icon;
+
+  /// An [EmptyArt] picture shown instead of the icon medallion.
+  final String? illustration;
   final String? actionLabel;
   final VoidCallback? onAction;
   final String? secondaryLabel;
@@ -43,7 +67,10 @@ class EmptyStateWidget extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _Medallion(icon: icon, color: colors.primary),
+                    if (illustration != null)
+                      _Illustration(path: illustration!)
+                    else
+                      _Medallion(icon: icon, color: colors.primary),
                     const SizedBox(height: AppSpacing.xxl),
                     Text(
                       title,
@@ -82,6 +109,31 @@ class EmptyStateWidget extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// One of the [EmptyArt] pictures. Its pale disc is dimmed a little in dark
+/// mode so it does not glare against the dark page.
+class _Illustration extends StatelessWidget {
+  const _Illustration({required this.path});
+
+  final String path;
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final picture = SvgPicture.asset(path, width: 200, height: 200);
+    return ExcludeSemantics(
+      child: dark
+          ? ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                Colors.black.withValues(alpha: 0.3),
+                BlendMode.srcATop,
+              ),
+              child: picture,
+            )
+          : picture,
     );
   }
 }

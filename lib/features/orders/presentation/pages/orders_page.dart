@@ -96,6 +96,7 @@ class _OrdersList extends StatelessWidget {
     if (orders.isEmpty) {
       return EmptyStateWidget(
         icon: Icons.receipt_long_outlined,
+        illustration: EmptyArt.orders,
         title: l10n.noOrdersTitle,
         message: l10n.noOrdersBody,
         actionLabel: l10n.startShopping,

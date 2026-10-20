@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100%" height="100%">
+  <!-- Soft Mint Backdrop Circle (~170px diameter) -->
+  <circle cx="120" cy="120" r="85" fill="#E4F1EC" />
+
+  <!-- Base Soft Shadow -->
+  <ellipse cx="120" cy="190" rx="42" ry="6" fill="#CFE5DE" />
+
+  <!-- Faint Dashed Path Leading Nowhere -->
+  <path d="M52,165 C68,145 78,160 98,142 C118,124 105,95 125,75 C138,62 165,65 188,52" fill="none" stroke="#0F5C4D" stroke-width="3" stroke-dasharray="4 6" stroke-linecap="round" opacity="0.35" />
+
+  <!-- Outer Compass Housing Ring -->
+  <circle cx="120" cy="120" r="48" fill="#CFE5DE" stroke="#0F5C4D" stroke-width="3" />
+
+  <!-- Inner Compass Rim & Face -->
+  <circle cx="120" cy="120" r="40" fill="#E4F1EC" stroke="#0F5C4D" stroke-width="3" opacity="0.7" />
+
+  <!-- Compass Top Attachment Ring / Loop -->
+  <path d="M120,72 V64" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" />
+  <circle cx="120" cy="58" r="6" fill="#E4F1EC" stroke="#0F5C4D" stroke-width="3" />
+
+  <!-- Compass Cardinal Tick Marks -->
+  <path d="M120,84 V88 M120,152 V156 M84,120 H88 M152,120 H156" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" opacity="0.5" />
+
+  <!-- Broken Needle - Top Half (Pointing North-West) -->
+  <path d="M120,120 L102,90 L112,110 Z" fill="#0F5C4D" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Broken Needle - Bottom Half (Pointed Away / Broken & Disconnected to South-East) -->
+  <path d="M126,128 L146,146 L130,138 Z" fill="#CFE5DE" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Gold Fracture/Break Fragment Line at Center -->
+  <path d="M116,115 L124,122 M121,117 L127,125" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+
+  <!-- Center Pivot Pin -->
+  <circle cx="120" cy="120" r="4.5" fill="#B8923F" stroke="#0F5C4D" stroke-width="3" />
+
+  <!-- Tiny Gold Star 1 (Top Right) -->
+  <path d="M182,72 L182,80 M178,76 L186,76" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <circle cx="182" cy="76" r="1.5" fill="#1F2A27" />
+
+  <!-- Tiny Gold Star 2 (Bottom Left) -->
+  <path d="M58,110 L58,118 M54,114 L62,114" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+
+  <!-- Decorative Floating Dots -->
+  <circle cx="188" cy="124" r="3" fill="#B8923F" />
+  <circle cx="68" cy="74" r="3.5" fill="#0F5C4D" />
+  <circle cx="162" cy="166" r="2" fill="#1F2A27" />
+</svg>

@@ -76,6 +76,7 @@ class _WishlistView extends StatelessWidget {
                 ),
                 WishlistStatus.empty => EmptyStateWidget(
                   icon: Icons.favorite_border_rounded,
+                  illustration: EmptyArt.wishlist,
                   title: l10n.emptyWishlistTitle,
                   message: l10n.emptyWishlistBody,
                   actionLabel: l10n.exploreProducts,

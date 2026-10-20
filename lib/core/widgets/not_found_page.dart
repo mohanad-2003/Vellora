@@ -16,6 +16,7 @@ class NotFoundPage extends StatelessWidget {
       body: SafeArea(
         child: EmptyStateWidget(
           icon: Icons.explore_off_outlined,
+          illustration: EmptyArt.notFound,
           title: l10n.pageNotFoundTitle,
           message: l10n.pageNotFoundBody,
           actionLabel: l10n.goHome,

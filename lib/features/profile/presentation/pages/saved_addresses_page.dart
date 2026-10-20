@@ -54,6 +54,7 @@ class _SavedAddressesView extends StatelessWidget {
                 title: l10n.noAddressesTitle,
                 message: l10n.noAddressesBody,
                 icon: Icons.location_off_outlined,
+                illustration: EmptyArt.addresses,
                 actionLabel: l10n.addNewAddress,
                 onAction: () => _openForm(context),
               );

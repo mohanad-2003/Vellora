@@ -80,6 +80,7 @@ flutter:
 
   assets:
     - assets/branding/
+    - assets/images/empty/
     - assets/images/onboarding/
     - assets/images/social/
 

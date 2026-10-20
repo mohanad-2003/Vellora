@@ -26,6 +26,7 @@ class FailureStateView extends StatelessWidget {
     if (key == 'pleaseLogin') {
       return EmptyStateWidget(
         icon: Icons.lock_outline_rounded,
+        illustration: EmptyArt.signInRequired,
         title: l10n.signInRequiredTitle,
         message: l10n.signInRequiredBody,
         actionLabel: l10n.login,

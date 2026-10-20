@@ -60,6 +60,7 @@ class _NotificationsView extends StatelessWidget {
                 state.items.isEmpty
                     ? EmptyStateWidget(
                         icon: Icons.notifications_none_rounded,
+                        illustration: EmptyArt.notifications,
                         title: l10n.noNotificationsTitle,
                         message: l10n.noNotificationsBody,
                       )

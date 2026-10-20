@@ -29,7 +29,7 @@ class CatalogResultsView extends StatelessWidget {
     required this.onRetry,
     required this.emptyTitle,
     required this.emptyMessage,
-    this.emptyIcon = Icons.inventory_2_outlined,
+    this.emptyArt = EmptyArt.products,
   });
 
   final CatalogState state;
@@ -39,7 +39,7 @@ class CatalogResultsView extends StatelessWidget {
   final VoidCallback onRetry;
   final String emptyTitle;
   final String emptyMessage;
-  final IconData emptyIcon;
+  final String emptyArt;
 
   Future<void> _openFilters(BuildContext context) async {
     final cubit = context.read<CatalogCubit>();
@@ -112,7 +112,7 @@ class CatalogResultsView extends StatelessWidget {
             // The placeholder scrolls by itself and takes the whole remaining height.
             hasScrollBody: true,
             child: EmptyStateWidget(
-              icon: filtersActive ? Icons.filter_alt_off_rounded : emptyIcon,
+              illustration: filtersActive ? EmptyArt.filters : emptyArt,
               title: filtersActive ? l10n.noFilterResultsTitle : emptyTitle,
               message:
                   filtersActive ? l10n.noFilterResultsBody : emptyMessage,

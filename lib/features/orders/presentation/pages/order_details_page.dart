@@ -53,6 +53,7 @@ class _OrderDetailsView extends StatelessWidget {
             OrderDetailStatus.loading => const ListSkeleton(),
             OrderDetailStatus.notFound => EmptyStateWidget(
               icon: Icons.receipt_long_outlined,
+              illustration: EmptyArt.notFound,
               title: l10n.orderNotFoundTitle,
               message: l10n.orderNotFoundBody,
             ),
