@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,15 +20,15 @@ class _MockUpdateProfile extends Mock implements UpdateProfileUseCase {}
 class _MockUpdateAvatar extends Mock implements UpdateAvatarUseCase {}
 
 class _FakeUploader implements ProfilePhotoUploader {
-  _FakeUploader({this.fail = false});
+  _FakeUploader({this.error});
 
-  final bool fail;
+  final Object? error;
   int uploads = 0;
 
   @override
   Future<String> upload(Uint8List bytes, {String filename = 'avatar.jpg'}) async {
     uploads++;
-    if (fail) throw StateError('offline');
+    if (error != null) throw error!;
     return 'https://res.cloudinary.com/oswjzdto/image/upload/v1/avatars/new.jpg';
   }
 }
@@ -117,12 +118,33 @@ void main() {
       verify(() => updateAvatar(saved.avatarUrl)).called(1);
     });
 
-    test('a failed upload never touches the account', () async {
-      cubit.uploader = _FakeUploader(fail: true);
+    test('no connection: tells the user to check it, account untouched', () async {
+      cubit.uploader = _FakeUploader(
+        error: DioException(
+          requestOptions: RequestOptions(path: '/upload'),
+          type: DioExceptionType.connectionError,
+        ),
+      );
 
       final r = await cubit.changeAvatar(bytes);
 
       expect(r.failureKey, 'photoUploadFailed');
+      verifyNever(() => updateAvatar(any()));
+    });
+
+    test('Cloudinary says no (bad preset): not blamed on the connection', () async {
+      final request = RequestOptions(path: '/upload');
+      cubit.uploader = _FakeUploader(
+        error: DioException(
+          requestOptions: request,
+          type: DioExceptionType.badResponse,
+          response: Response(requestOptions: request, statusCode: 400),
+        ),
+      );
+
+      final r = await cubit.changeAvatar(bytes);
+
+      expect(r.failureKey, 'somethingWentWrong');
       verifyNever(() => updateAvatar(any()));
     });
 

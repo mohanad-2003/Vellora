@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -33,8 +34,14 @@ class EditProfileCubit extends Cubit<EditProfileState> with SafeEmit<EditProfile
     final String address;
     try {
       address = await uploader.upload(bytes, filename: filename);
-    } catch (_) {
-      return (failureKey: 'photoUploadFailed', url: null);
+    } catch (e) {
+      // No answer at all means the connection; an answer that says no (a missing
+      // or wrong upload preset, a file refused) is not something to retry.
+      final offline = e is DioException && e.response == null;
+      return (
+        failureKey: offline ? 'photoUploadFailed' : 'somethingWentWrong',
+        url: null,
+      );
     }
     return _saveAvatar(address);
   }
