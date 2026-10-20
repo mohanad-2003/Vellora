@@ -41,6 +41,11 @@ abstract class AuthRepository {
     String? phone,
   });
 
+  /// Sets the profile picture to [url] (an address on the shop's own picture
+  /// account), or removes it when null. Needs the server, which checks the
+  /// address; fails with `unauthorized` when nobody is signed in.
+  Future<Either<Failure, UserEntity>> updateAvatar(String? url);
+
   Future<Either<Failure, Unit>> logout();
 
   Future<Either<Failure, Unit>> changePassword({

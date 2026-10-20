@@ -32,6 +32,9 @@ abstract class AuthRemoteDataSource {
   /// Saves the display name on the server for the signed-in user.
   Future<void> updateName({required String name});
 
+  /// Saves the profile picture address (null removes the picture).
+  Future<void> updateAvatar({String? url});
+
   /// Changes the password. The server signs every session out and returns a
   /// fresh token for this device (null when there is nothing to replace).
   Future<String?> changePassword({
@@ -151,6 +154,9 @@ class MockAuthRemoteDataSource implements AuthRemoteDataSource {
   Future<void> updateName({required String name}) async {}
 
   @override
+  Future<void> updateAvatar({String? url}) async {}
+
+  @override
   Future<String?> changePassword({
     required String currentPassword,
     required String newPassword,
@@ -209,6 +215,7 @@ class ApiAuthRemoteDataSource implements AuthRemoteDataSource {
       id: user['id'] as String,
       name: user['name'] as String,
       email: user['email'] as String,
+      avatarUrl: user['avatarUrl'] as String?,
       token: json['token'] as String,
     );
   }
@@ -325,6 +332,11 @@ class ApiAuthRemoteDataSource implements AuthRemoteDataSource {
   @override
   Future<void> updateName({required String name}) async {
     await _dio.patch<void>(ApiEndpoints.me, data: {'name': name.trim()});
+  }
+
+  @override
+  Future<void> updateAvatar({String? url}) async {
+    await _dio.patch<void>(ApiEndpoints.me, data: {'avatarUrl': url});
   }
 
   @override

@@ -830,6 +830,36 @@ abstract class AppLocalizations {
   /// **'Change photo'**
   String get changePhoto;
 
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get takePhoto;
+
+  /// No description provided for @removePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get removePhoto;
+
+  /// No description provided for @photoUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile picture updated'**
+  String get photoUpdated;
+
+  /// No description provided for @photoRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile picture removed'**
+  String get photoRemoved;
+
   /// No description provided for @itemRemoved.
   ///
   /// In en, this message translates to:
@@ -2425,12 +2455,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Up to 3 pictures'**
   String get photosHint;
-
-  /// No description provided for @removePhoto.
-  ///
-  /// In en, this message translates to:
-  /// **'Remove photo'**
-  String get removePhoto;
 
   /// No description provided for @photoUploadFailed.
   ///

@@ -21,6 +21,18 @@ class UpdateProfileUseCase implements UseCase<UserEntity, UpdateProfileParams> {
       );
 }
 
+/// Sets or removes the signed-in user's profile picture.
+@injectable
+class UpdateAvatarUseCase implements UseCase<UserEntity, String?> {
+  UpdateAvatarUseCase(this._repository);
+
+  final AuthRepository _repository;
+
+  @override
+  Future<Either<Failure, UserEntity>> call(String? url) =>
+      _repository.updateAvatar(url);
+}
+
 class UpdateProfileParams extends Equatable {
   const UpdateProfileParams({required this.name, this.phone});
 

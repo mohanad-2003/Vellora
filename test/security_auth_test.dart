@@ -9,6 +9,7 @@ import 'package:hive/hive.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vellora/core/constants/app_constants.dart';
+import 'package:vellora/core/errors/exceptions.dart';
 import 'package:vellora/core/errors/failures.dart';
 import 'package:vellora/core/network/dio_client.dart';
 import 'package:vellora/core/network/interceptors/auth_interceptor.dart';
@@ -233,6 +234,44 @@ void main() {
       expect(saved?.phone, '+200');
       expect(saved?.email, 'sara@test.com', reason: 'the account email cannot be edited');
       expect(hiveDump(), isNot(contains(_token)));
+    });
+
+    test('a guest cannot set a profile picture', () async {
+      final result = await repo.updateAvatar('https://res.cloudinary.com/x/image/upload/a.jpg');
+
+      result.match(
+        (f) => expect(f, isA<UnauthorizedFailure>()),
+        (_) => fail('a guest must not get a picture'),
+      );
+      verifyNever(() => remote.updateAvatar(url: any(named: 'url')));
+    });
+
+    test('a signed-in user can set and then remove the profile picture',
+        () async {
+      await local.cacheUser(user);
+      when(() => remote.updateAvatar(url: any(named: 'url')))
+          .thenAnswer((_) async {});
+      const url = 'https://res.cloudinary.com/oswjzdto/image/upload/v1/avatars/a.jpg';
+
+      final set = await repo.updateAvatar(url);
+      expect(set.getOrElse((_) => throw 'failed').avatarUrl, url);
+      expect((await local.getCachedUser())?.avatarUrl, url);
+
+      final removed = await repo.updateAvatar(null);
+      expect(removed.getOrElse((_) => throw 'failed').avatarUrl, isNull);
+      expect((await local.getCachedUser())?.avatarUrl, isNull);
+      expect((await local.getCachedUser())?.name, 'Sara', reason: 'the rest is untouched');
+    });
+
+    test('when the server refuses the picture, the old one stays', () async {
+      await local.cacheUser(user);
+      when(() => remote.updateAvatar(url: any(named: 'url')))
+          .thenThrow(const ServerException('Not a picture uploaded to the shop'));
+
+      final result = await repo.updateAvatar('https://evil.example/a.jpg');
+
+      expect(result.isLeft(), isTrue);
+      expect((await local.getCachedUser())?.avatarUrl, isNull);
     });
 
     test('logout clears local data and revokes the token on the server',

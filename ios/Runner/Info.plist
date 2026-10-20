@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Choose pictures to add to your product reviews.</string>
+	<string>Choose pictures for your product reviews and your profile.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Take a picture to use as your profile photo.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Vellora uses Face ID to unlock the app.</string>
 	<!-- Allows plain-HTTP calls to a local development API (localhost / LAN). -->

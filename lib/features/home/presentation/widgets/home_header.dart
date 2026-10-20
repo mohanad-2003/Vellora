@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/media/cloudinary_url.dart';
 import 'package:vellora/core/routing/route_names.dart';
 import 'package:vellora/core/widgets/app_icon_button.dart';
 import 'package:vellora/features/auth/presentation/bloc/user_session_cubit.dart';
@@ -92,7 +93,7 @@ class _Avatar extends StatelessWidget {
     Widget child;
     if (avatarUrl != null && avatarUrl.isNotEmpty) {
       child = Image.network(
-        avatarUrl,
+        avatarThumb(avatarUrl, size: 132),
         fit: BoxFit.cover,
         errorBuilder: (_, _, _) => _fallback(colors, initial),
       );

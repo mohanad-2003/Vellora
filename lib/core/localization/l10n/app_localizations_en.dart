@@ -406,6 +406,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get changePhoto => 'Change photo';
 
   @override
+  String get chooseFromGallery => 'Choose from gallery';
+
+  @override
+  String get takePhoto => 'Take a photo';
+
+  @override
+  String get removePhoto => 'Remove photo';
+
+  @override
+  String get photoUpdated => 'Profile picture updated';
+
+  @override
+  String get photoRemoved => 'Profile picture removed';
+
+  @override
   String get itemRemoved => 'Item removed from cart';
 
   @override
@@ -1294,9 +1309,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photosHint => 'Up to 3 pictures';
-
-  @override
-  String get removePhoto => 'Remove photo';
 
   @override
   String get photoUploadFailed =>

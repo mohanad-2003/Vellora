@@ -1,14 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:vellora/core/di/injection.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/media/profile_photo.dart';
 import 'package:vellora/core/theme/app_spacing.dart';
 import 'package:vellora/core/utils/input_validators.dart';
 import 'package:vellora/core/widgets/app_bar_widget.dart';
 import 'package:vellora/core/widgets/app_button.dart';
 import 'package:vellora/core/widgets/app_text_field.dart';
+import 'package:vellora/core/widgets/custom_bottom_sheet.dart';
 import 'package:vellora/core/widgets/custom_snackbar.dart';
 import 'package:vellora/features/auth/domain/entities/user_entity.dart';
 import 'package:vellora/features/profile/presentation/cubit/edit_profile_cubit.dart';
@@ -48,6 +52,53 @@ class _EditProfileViewState extends State<_EditProfileView> {
   late final TextEditingController _phone = TextEditingController(
     text: widget.user?.phone ?? '',
   );
+
+  late String? _avatarUrl = widget.user?.avatarUrl;
+  bool _uploading = false;
+
+  /// Asks where the picture comes from, uploads it and saves it on the account.
+  /// It takes effect at once; it does not wait for Save.
+  Future<void> _changePhoto() async {
+    final cubit = context.read<EditProfileCubit>();
+    final choice = await AppBottomSheet.show<_PhotoChoice>(
+      context,
+      title: context.l10n.changePhoto,
+      child: _PhotoChoices(canRemove: _avatarUrl?.isNotEmpty ?? false),
+    );
+    if (choice == null || !mounted) return;
+
+    setState(() => _uploading = true);
+    ({String? failureKey, String? url}) result;
+    if (choice == _PhotoChoice.remove) {
+      result = await cubit.removeAvatar();
+    } else {
+      final photo = await pickProfilePhoto(
+        choice == _PhotoChoice.camera
+            ? ImageSource.camera
+            : ImageSource.gallery,
+      );
+      if (photo == null) {
+        if (mounted) setState(() => _uploading = false);
+        return;
+      }
+      result = await cubit.changeAvatar(photo.bytes, filename: photo.name);
+    }
+    if (!mounted) return;
+
+    final l10n = context.l10n;
+    setState(() {
+      _uploading = false;
+      if (result.failureKey == null) _avatarUrl = result.url;
+    });
+    if (result.failureKey != null) {
+      AppSnackbar.error(context, tr(context, result.failureKey!));
+    } else {
+      AppSnackbar.success(
+        context,
+        result.url == null ? l10n.photoRemoved : l10n.photoUpdated,
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -97,13 +148,11 @@ class _EditProfileViewState extends State<_EditProfileView> {
                         SizedBox(height: AppSpacing.vSm),
                         ProfileAvatar(
                           name: _name.text.isEmpty ? '?' : _name.text,
-                          avatarUrl: widget.user?.avatarUrl,
+                          avatarUrl: _avatarUrl,
                           size: 96,
                           editable: true,
-                          onEdit: () => AppSnackbar.show(
-                            context,
-                            message: l10n.comingSoon,
-                          ),
+                          busy: _uploading,
+                          onEdit: _changePhoto,
                         ),
                         SizedBox(height: AppSpacing.vXxl),
                         AppTextField(
@@ -158,6 +207,54 @@ class _EditProfileViewState extends State<_EditProfileView> {
           );
         },
       ),
+    );
+  }
+}
+
+enum _PhotoChoice { gallery, camera, remove }
+
+/// The options in the "change photo" sheet. Taking a photo is hidden on
+/// desktop and web, where there is no camera to open.
+class _PhotoChoices extends StatelessWidget {
+  const _PhotoChoices({required this.canRemove});
+
+  final bool canRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final phone =
+        !kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.android ||
+            defaultTargetPlatform == TargetPlatform.iOS);
+    void pick(_PhotoChoice c) => Navigator.of(context).pop(c);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          leading: const Icon(Icons.photo_library_outlined),
+          title: Text(l10n.chooseFromGallery),
+          onTap: () => pick(_PhotoChoice.gallery),
+        ),
+        if (phone)
+          ListTile(
+            leading: const Icon(Icons.photo_camera_outlined),
+            title: Text(l10n.takePhoto),
+            onTap: () => pick(_PhotoChoice.camera),
+          ),
+        if (canRemove)
+          ListTile(
+            leading: Icon(
+              Icons.delete_outline_rounded,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            title: Text(
+              l10n.removePhoto,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+            onTap: () => pick(_PhotoChoice.remove),
+          ),
+      ],
     );
   }
 }
