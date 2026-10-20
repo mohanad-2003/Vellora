@@ -68,7 +68,10 @@ class EmptyStateWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (illustration != null)
-                      _Illustration(path: illustration!)
+                      _Illustration(
+                        path: illustration!,
+                        fallback: _Medallion(icon: icon, color: colors.primary),
+                      )
                     else
                       _Medallion(icon: icon, color: colors.primary),
                     const SizedBox(height: AppSpacing.xxl),
@@ -116,14 +119,22 @@ class EmptyStateWidget extends StatelessWidget {
 /// One of the [EmptyArt] pictures. Its pale disc is dimmed a little in dark
 /// mode so it does not glare against the dark page.
 class _Illustration extends StatelessWidget {
-  const _Illustration({required this.path});
+  const _Illustration({required this.path, required this.fallback});
 
   final String path;
+
+  /// Shown if the picture cannot be read, so a bad file never breaks a screen.
+  final Widget fallback;
 
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final picture = SvgPicture.asset(path, width: 200, height: 200);
+    final picture = SvgPicture.asset(
+      path,
+      width: 200,
+      height: 200,
+      errorBuilder: (_, _, _) => fallback,
+    );
     return ExcludeSemantics(
       child: dark
           ? ColorFiltered(

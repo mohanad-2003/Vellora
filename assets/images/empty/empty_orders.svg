@@ -45,8 +45,8 @@
   <!-- Upper Left Gold Sparkle -->
   <path d="M45,40 L45,50 M40,45 L50,45" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
   <!-- Small Ink Dot (bottom right) -->
-  <circle cx="195, 175" r="2.5" fill="#1F2A27" />
+  <circle cx="195" cy="175" r="2.5" fill="#1F2A27" />
   <!-- Small Gold Dot (above delivery path) -->
-  <circle cx="215, 60" r="3" fill="#B8923F" />
+  <circle cx="215" cy="60" r="3" fill="#B8923F" />
 
 </svg>
