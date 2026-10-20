@@ -812,6 +812,24 @@ abstract class AppLocalizations {
   /// **'Remove'**
   String get removeItem;
 
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
+
+  /// No description provided for @changePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get changePhoto;
+
   /// No description provided for @itemRemoved.
   ///
   /// In en, this message translates to:

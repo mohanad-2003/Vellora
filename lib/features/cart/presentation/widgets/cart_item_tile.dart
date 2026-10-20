@@ -57,7 +57,12 @@ class CartItemTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            GestureDetector(
+            Semantics(
+              button: true,
+              label: item.name,
+              excludeSemantics: true,
+              onTap: onTap,
+              child: GestureDetector(
               onTap: onTap,
               child: ClipRRect(
                 borderRadius: AppRadius.rLg,
@@ -69,6 +74,7 @@ class CartItemTile extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
