@@ -116,8 +116,8 @@ class EmptyStateWidget extends StatelessWidget {
   }
 }
 
-/// One of the [EmptyArt] pictures, drawn for the light page; in dark mode only
-/// the disc behind the picture changes (see [_DarkArtColors]).
+/// One of the [EmptyArt] pictures, drawn for the light page and recoloured in
+/// dark mode (see [_DarkArtColors]).
 class _Illustration extends StatelessWidget {
   const _Illustration({required this.path, required this.fallback});
 
@@ -141,12 +141,19 @@ class _Illustration extends StatelessWidget {
   }
 }
 
-/// In dark mode the pale disc behind each picture turns white, so the dark
-/// green lines drawn on it stay clear against the dark page.
+/// The pictures are drawn in pale greens for the light page. In dark mode the
+/// whole set is recoloured together (disc, fills, lines, accents) so it stays one
+/// matching family instead of a light disc glaring on a dark page.
 class _DarkArtColors extends ColorMapper {
   const _DarkArtColors();
 
-  static const int _disc = 0xFFE4F1EC;
+  static const Map<int, Color> _swap = {
+    0xFF0F5C4D: Color(0xFF6FE0BC), // lines and pins
+    0xFFE4F1EC: Color(0xFF17382F), // the disc behind the picture
+    0xFFCFE5DE: Color(0xFF24574A), // soft fills on the object
+    0xFF1F2A27: Color(0xFFE4F1EC), // small dark dots
+    0xFFB8923F: Color(0xFFDDB865), // champagne accents
+  };
 
   @override
   Color substitute(
@@ -154,7 +161,7 @@ class _DarkArtColors extends ColorMapper {
     String elementName,
     String attributeName,
     Color color,
-  ) => color.toARGB32() == _disc ? Colors.white : color;
+  ) => _swap[color.toARGB32()] ?? color;
 }
 
 /// Icon on a gradient disc inside two soft rings, with a few champagne sparks —
