@@ -1575,4 +1575,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bannerBadgeSeason => 'Season picks';
+
+  @override
+  String get returnsTitle => 'Returns';
+
+  @override
+  String get returnItems => 'Return items';
+
+  @override
+  String get returnItemsBody =>
+      'Choose what you want to send back. Returns are accepted within 14 days of delivery.';
+
+  @override
+  String get returnReason => 'Reason';
+
+  @override
+  String get returnReasonWrongSize => 'Wrong size';
+
+  @override
+  String get returnReasonDamaged => 'Damaged or faulty';
+
+  @override
+  String get returnReasonNotAsDescribed => 'Not as described';
+
+  @override
+  String get returnReasonChangedMind => 'Changed my mind';
+
+  @override
+  String get returnReasonOther => 'Other';
+
+  @override
+  String get returnNote => 'Anything we should know? (optional)';
+
+  @override
+  String get returnSend => 'Send return request';
+
+  @override
+  String get returnRequested => 'Return request sent. We will let you know.';
+
+  @override
+  String get returnNotAllowed => 'This order can no longer be returned.';
+
+  @override
+  String get returnStatusRequested => 'Waiting for review';
+
+  @override
+  String get returnStatusApproved => 'Approved';
+
+  @override
+  String get returnStatusRejected => 'Declined';
+
+  @override
+  String get returnStatusReceived => 'Received';
+
+  @override
+  String get returnStatusCompleted => 'Completed';
+
+  @override
+  String get decrease => 'Decrease';
+
+  @override
+  String get increase => 'Increase';
 }

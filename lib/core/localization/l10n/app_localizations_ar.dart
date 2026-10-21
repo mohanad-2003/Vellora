@@ -1590,4 +1590,65 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get bannerBadgeSeason => 'اختيارات الموسم';
+
+  @override
+  String get returnsTitle => 'المرتجعات';
+
+  @override
+  String get returnItems => 'إرجاع منتجات';
+
+  @override
+  String get returnItemsBody =>
+      'اختر ما تريد إعادته. يُقبل الإرجاع خلال 14 يومًا من التسليم.';
+
+  @override
+  String get returnReason => 'السبب';
+
+  @override
+  String get returnReasonWrongSize => 'المقاس غير مناسب';
+
+  @override
+  String get returnReasonDamaged => 'تالف أو معيب';
+
+  @override
+  String get returnReasonNotAsDescribed => 'مختلف عن الوصف';
+
+  @override
+  String get returnReasonChangedMind => 'غيّرت رأيي';
+
+  @override
+  String get returnReasonOther => 'سبب آخر';
+
+  @override
+  String get returnNote => 'هل من شيء تريد إخبارنا به؟ (اختياري)';
+
+  @override
+  String get returnSend => 'إرسال طلب الإرجاع';
+
+  @override
+  String get returnRequested => 'تم إرسال طلب الإرجاع. سنوافيك بالرد.';
+
+  @override
+  String get returnNotAllowed => 'لم يعد بالإمكان إرجاع هذا الطلب.';
+
+  @override
+  String get returnStatusRequested => 'بانتظار المراجعة';
+
+  @override
+  String get returnStatusApproved => 'تمت الموافقة';
+
+  @override
+  String get returnStatusRejected => 'مرفوض';
+
+  @override
+  String get returnStatusReceived => 'تم الاستلام';
+
+  @override
+  String get returnStatusCompleted => 'مكتمل';
+
+  @override
+  String get decrease => 'إنقاص';
+
+  @override
+  String get increase => 'زيادة';
 }

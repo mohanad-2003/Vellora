@@ -52,6 +52,8 @@ class ApiEndpoints {
   static const String orders = '/orders';
   static String order(String id) => '/orders/$id';
   static String orderCancel(String id) => '/orders/$id/cancel';
+  static String orderReturns(String id) => '/orders/$id/returns';
+  static const String returns = '/returns';
   static const String notifications = '/notifications';
   static const String notificationsReadAll = '/notifications/read-all';
   static String notificationRead(String id) => '/notifications/$id/read';
