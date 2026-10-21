@@ -16,6 +16,7 @@ import 'package:vellora/core/widgets/shimmer_widgets.dart';
 import 'package:vellora/features/auth/domain/entities/user_entity.dart';
 import 'package:vellora/features/cart/presentation/bloc/cart_badge_cubit.dart';
 import 'package:vellora/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:vellora/features/profile/presentation/widgets/help_sheet.dart';
 import 'package:vellora/features/profile/presentation/widgets/profile_avatar.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -223,31 +224,10 @@ class _ProfileContent extends StatelessWidget {
   }
 
   void _showHelp(BuildContext context) {
-    final l10n = context.l10n;
     AppBottomSheet.show(
       context,
-      title: l10n.helpSupport,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l10n.helpBody, style: context.textTheme.bodyMedium),
-          const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              Icon(Icons.mail_outline_rounded, color: context.colors.primary),
-              const SizedBox(width: AppSpacing.md),
-              // Email addresses read left-to-right in every locale.
-              Directionality(
-                textDirection: TextDirection.ltr,
-                child: SelectableText(
-                  AppConstants.supportEmail,
-                  style: context.textTheme.titleSmall,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+      title: context.l10n.helpSupport,
+      child: const HelpSheet(),
     );
   }
 

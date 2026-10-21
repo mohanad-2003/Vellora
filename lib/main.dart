@@ -14,6 +14,7 @@ import 'core/push/push_gateway.dart';
 import 'core/push/push_navigation.dart';
 import 'core/push/push_registrar.dart';
 import 'features/auth/presentation/bloc/user_session_cubit.dart';
+import 'features/checkout/data/delivery_remote_datasource.dart';
 import 'features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'features/cart/domain/repositories/cart_repository.dart';
 import 'features/product/domain/repositories/favorites_repository.dart';
@@ -27,6 +28,10 @@ Future<void> main() => CrashReporting.run(() async {
       // A signed-in user's wishlist and bag may have changed on another device.
       unawaited(sl<FavoritesRepository>().sync());
       unawaited(sl<CartRepository>().sync());
+      // The shop's shipping fees, so the bag and checkout estimates match what the server charges.
+      unawaited(
+        sl<DeliveryRemoteDataSource>().getOptions().then((_) {}, onError: (_) {}),
+      );
       runApp(const VelloraApp());
       _startPush();
     });

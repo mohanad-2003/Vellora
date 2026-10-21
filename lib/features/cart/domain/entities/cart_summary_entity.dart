@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../core/shipping/shipping_rules.dart';
 import 'cart_item_entity.dart';
 import 'promo_code_entity.dart';
 
@@ -26,7 +27,10 @@ class CartSummaryEntity extends Equatable {
         items.fold<double>(0, (sum, item) => sum + item.lineTotal);
     final discount =
         promo == null ? 0.0 : subtotal * (promo.discountPercent / 100);
-    final shipping = subtotal > 100 || subtotal == 0 ? 0.0 : 9.99;
+    final rules = ShippingRules.current.value;
+    final shipping = subtotal >= rules.freeThreshold || subtotal == 0
+        ? 0.0
+        : rules.standardFee;
     final total = subtotal - discount + shipping;
     final itemCount = items.fold<int>(0, (sum, item) => sum + item.quantity);
     return CartSummaryEntity(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/extensions/num_extensions.dart';
+import 'package:vellora/core/shipping/shipping_rules.dart';
 import 'package:vellora/core/theme/app_radius.dart';
 import 'package:vellora/core/theme/app_spacing.dart';
 import 'package:vellora/core/utils/haptics.dart';
@@ -16,9 +17,6 @@ import 'package:vellora/features/home/domain/entities/product_entity.dart';
 
 import 'home_sections.dart';
 
-/// Order threshold for free delivery (matches the cart's progress bar).
-const double kFreeShippingThreshold = 100;
-
 /// Three shopping promises (free shipping, returns, secure payment) in one
 /// quiet card under the banners.
 class ValuePropsStrip extends StatelessWidget {
@@ -26,13 +24,20 @@ class ValuePropsStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ValueListenableBuilder<ShippingRulesData>(
+      valueListenable: ShippingRules.current,
+      builder: (context, rules, _) => _content(context, rules),
+    );
+  }
+
+  Widget _content(BuildContext context, ShippingRulesData rules) {
     final l10n = context.l10n;
     final brand = context.vellora;
     final items = [
       (
         Icons.local_shipping_outlined,
         l10n.valueFreeShipping,
-        l10n.valueFreeShippingBody(kFreeShippingThreshold.toPrice()),
+        l10n.valueFreeShippingBody(rules.freeThreshold.toPrice()),
         context.colors.primary,
       ),
       (

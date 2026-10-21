@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../core/di/environments.dart';
 import '../../../core/network/api_endpoints.dart';
+import '../../../core/shipping/shipping_rules.dart';
 import '../presentation/models/checkout_models.dart';
 
 /// What checkout may offer, from the server so the app and the order total it
@@ -15,6 +16,9 @@ abstract class DeliveryRemoteDataSource {
   /// cannot say (an older server, or no connection): then nothing is hidden and
   /// the server decides when the order is placed.
   Future<Set<PaymentKind>?> getPaymentKinds();
+
+  /// The shop's name and support contacts, or `null` when the server cannot say.
+  Future<StoreInfo?> getStoreInfo();
 }
 
 @mockOnly
@@ -26,6 +30,9 @@ class MockDeliveryRemoteDataSource implements DeliveryRemoteDataSource {
   @override
   Future<Set<PaymentKind>?> getPaymentKinds() async =>
       PaymentKind.values.toSet();
+
+  @override
+  Future<StoreInfo?> getStoreInfo() async => null;
 }
 
 @apiOnly
@@ -40,6 +47,12 @@ class ApiDeliveryRemoteDataSource implements DeliveryRemoteDataSource {
     final res = await _dio.get<Map<String, dynamic>>(
       ApiEndpoints.deliveryOptions,
     );
+    // The same answer carries the fees the owner set; the cart and checkout estimates follow them.
+    final threshold = (res.data!['freeShippingThreshold'] as num?)?.toDouble();
+    final standardFee = (res.data!['standardShipping'] as num?)?.toDouble();
+    if (threshold != null && standardFee != null) {
+      ShippingRules.update(freeThreshold: threshold, standardFee: standardFee);
+    }
     final options = <DeliveryOption>[
       for (final raw in res.data!['options'] as List)
         _option(raw as Map<String, dynamic>),
@@ -59,6 +72,22 @@ class ApiDeliveryRemoteDataSource implements DeliveryRemoteDataSource {
         for (final kind in PaymentKind.values)
           if (names.contains(kind.name)) kind,
       };
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<StoreInfo?> getStoreInfo() async {
+    try {
+      final res = await _dio.get<Map<String, dynamic>>(ApiEndpoints.storeInfo);
+      final j = res.data;
+      if (j == null) return null;
+      return StoreInfo(
+        name: j['name'] as String? ?? '',
+        supportEmail: j['supportEmail'] as String? ?? '',
+        supportPhone: j['supportPhone'] as String? ?? '',
+      );
     } catch (_) {
       return null;
     }
