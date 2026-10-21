@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/shipping/shipping_rules.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/num_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -13,14 +14,24 @@ class FreeShippingProgress extends StatelessWidget {
   const FreeShippingProgress({
     super.key,
     required this.subtotal,
-    this.threshold = 100,
+    this.threshold,
   });
 
   final double subtotal;
-  final double threshold;
+
+  /// The free-shipping line; the shop's current rule when not given.
+  final double? threshold;
 
   @override
   Widget build(BuildContext context) {
+    return ValueListenableBuilder<ShippingRulesData>(
+      valueListenable: ShippingRules.current,
+      builder: (context, rules, _) =>
+          _content(context, threshold ?? rules.freeThreshold),
+    );
+  }
+
+  Widget _content(BuildContext context, double threshold) {
     final unlocked = subtotal >= threshold;
     final remaining = (threshold - subtotal).clamp(0, threshold).toDouble();
     final progress = (subtotal / threshold).clamp(0.0, 1.0);
