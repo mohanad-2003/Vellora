@@ -5,6 +5,7 @@ import '../../features/home/domain/entities/home_offer_entity.dart';
 import '../../features/home/domain/entities/product_entity.dart';
 import '../../features/notifications/domain/notification_entity.dart';
 import '../../features/orders/domain/order_entity.dart';
+import '../../features/orders/domain/return_entity.dart';
 import '../../features/product/domain/entities/review_entity.dart';
 
 /// JSON → domain mappers for the Vellora API payloads. Kept in one place so the
@@ -117,8 +118,8 @@ class ApiMappers {
       items: [
         for (final i in j['items'] as List)
           OrderItemEntity(
-            productId:
-                (i as Map<String, dynamic>)['productId'] as String? ?? '',
+            id: (i as Map<String, dynamic>)['id']?.toString() ?? '',
+            productId: i['productId'] as String? ?? '',
             name: i['name'] as String,
             imagePath: i['imageUrl'] as String,
             quantity: (i['quantity'] as num).toInt(),
@@ -154,5 +155,30 @@ class ApiMappers {
     if (diff.inDays < 30) return unit(diff.inDays ~/ 7, 'week');
     if (diff.inDays < 365) return unit(diff.inDays ~/ 30, 'month');
     return unit(diff.inDays ~/ 365, 'year');
+  }
+
+  static ReturnEntity orderReturn(Map<String, dynamic> j) {
+    return ReturnEntity(
+      id: j['id'].toString(),
+      orderId: j['orderId'] as String,
+      status: switch (j['status']) {
+        'approved' => ReturnStatus.approved,
+        'rejected' => ReturnStatus.rejected,
+        'received' => ReturnStatus.received,
+        'completed' => ReturnStatus.completed,
+        _ => ReturnStatus.requested,
+      },
+      reason: j['reason'] as String? ?? '',
+      adminNote: j['adminNote'] as String?,
+      createdAt: DateTime.parse(j['createdAt'] as String).toLocal(),
+      items: [
+        for (final i in j['items'] as List)
+          ReturnItemEntity(
+            orderItemId: (i as Map<String, dynamic>)['orderItemId'].toString(),
+            name: i['name'] as String,
+            quantity: (i['quantity'] as num).toInt(),
+          ),
+      ],
+    );
   }
 }

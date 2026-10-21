@@ -7,6 +7,7 @@ import '../../../core/network/api_endpoints.dart';
 import '../../../core/network/api_mappers.dart';
 import '../domain/order_entity.dart';
 import '../domain/place_order_request.dart';
+import '../domain/return_entity.dart';
 import 'mock_orders_store.dart';
 
 /// Order history and checkout. Needs a signed-in user when talking to the API.
@@ -21,6 +22,19 @@ abstract class OrdersRemoteDataSource {
   /// Only orders that are still being processed can be cancelled; otherwise
   /// this throws a [ValidationException] with code `conflict`.
   Future<OrderEntity> cancelOrder(String id);
+
+  /// The signed-in customer's return requests, newest first.
+  Future<List<ReturnEntity>> getReturns();
+
+  /// Asks to send [quantities] (order line id -> units) of a delivered order back.
+  /// Throws a [ValidationException] when the order cannot be returned (not
+  /// delivered, past the return window, or more units than are left).
+  Future<ReturnEntity> requestReturn(
+    String orderId,
+    Map<String, int> quantities, {
+    required String reason,
+    String? note,
+  });
 }
 
 @mockOnly
@@ -29,6 +43,46 @@ class MockOrdersRemoteDataSource implements OrdersRemoteDataSource {
   MockOrdersRemoteDataSource(this._store);
 
   final MockOrdersStore _store;
+  final List<ReturnEntity> _returns = [];
+
+  @override
+  Future<List<ReturnEntity>> getReturns() async => List.unmodifiable(_returns);
+
+  @override
+  Future<ReturnEntity> requestReturn(
+    String orderId,
+    Map<String, int> quantities, {
+    required String reason,
+    String? note,
+  }) async {
+    final order = await _store.getOrder(orderId);
+    if (order == null) throw const NotFoundException('Order not found');
+    if (order.status != OrderStatus.delivered) {
+      throw const ValidationException('Not delivered', 'conflict');
+    }
+    final made = ReturnEntity(
+      id: '${_returns.length + 1}',
+      orderId: orderId,
+      status: ReturnStatus.requested,
+      reason: reason,
+      createdAt: DateTime.now(),
+      items: [
+        for (final e in quantities.entries)
+          ReturnItemEntity(
+            orderItemId: e.key,
+            name: order.items
+                .firstWhere(
+                  (i) => i.id == e.key,
+                  orElse: () => order.items.first,
+                )
+                .name,
+            quantity: e.value,
+          ),
+      ],
+    );
+    _returns.insert(0, made);
+    return made;
+  }
 
   @override
   Future<List<OrderEntity>> getOrders() => _store.getOrders();
@@ -85,6 +139,36 @@ class ApiOrdersRemoteDataSource implements OrdersRemoteDataSource {
       ApiEndpoints.orderCancel(id),
     );
     return ApiMappers.order(res.data!);
+  }
+
+  @override
+  Future<List<ReturnEntity>> getReturns() async {
+    final res = await _dio.get<List<dynamic>>(ApiEndpoints.returns);
+    return [
+      for (final r in res.data!)
+        ApiMappers.orderReturn(r as Map<String, dynamic>),
+    ];
+  }
+
+  @override
+  Future<ReturnEntity> requestReturn(
+    String orderId,
+    Map<String, int> quantities, {
+    required String reason,
+    String? note,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      ApiEndpoints.orderReturns(orderId),
+      data: {
+        'items': [
+          for (final e in quantities.entries)
+            {'orderItemId': e.key, 'quantity': e.value},
+        ],
+        'reason': reason,
+        if (note != null && note.trim().isNotEmpty) 'note': note.trim(),
+      },
+    );
+    return ApiMappers.orderReturn(res.data!);
   }
 
   @override

@@ -18,6 +18,7 @@ import '../../../../core/widgets/product_image.dart';
 import '../../../../core/widgets/shimmer_widgets.dart';
 import '../../domain/order_entity.dart';
 import '../cubit/orders_cubit.dart';
+import '../widgets/order_returns.dart';
 import '../widgets/order_timeline.dart';
 import '../widgets/order_widgets.dart';
 import '../../../../core/widgets/failure_state_view.dart';
@@ -312,6 +313,7 @@ class _Details extends StatelessWidget {
               ),
             ),
           ),
+          OrderReturnsSection(order: order),
           if (order.status == OrderStatus.processing)
             AppButton(
               label: l10n.cancelOrder,

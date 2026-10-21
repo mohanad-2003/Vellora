@@ -2935,6 +2935,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Season picks'**
   String get bannerBadgeSeason;
+
+  /// No description provided for @returnsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Returns'**
+  String get returnsTitle;
+
+  /// No description provided for @returnItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Return items'**
+  String get returnItems;
+
+  /// No description provided for @returnItemsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what you want to send back. Returns are accepted within 14 days of delivery.'**
+  String get returnItemsBody;
+
+  /// No description provided for @returnReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get returnReason;
+
+  /// No description provided for @returnReasonWrongSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong size'**
+  String get returnReasonWrongSize;
+
+  /// No description provided for @returnReasonDamaged.
+  ///
+  /// In en, this message translates to:
+  /// **'Damaged or faulty'**
+  String get returnReasonDamaged;
+
+  /// No description provided for @returnReasonNotAsDescribed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not as described'**
+  String get returnReasonNotAsDescribed;
+
+  /// No description provided for @returnReasonChangedMind.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed my mind'**
+  String get returnReasonChangedMind;
+
+  /// No description provided for @returnReasonOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get returnReasonOther;
+
+  /// No description provided for @returnNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything we should know? (optional)'**
+  String get returnNote;
+
+  /// No description provided for @returnSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send return request'**
+  String get returnSend;
+
+  /// No description provided for @returnRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Return request sent. We will let you know.'**
+  String get returnRequested;
+
+  /// No description provided for @returnNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'This order can no longer be returned.'**
+  String get returnNotAllowed;
+
+  /// No description provided for @returnStatusRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for review'**
+  String get returnStatusRequested;
+
+  /// No description provided for @returnStatusApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get returnStatusApproved;
+
+  /// No description provided for @returnStatusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get returnStatusRejected;
+
+  /// No description provided for @returnStatusReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get returnStatusReceived;
+
+  /// No description provided for @returnStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get returnStatusCompleted;
+
+  /// No description provided for @decrease.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrease'**
+  String get decrease;
+
+  /// No description provided for @increase.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase'**
+  String get increase;
 }
 
 class _AppLocalizationsDelegate

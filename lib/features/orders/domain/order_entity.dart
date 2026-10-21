@@ -14,7 +14,11 @@ class OrderItemEntity extends Equatable {
     this.color,
     this.size,
     this.productId = '',
+    this.id = '',
   });
+
+  /// The order line's id on the server (needed to return it); empty when unknown.
+  final String id;
 
   /// The shop's product id, so the line can go back into the bag; empty when unknown.
   final String productId;
@@ -29,6 +33,7 @@ class OrderItemEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+    id,
     productId,
     name,
     imagePath,
