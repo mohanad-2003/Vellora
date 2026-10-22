@@ -13,11 +13,11 @@
 </div>
 
 <p align="center">
-  <img src="docs/screenshots/06-home.png" width="19%" alt="Home"/>
-  <img src="docs/screenshots/07-explore.png" width="19%" alt="Explore"/>
-  <img src="docs/screenshots/08-product.png" width="19%" alt="Product details"/>
-  <img src="docs/screenshots/09-cart.png" width="19%" alt="Cart"/>
-  <img src="docs/screenshots/11-profile.png" width="19%" alt="Profile"/>
+  <img src="docs/screenshots/home.png" width="19%" alt="Home"/>
+  <img src="docs/screenshots/explore.png" width="19%" alt="Explore"/>
+  <img src="docs/screenshots/product.png" width="19%" alt="Product details"/>
+  <img src="docs/screenshots/cart.png" width="19%" alt="Cart"/>
+  <img src="docs/screenshots/profile.png" width="19%" alt="Profile"/>
 </p>
 
 ---
@@ -52,11 +52,11 @@ states throughout.
 
 <table>
 <tr>
-<td align="center"><img src="docs/screenshots/01-splash.png" width="150" alt="Splash"/><br/><sub><b>Splash</b></sub></td>
-<td align="center"><img src="docs/screenshots/02-onboarding-discover.png" width="150" alt="Discover"/><br/><sub><b>Discover</b></sub></td>
-<td align="center"><img src="docs/screenshots/03-onboarding-shop.png" width="150" alt="Shop with ease"/><br/><sub><b>Shop with ease</b></sub></td>
-<td align="center"><img src="docs/screenshots/04-onboarding-delivery.png" width="150" alt="Fast &amp; secure delivery"/><br/><sub><b>Fast &amp; secure delivery</b></sub></td>
-<td align="center"><img src="docs/screenshots/05-welcome.png" width="150" alt="Welcome"/><br/><sub><b>Welcome</b></sub></td>
+<td align="center"><img src="docs/screenshots/splash.png" width="150" alt="Splash"/><br/><sub><b>Splash</b></sub></td>
+<td align="center"><img src="docs/screenshots/onboarding-discover.png" width="150" alt="Discover"/><br/><sub><b>Discover</b></sub></td>
+<td align="center"><img src="docs/screenshots/onboarding-shop.png" width="150" alt="Shop with ease"/><br/><sub><b>Shop with ease</b></sub></td>
+<td align="center"><img src="docs/screenshots/onboarding-delivery.png" width="150" alt="Fast &amp; secure delivery"/><br/><sub><b>Fast &amp; secure delivery</b></sub></td>
+<td align="center"><img src="docs/screenshots/welcome.png" width="150" alt="Welcome"/><br/><sub><b>Welcome</b></sub></td>
 </tr>
 </table>
 
@@ -70,9 +70,9 @@ states throughout.
 
 <table>
 <tr>
-<td align="center"><img src="docs/screenshots/06-home.png" width="200" alt="Home"/><br/><sub><b>Home</b></sub></td>
-<td align="center"><img src="docs/screenshots/07-explore.png" width="200" alt="Explore"/><br/><sub><b>Explore</b></sub></td>
-<td align="center"><img src="docs/screenshots/08-product.png" width="200" alt="Product details"/><br/><sub><b>Product details</b></sub></td>
+<td align="center"><img src="docs/screenshots/home.png" width="200" alt="Home"/><br/><sub><b>Home</b></sub></td>
+<td align="center"><img src="docs/screenshots/explore.png" width="200" alt="Explore"/><br/><sub><b>Explore</b></sub></td>
+<td align="center"><img src="docs/screenshots/product.png" width="200" alt="Product details"/><br/><sub><b>Product details</b></sub></td>
 </tr>
 </table>
 
@@ -86,9 +86,9 @@ states throughout.
 
 <table>
 <tr>
-<td align="center"><img src="docs/screenshots/09-cart.png" width="200" alt="Cart &amp; free-shipping progress"/><br/><sub><b>Cart &amp; free-shipping progress</b></sub></td>
-<td align="center"><img src="docs/screenshots/10-wishlist.png" width="200" alt="Wishlist"/><br/><sub><b>Wishlist</b></sub></td>
-<td align="center"><img src="docs/screenshots/11-profile.png" width="200" alt="Profile"/><br/><sub><b>Profile</b></sub></td>
+<td align="center"><img src="docs/screenshots/cart.png" width="200" alt="Cart &amp; free-shipping progress"/><br/><sub><b>Cart &amp; free-shipping progress</b></sub></td>
+<td align="center"><img src="docs/screenshots/wishlist.png" width="200" alt="Wishlist"/><br/><sub><b>Wishlist</b></sub></td>
+<td align="center"><img src="docs/screenshots/profile.png" width="200" alt="Profile"/><br/><sub><b>Profile</b></sub></td>
 </tr>
 </table>
 
