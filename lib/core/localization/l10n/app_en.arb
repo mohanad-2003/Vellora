@@ -690,5 +690,7 @@
   "increase": "Increase",
   "googleSignInFailed": "Could not sign in with Google. Check your connection and try again.",
   "googleSignInNoAccount": "There is no Google account on this device. Add one in Settings, then try again.",
-  "googleSignInNotConfigured": "Google sign-in is not set up in this version of the app."
+  "googleSignInNotConfigured": "Google sign-in is not set up in this version of the app.",
+  "deleteAccountGoogleHint": "You signed up with Google, so there is no password. Confirm with your Google account to continue.",
+  "deleteAccountWithGoogle": "Confirm with Google"
 }

@@ -15,12 +15,7 @@ import 'package:vellora/features/product/domain/repositories/favorites_repositor
 
 @LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
-  AuthRepositoryImpl(
-    this._remote,
-    this._local,
-    this._favorites,
-    this._cart,
-  );
+  AuthRepositoryImpl(this._remote, this._local, this._favorites, this._cart);
 
   final AuthRemoteDataSource _remote;
   final AuthLocalDataSource _local;
@@ -255,11 +250,21 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, bool>> hasPassword() async {
+    try {
+      return Right(await _remote.accountHasPassword());
+    } catch (_) {
+      return const Right(true);
+    }
+  }
+
+  @override
   Future<Either<Failure, Unit>> deleteAccount({
-    required String password,
+    String? password,
+    String? googleIdToken,
   }) async {
     try {
-      await _remote.deleteAccount(password: password);
+      await _remote.deleteAccount(password: password, idToken: googleIdToken);
       await _local.clear();
       await _favorites.clear();
       await _cart.clearLocal();

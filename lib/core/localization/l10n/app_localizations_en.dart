@@ -1648,4 +1648,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get googleSignInNotConfigured =>
       'Google sign-in is not set up in this version of the app.';
+
+  @override
+  String get deleteAccountGoogleHint =>
+      'You signed up with Google, so there is no password. Confirm with your Google account to continue.';
+
+  @override
+  String get deleteAccountWithGoogle => 'Confirm with Google';
 }

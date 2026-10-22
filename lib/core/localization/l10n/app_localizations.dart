@@ -3073,6 +3073,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Google sign-in is not set up in this version of the app.'**
   String get googleSignInNotConfigured;
+
+  /// No description provided for @deleteAccountGoogleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You signed up with Google, so there is no password. Confirm with your Google account to continue.'**
+  String get deleteAccountGoogleHint;
+
+  /// No description provided for @deleteAccountWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm with Google'**
+  String get deleteAccountWithGoogle;
 }
 
 class _AppLocalizationsDelegate

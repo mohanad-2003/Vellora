@@ -57,6 +57,8 @@ String _lookup(AppLocalizations l, String key) {
       return l.noConnection;
     case 'somethingWentWrong':
       return l.somethingWentWrong;
+    case 'googleSignInFailed':
+      return l.googleSignInFailed;
     case 'unexpectedError':
       return l.unexpectedError;
     // Onboarding.

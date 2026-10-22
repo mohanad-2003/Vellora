@@ -142,17 +142,27 @@ class SettingsPage extends StatelessWidget {
                               title: l10n.deleteAccount,
                               subtitle: l10n.deleteAccountSub,
                               destructive: true,
-                              onTap: () => showDeleteAccountSheet(
-                                context,
-                                onConfirm: (password) async {
-                                  final result = await sl<AuthRepository>()
-                                      .deleteAccount(password: password);
-                                  return result.match<String?>(
-                                    (Failure f) => f.l10nKey,
-                                    (_) => null,
-                                  );
-                                },
-                              ),
+                              onTap: () async {
+                                final repo = sl<AuthRepository>();
+                                // An account made with Google has no password to type.
+                                final hasPassword = (await repo.hasPassword())
+                                    .getOrElse((_) => true);
+                                if (!context.mounted) return;
+                                showDeleteAccountSheet(
+                                  context,
+                                  googleOnly: !hasPassword,
+                                  onConfirm: (password, googleIdToken) async {
+                                    final result = await repo.deleteAccount(
+                                      password: password,
+                                      googleIdToken: googleIdToken,
+                                    );
+                                    return result.match<String?>(
+                                      (Failure f) => f.l10nKey,
+                                      (_) => null,
+                                    );
+                                  },
+                                );
+                              },
                             ),
                           ],
                         ),

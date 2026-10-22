@@ -1663,4 +1663,11 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get googleSignInNotConfigured =>
       'تسجيل الدخول عبر Google غير مُعدّ في هذه النسخة من التطبيق.';
+
+  @override
+  String get deleteAccountGoogleHint =>
+      'سجّلتَ عبر Google فلا توجد كلمة مرور. أكّد بحساب Google للمتابعة.';
+
+  @override
+  String get deleteAccountWithGoogle => 'التأكيد عبر Google';
 }
