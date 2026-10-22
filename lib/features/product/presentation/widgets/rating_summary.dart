@@ -106,7 +106,64 @@ class _ReviewTile extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             _ReviewPhotos(photos: review.photos),
           ],
+          if (review.reply != null) ...[
+            const SizedBox(height: AppSpacing.md),
+            _ShopReply(reply: review.reply!),
+          ],
         ],
+      ),
+    );
+  }
+}
+
+/// The shop's answer under a review: a tinted block with the shop's mark, so it reads as the seller
+/// speaking and not as another customer.
+class _ShopReply extends StatelessWidget {
+  const _ShopReply({required this.reply});
+
+  final String reply;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = context.textTheme;
+    final colors = context.colors;
+    return Semantics(
+      container: true,
+      label: context.l10n.shopReply,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: colors.primaryContainer.withValues(alpha: 0.55),
+          borderRadius: AppRadius.rMd,
+          border: BorderDirectional(
+            start: BorderSide(color: colors.primary, width: 3),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.storefront_outlined,
+                  size: 16,
+                  color: colors.primary,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  context.l10n.shopReply,
+                  style: text.labelMedium?.copyWith(
+                    color: colors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(reply, style: text.bodyMedium),
+          ],
+        ),
       ),
     );
   }

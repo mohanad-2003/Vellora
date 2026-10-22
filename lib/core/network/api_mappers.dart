@@ -84,6 +84,9 @@ class ApiMappers {
     comment: j['comment'] as String,
     timeAgo: timeAgo(DateTime.parse(j['createdAt'] as String)),
     photos: [for (final p in (j['photos'] as List? ?? const [])) p as String],
+    reply: (j['reply'] as String?)?.trim().isEmpty ?? true
+        ? null
+        : (j['reply'] as String).trim(),
   );
 
   static NotificationEntity notification(Map<String, dynamic> j) =>

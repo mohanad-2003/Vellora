@@ -3073,6 +3073,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Google sign-in is not set up in this version of the app.'**
   String get googleSignInNotConfigured;
+
+  /// No description provided for @shopReply.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply from Vellora'**
+  String get shopReply;
 }
 
 class _AppLocalizationsDelegate
