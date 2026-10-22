@@ -55,6 +55,9 @@ abstract class AuthRemoteDataSource {
     required String code,
   });
 
+  /// Signs in with the ID token Google gave the app.
+  Future<UserModel> loginWithGoogle({required String idToken});
+
   /// Whether the signed-in account has two-factor sign-in on.
   Future<bool> twoFactorStatus();
 
@@ -95,6 +98,17 @@ class MockAuthRemoteDataSource implements AuthRemoteDataSource {
       id: 'u${_idCounter++}',
       name: name,
       email: email.trim(),
+      token: 'mock-token-${DateTime.now().millisecondsSinceEpoch}',
+    );
+  }
+
+  @override
+  Future<UserModel> loginWithGoogle({required String idToken}) async {
+    await Future<void>.delayed(AppConstants.mockDelay);
+    return UserModel(
+      id: 'u${_idCounter++}',
+      name: 'Google User',
+      email: 'google.user@example.com',
       token: 'mock-token-${DateTime.now().millisecondsSinceEpoch}',
     );
   }
@@ -228,6 +242,19 @@ class ApiAuthRemoteDataSource implements AuthRemoteDataSource {
     final res = await _dio.post<Map<String, dynamic>>(
       ApiEndpoints.login,
       data: {'email': email.trim(), 'password': password},
+    );
+    final body = res.data!;
+    if (body['twoFactorRequired'] == true) {
+      throw TwoFactorRequiredException(body['challengeToken'] as String);
+    }
+    return _session(body);
+  }
+
+  @override
+  Future<UserModel> loginWithGoogle({required String idToken}) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      ApiEndpoints.loginGoogle,
+      data: {'idToken': idToken},
     );
     final body = res.data!;
     if (body['twoFactorRequired'] == true) {

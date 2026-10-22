@@ -1636,4 +1636,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get increase => 'Increase';
+
+  @override
+  String get googleSignInFailed =>
+      'Could not sign in with Google. Check your connection and try again.';
 }

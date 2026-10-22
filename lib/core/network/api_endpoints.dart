@@ -5,6 +5,7 @@ class ApiEndpoints {
   // Auth & profile.
   static const String login = '/auth/login';
   static const String loginTwoFactor = '/auth/login/2fa';
+  static const String loginGoogle = '/auth/google';
   static const String register = '/auth/register';
   static const String forgotPassword = '/auth/forgot-password';
   static const String verifyOtp = '/auth/verify-otp';

@@ -63,6 +63,10 @@ abstract class AuthRepository {
     required String code,
   });
 
+  /// Signs in (or signs up) with the ID token Google gave the app. The server verifies it; like a password
+  /// sign-in it may answer "two-factor required".
+  Future<Either<Failure, UserEntity>> loginWithGoogle({required String idToken});
+
   Future<Either<Failure, bool>> twoFactorStatus();
 
   /// Starts setup: returns the key to add to an authenticator app.

@@ -63,6 +63,21 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, UserEntity>> loginWithGoogle({
+    required String idToken,
+  }) async {
+    try {
+      final user = await _remote.loginWithGoogle(idToken: idToken);
+      await _local.cacheUser(user);
+      await _favorites.sync();
+      await _cart.sync();
+      return Right(user.toEntity());
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
   Future<Either<Failure, bool>> twoFactorStatus() async {
     try {
       return Right(await _remote.twoFactorStatus());

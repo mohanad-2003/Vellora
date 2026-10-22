@@ -628,5 +628,6 @@
   "returnStatusReceived": "تم الاستلام",
   "returnStatusCompleted": "مكتمل",
   "decrease": "إنقاص",
-  "increase": "زيادة"
+  "increase": "زيادة",
+  "googleSignInFailed": "تعذّر تسجيل الدخول عبر Google. تحقق من اتصالك وحاول مجدداً."
 }

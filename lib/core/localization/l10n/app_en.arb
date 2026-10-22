@@ -687,5 +687,6 @@
   "returnStatusReceived": "Received",
   "returnStatusCompleted": "Completed",
   "decrease": "Decrease",
-  "increase": "Increase"
+  "increase": "Increase",
+  "googleSignInFailed": "Could not sign in with Google. Check your connection and try again."
 }

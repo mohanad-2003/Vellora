@@ -3055,6 +3055,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Increase'**
   String get increase;
+
+  /// No description provided for @googleSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not sign in with Google. Check your connection and try again.'**
+  String get googleSignInFailed;
 }
 
 class _AppLocalizationsDelegate

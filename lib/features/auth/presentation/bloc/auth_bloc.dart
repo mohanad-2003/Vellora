@@ -30,6 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) : super(const AuthState()) {
     on<AuthCheckStatusRequested>(_onCheckStatus);
     on<AuthLoginRequested>(_onLogin);
+    on<AuthGoogleSubmitted>(_onGoogle);
     on<AuthTwoFactorSubmitted>(_onTwoFactor);
     on<AuthRegisterRequested>(_onRegister);
     on<AuthForgotPasswordRequested>(_onForgotPassword);
@@ -73,6 +74,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     result.match(
       (failure) => emit(
         // The password was right but a code is needed: not an error.
+        failure is ValidationFailure && failure.code == twoFactorRequiredCode
+            ? state.copyWith(
+                status: AuthStatus.twoFactorRequired,
+                twoFactorToken: failure.message,
+              )
+            : state.copyWith(
+                status: AuthStatus.failure,
+                failureKey: failure.l10nKey,
+              ),
+      ),
+      (user) =>
+          emit(state.copyWith(status: AuthStatus.authenticated, user: user)),
+    );
+  }
+
+  Future<void> _onGoogle(
+    AuthGoogleSubmitted event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(state.copyWith(status: AuthStatus.loading));
+    final result = await _login(
+      LoginParams(email: '', password: '', googleIdToken: event.idToken),
+    );
+    result.match(
+      (failure) => emit(
+        // An account with two-factor still needs its code after Google.
         failure is ValidationFailure && failure.code == twoFactorRequiredCode
             ? state.copyWith(
                 status: AuthStatus.twoFactorRequired,
