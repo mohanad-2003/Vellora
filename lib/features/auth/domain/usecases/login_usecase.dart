@@ -15,6 +15,10 @@ class LoginUseCase implements UseCase<UserEntity, LoginParams> {
 
   @override
   Future<Either<Failure, UserEntity>> call(LoginParams params) {
+    final googleToken = params.googleIdToken;
+    if (googleToken != null) {
+      return _repository.loginWithGoogle(idToken: googleToken);
+    }
     final challenge = params.challengeToken;
     // Second step of a two-factor sign-in: no password, just the code.
     if (challenge != null) {
@@ -33,6 +37,7 @@ class LoginParams extends Equatable {
     required this.password,
     this.challengeToken,
     this.code,
+    this.googleIdToken,
   });
 
   final String email;
@@ -42,6 +47,9 @@ class LoginParams extends Equatable {
   final String? challengeToken;
   final String? code;
 
+  /// Set for "Continue with Google": the ID token Google gave the app.
+  final String? googleIdToken;
+
   @override
-  List<Object?> get props => [email, password, challengeToken, code];
+  List<Object?> get props => [email, password, challengeToken, code, googleIdToken];
 }

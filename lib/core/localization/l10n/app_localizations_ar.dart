@@ -1651,4 +1651,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get increase => 'زيادة';
+
+  @override
+  String get googleSignInFailed =>
+      'تعذّر تسجيل الدخول عبر Google. تحقق من اتصالك وحاول مجدداً.';
 }

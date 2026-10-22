@@ -21,6 +21,16 @@ class AuthLoginRequested extends AuthEvent {
   List<Object?> get props => [email, password];
 }
 
+/// "Continue with Google": the ID token Google gave the app, for the server to verify.
+class AuthGoogleSubmitted extends AuthEvent {
+  const AuthGoogleSubmitted({required this.idToken});
+
+  final String idToken;
+
+  @override
+  List<Object?> get props => [idToken];
+}
+
 /// The authenticator code for an account that asked for two-factor sign-in.
 class AuthTwoFactorSubmitted extends AuthEvent {
   const AuthTwoFactorSubmitted({required this.code});
