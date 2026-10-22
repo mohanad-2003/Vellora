@@ -688,5 +688,7 @@
   "returnStatusCompleted": "Completed",
   "decrease": "Decrease",
   "increase": "Increase",
-  "googleSignInFailed": "Could not sign in with Google. Check your connection and try again."
+  "googleSignInFailed": "Could not sign in with Google. Check your connection and try again.",
+  "googleSignInNoAccount": "There is no Google account on this device. Add one in Settings, then try again.",
+  "googleSignInNotConfigured": "Google sign-in is not set up in this version of the app."
 }
