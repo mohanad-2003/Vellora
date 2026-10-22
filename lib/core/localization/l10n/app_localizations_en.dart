@@ -1648,4 +1648,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get googleSignInNotConfigured =>
       'Google sign-in is not set up in this version of the app.';
+
+  @override
+  String get shopReply => 'Reply from Vellora';
 }

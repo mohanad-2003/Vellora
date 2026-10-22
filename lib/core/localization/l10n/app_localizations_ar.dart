@@ -1663,4 +1663,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get googleSignInNotConfigured =>
       'تسجيل الدخول عبر Google غير مُعدّ في هذه النسخة من التطبيق.';
+
+  @override
+  String get shopReply => 'ردّ Vellora';
 }
