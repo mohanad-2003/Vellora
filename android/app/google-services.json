@@ -12,7 +12,20 @@
           "package_name": "com.vellora.shop"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "745647333654-jq4ofgtcfu7ovaet1gd58a1g361ici7b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vellora.shop",
+            "certificate_hash": "eff110d311af2de6b18e7860fe296fe525293d48"
+          }
+        },
+        {
+          "client_id": "745647333654-0kkvfcdu94bn7fm1i31narg45cnb28a5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCaE0RFMgAeKLsOQOIquZm3D3pRoAqOOt4"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "745647333654-0kkvfcdu94bn7fm1i31narg45cnb28a5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
