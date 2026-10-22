@@ -54,7 +54,16 @@ abstract class AuthRepository {
   });
 
   /// Deletes the account on the server, then clears the local session.
-  Future<Either<Failure, Unit>> deleteAccount({required String password});
+  /// Deletes the account for good. Confirmed with the [password], or with a fresh [googleIdToken] for an
+  /// account made with Google that has no password.
+  Future<Either<Failure, Unit>> deleteAccount({
+    String? password,
+    String? googleIdToken,
+  });
+
+  /// False for an account made with Google that never set a password (it is confirmed with Google instead).
+  /// When the server cannot say, the answer is true: the password form is the safe default.
+  Future<Either<Failure, bool>> hasPassword();
 
   /// Completes a sign-in that answered "two-factor required": the challenge
   /// from the failed [login] plus the authenticator code.
@@ -65,7 +74,9 @@ abstract class AuthRepository {
 
   /// Signs in (or signs up) with the ID token Google gave the app. The server verifies it; like a password
   /// sign-in it may answer "two-factor required".
-  Future<Either<Failure, UserEntity>> loginWithGoogle({required String idToken});
+  Future<Either<Failure, UserEntity>> loginWithGoogle({
+    required String idToken,
+  });
 
   Future<Either<Failure, bool>> twoFactorStatus();
 

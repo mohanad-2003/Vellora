@@ -46,8 +46,12 @@ abstract class AuthRemoteDataSource {
   /// copy of the token stops working. Best effort: the caller ignores failures.
   Future<void> logout({required String token});
 
-  /// Permanently deletes the signed-in account (password confirms it).
-  Future<void> deleteAccount({required String password});
+  /// Permanently deletes the signed-in account. The password confirms it, or, for an account made with
+  /// Google that has no password, a fresh Google ID token ([idToken]).
+  Future<void> deleteAccount({String? password, String? idToken});
+
+  /// False for an account made with Google that never set a password.
+  Future<bool> accountHasPassword();
 
   /// Second step of sign-in for accounts with two-factor on.
   Future<UserModel> loginTwoFactor({
@@ -180,7 +184,10 @@ class MockAuthRemoteDataSource implements AuthRemoteDataSource {
   Future<void> logout({required String token}) async {}
 
   @override
-  Future<void> deleteAccount({required String password}) async {}
+  Future<void> deleteAccount({String? password, String? idToken}) async {}
+
+  @override
+  Future<bool> accountHasPassword() async => true;
 
   @override
   Future<UserModel> loginTwoFactor({
@@ -396,7 +403,20 @@ class ApiAuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> deleteAccount({required String password}) async {
-    await _dio.delete<void>(ApiEndpoints.me, data: {'password': password});
+  Future<void> deleteAccount({String? password, String? idToken}) async {
+    await _dio.delete<void>(
+      ApiEndpoints.me,
+      data: {
+        'password': ?password,
+        'idToken': ?idToken,
+      },
+    );
+  }
+
+  @override
+  Future<bool> accountHasPassword() async {
+    final res = await _dio.get<Map<String, dynamic>>(ApiEndpoints.me);
+    final user = res.data!['user'] as Map<String, dynamic>;
+    return user['hasPassword'] != false;
   }
 }

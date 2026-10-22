@@ -1666,4 +1666,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shopReply => 'ردّ Vellora';
+
+  @override
+  String get deleteAccountGoogleHint =>
+      'سجّلتَ عبر Google فلا توجد كلمة مرور. أكّد بحساب Google للمتابعة.';
+
+  @override
+  String get deleteAccountWithGoogle => 'التأكيد عبر Google';
 }

@@ -1651,4 +1651,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shopReply => 'Reply from Vellora';
+
+  @override
+  String get deleteAccountGoogleHint =>
+      'You signed up with Google, so there is no password. Confirm with your Google account to continue.';
+
+  @override
+  String get deleteAccountWithGoogle => 'Confirm with Google';
 }
