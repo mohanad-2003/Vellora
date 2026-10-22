@@ -629,5 +629,7 @@
   "returnStatusCompleted": "مكتمل",
   "decrease": "إنقاص",
   "increase": "زيادة",
-  "googleSignInFailed": "تعذّر تسجيل الدخول عبر Google. تحقق من اتصالك وحاول مجدداً."
+  "googleSignInFailed": "تعذّر تسجيل الدخول عبر Google. تحقق من اتصالك وحاول مجدداً.",
+  "googleSignInNoAccount": "لا يوجد حساب Google على هذا الجهاز. أضف حسابًا من الإعدادات ثم حاول مجددًا.",
+  "googleSignInNotConfigured": "تسجيل الدخول عبر Google غير مُعدّ في هذه النسخة من التطبيق."
 }

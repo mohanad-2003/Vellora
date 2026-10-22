@@ -3061,6 +3061,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not sign in with Google. Check your connection and try again.'**
   String get googleSignInFailed;
+
+  /// No description provided for @googleSignInNoAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no Google account on this device. Add one in Settings, then try again.'**
+  String get googleSignInNoAccount;
+
+  /// No description provided for @googleSignInNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in is not set up in this version of the app.'**
+  String get googleSignInNotConfigured;
 }
 
 class _AppLocalizationsDelegate

@@ -119,8 +119,16 @@ class _SocialButton extends StatelessWidget {
       // null: the person closed the account chooser.
       if (idToken == null || bloc.isClosed) return;
       bloc.add(AuthGoogleSubmitted(idToken: idToken));
-    } catch (_) {
-      if (context.mounted) AppSnackbar.error(context, l10n.googleSignInFailed);
+    } catch (e) {
+      if (!context.mounted) return;
+      final problem = e is GoogleSignInUnavailable
+          ? e.problem
+          : GoogleSignInProblem.other;
+      AppSnackbar.error(context, switch (problem) {
+        GoogleSignInProblem.noAccount => l10n.googleSignInNoAccount,
+        GoogleSignInProblem.notConfigured => l10n.googleSignInNotConfigured,
+        GoogleSignInProblem.other => l10n.googleSignInFailed,
+      });
     }
   }
 

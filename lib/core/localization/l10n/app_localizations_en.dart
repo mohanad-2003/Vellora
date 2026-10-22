@@ -1640,4 +1640,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get googleSignInFailed =>
       'Could not sign in with Google. Check your connection and try again.';
+
+  @override
+  String get googleSignInNoAccount =>
+      'There is no Google account on this device. Add one in Settings, then try again.';
+
+  @override
+  String get googleSignInNotConfigured =>
+      'Google sign-in is not set up in this version of the app.';
 }

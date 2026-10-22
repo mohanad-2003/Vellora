@@ -136,17 +136,38 @@ void main() {
         findsNothing,
       );
 
-      googleIdTokenSource = () async =>
-          throw const GoogleSignInUnavailable('misconfigured');
-      await tester.tap(find.bySemanticsLabel('Continue with Google'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
-      expect(repo.sentToken, isNull);
-      expect(
-        find.textContaining('Could not sign in with Google'),
-        findsOneWidget,
+      Future<void> tapAndExpect(Object problem, String message) async {
+        googleIdTokenSource = () async => throw problem;
+        await tester.tap(find.bySemanticsLabel('Continue with Google'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(repo.sentToken, isNull);
+        expect(find.textContaining(message), findsOneWidget);
+        await tester.pumpAndSettle(const Duration(seconds: 6));
+      }
+
+      await tapAndExpect(
+        const GoogleSignInUnavailable('x'),
+        'Could not sign in with Google',
       );
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tapAndExpect(
+        const GoogleSignInUnavailable(
+          'no credential',
+          problem: GoogleSignInProblem.noAccount,
+        ),
+        'no Google account on this device',
+      );
+      await tapAndExpect(
+        const GoogleSignInUnavailable(
+          'id',
+          problem: GoogleSignInProblem.notConfigured,
+        ),
+        'not set up in this version',
+      );
+      await tapAndExpect(
+        StateError('anything else'),
+        'Could not sign in with Google',
+      );
     },
   );
 

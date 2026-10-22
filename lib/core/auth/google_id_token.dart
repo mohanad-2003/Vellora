@@ -1,13 +1,30 @@
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+/// What went wrong, so the person is told something useful instead of "check your connection".
+enum GoogleSignInProblem {
+  /// This device has no Google account yet: add one in the phone's settings.
+  noAccount,
+
+  /// This build of the app has no Google client id (the `google-services.json` it was built with is old).
+  notConfigured,
+
+  /// Anything else; the reason is printed in the debug console.
+  other,
+}
 
 /// Why Google sign-in could not give an ID token (not the person backing out: that is just `null`).
 class GoogleSignInUnavailable implements Exception {
-  const GoogleSignInUnavailable(this.reason);
+  const GoogleSignInUnavailable(
+    this.reason, {
+    this.problem = GoogleSignInProblem.other,
+  });
 
   final String reason;
+  final GoogleSignInProblem problem;
 
   @override
-  String toString() => 'GoogleSignInUnavailable($reason)';
+  String toString() => 'GoogleSignInUnavailable($problem: $reason)';
 }
 
 /// Asks Google who the person is and returns the signed ID token the server verifies, or `null` when
@@ -42,6 +59,20 @@ Future<String?> _askGoogle() async {
     if (e.code == GoogleSignInExceptionCode.canceled) return null;
     // A failed start is not remembered, so the next tap tries again.
     _initialized = null;
-    throw GoogleSignInUnavailable('${e.code.name}: ${e.description ?? ''}');
+    final reason = '${e.code.name}: ${e.description ?? ''}';
+    if (kDebugMode) debugPrint('Google sign-in failed: $reason');
+    throw GoogleSignInUnavailable(reason, problem: _problemOf(e));
   }
+}
+
+GoogleSignInProblem _problemOf(GoogleSignInException e) {
+  // No Google account on the phone: the Android sign-in says so in the description.
+  if (e.code == GoogleSignInExceptionCode.unknownError &&
+      (e.description ?? '').toLowerCase().contains('no credential')) {
+    return GoogleSignInProblem.noAccount;
+  }
+  if (e.code == GoogleSignInExceptionCode.clientConfigurationError) {
+    return GoogleSignInProblem.notConfigured;
+  }
+  return GoogleSignInProblem.other;
 }

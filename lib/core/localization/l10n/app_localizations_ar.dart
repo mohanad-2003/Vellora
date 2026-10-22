@@ -1655,4 +1655,12 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get googleSignInFailed =>
       'تعذّر تسجيل الدخول عبر Google. تحقق من اتصالك وحاول مجدداً.';
+
+  @override
+  String get googleSignInNoAccount =>
+      'لا يوجد حساب Google على هذا الجهاز. أضف حسابًا من الإعدادات ثم حاول مجددًا.';
+
+  @override
+  String get googleSignInNotConfigured =>
+      'تسجيل الدخول عبر Google غير مُعدّ في هذه النسخة من التطبيق.';
 }
