@@ -7,6 +7,7 @@ class ReviewEntity extends Equatable {
     required this.comment,
     required this.timeAgo,
     this.photos = const [],
+    this.reply,
   });
 
   final String author;
@@ -17,6 +18,9 @@ class ReviewEntity extends Equatable {
   /// Addresses of the pictures the reviewer added.
   final List<String> photos;
 
+  /// What the shop answered, when it did.
+  final String? reply;
+
   @override
-  List<Object?> get props => [author, rating, comment, timeAgo, photos];
+  List<Object?> get props => [author, rating, comment, timeAgo, photos, reply];
 }

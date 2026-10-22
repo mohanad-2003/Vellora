@@ -1665,6 +1665,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'تسجيل الدخول عبر Google غير مُعدّ في هذه النسخة من التطبيق.';
 
   @override
+  String get shopReply => 'ردّ Vellora';
+
+  @override
   String get deleteAccountGoogleHint =>
       'سجّلتَ عبر Google فلا توجد كلمة مرور. أكّد بحساب Google للمتابعة.';
 

@@ -1650,6 +1650,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Google sign-in is not set up in this version of the app.';
 
   @override
+  String get shopReply => 'Reply from Vellora';
+
+  @override
   String get deleteAccountGoogleHint =>
       'You signed up with Google, so there is no password. Confirm with your Google account to continue.';
 
