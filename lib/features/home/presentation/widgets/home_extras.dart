@@ -198,7 +198,7 @@ class _CouponCard extends StatelessWidget {
 
   static const _palettes = [
     [Color(0xFF0F5C4D), Color(0xFF1F8A72)],
-    [Color(0xFFB8923F), Color(0xFFD9B46A)],
+    [Color(0xFFE85D04), Color(0xFFFF8A3D)],
     [Color(0xFF0E9F8F), Color(0xFF39C29A)],
   ];
 

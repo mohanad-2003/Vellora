@@ -21,8 +21,8 @@
   <path d="M96,96 L96,72 C96,58.7 106.7,48 120,48 C133.3,48 144,58.7 144,72 L144,96" fill="none" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
 
   <!-- Metallic Handle Buckles/Anchors -->
-  <rect x="92" y="90" width="8" height="10" rx="2" fill="#B8923F" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="140" y="90" width="8" height="10" rx="2" fill="#B8923F" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="92" y="90" width="8" height="10" rx="2" fill="#E85D04" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="140" y="90" width="8" height="10" rx="2" fill="#E85D04" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
 
   <!-- Hanging Luxury Tag String -->
   <path d="M144,95 C144,110 152,118 152,124" fill="none" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" />
@@ -30,18 +30,18 @@
   <!-- Hanging Luxury Tag -->
   <g transform="translate(142, 122) rotate(-12)">
     <path d="M0,0 L16,0 L22,10 L22,32 C22,34.2 20.2,36 18,36 L4,36 C1.8,36 0,34.2 0,32 Z" fill="#E4F1EC" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-    <circle cx="11" cy="8" r="2" fill="#B8923F" />
+    <circle cx="11" cy="8" r="2" fill="#E85D04" />
   </g>
 
   <!-- Gold Accent Sparkle Top Left -->
-  <path d="M58,62 L58,74 M52,68 L64,68" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M58,62 L58,74 M52,68 L64,68" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
   <circle cx="58" cy="68" r="1.5" fill="#1F2A27" />
 
   <!-- Gold Accent Sparkle Right -->
-  <path d="M182,102 L182,110 M178,106 L186,106" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M182,102 L182,110 M178,106 L186,106" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
 
   <!-- Decorative Floating Dots -->
-  <circle cx="176" cy="74" r="3" fill="#B8923F" />
+  <circle cx="176" cy="74" r="3" fill="#E85D04" />
   <circle cx="64" cy="154" r="3.5" fill="#0F5C4D" />
   <circle cx="184" cy="144" r="2" fill="#1F2A27" />
 </svg>

@@ -87,7 +87,7 @@ class GlassTotalBar extends StatelessWidget {
                                   maxLines: 1,
                                   style: text.labelSmall?.copyWith(
                                     color: context.isDark
-                                        ? kBrandGold
+                                        ? kBrandAccent
                                         : context.vellora.success,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -107,7 +107,7 @@ class GlassTotalBar extends StatelessWidget {
                         child: Opacity(
                           opacity: onPressed == null ? 0.4 : 1,
                           child: Material(
-                            color: kBrandGold,
+                            color: kBrandAccent,
                             shape: const StadiumBorder(),
                             clipBehavior: Clip.antiAlias,
                             child: InkWell(

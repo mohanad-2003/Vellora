@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vellora/core/constants/app_constants.dart';
 import 'package:vellora/core/constants/asset_paths.dart';
 import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/theme/app_colors.dart';
 
 /// Vellora app mark: the "V" tile used as the launcher icon. It carries its
 /// own navy-to-violet background, so it reads on light and dark surfaces alike.
@@ -30,7 +31,7 @@ class VelloraMark extends StatelessWidget {
           borderRadius: BorderRadius.circular(size * 0.26),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFFE9B861).withValues(alpha: 0.28),
+              color: kBrandAccent.withValues(alpha: 0.28),
               blurRadius: size * 0.45,
               spreadRadius: size * 0.02,
             ),
@@ -127,7 +128,7 @@ class _Fallback extends StatelessWidget {
       child: Text(
         'V',
         style: TextStyle(
-          color: const Color(0xFFE9B861),
+          color: kBrandAccent,
           fontSize: size * 0.55,
           fontWeight: FontWeight.w700,
         ),

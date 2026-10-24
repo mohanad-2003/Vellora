@@ -14,14 +14,14 @@
     <path d="M12,12 H84" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" />
 
     <!-- Gold Accent Line inside Funnel Body -->
-    <path d="M28,26 H68" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+    <path d="M28,26 H68" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
   </g>
 
   <!-- Horizontal Slider Control Lines (Right Side) -->
   <g transform="translate(130, 68)">
     <!-- Slider Line 1 & Gold Knob -->
     <path d="M0,12 H52" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" opacity="0.4" />
-    <circle cx="16" cy="12" r="5" fill="#B8923F" stroke="#0F5C4D" stroke-width="3" />
+    <circle cx="16" cy="12" r="5" fill="#E85D04" stroke="#0F5C4D" stroke-width="3" />
 
     <!-- Slider Line 2 & Knob -->
     <path d="M0,32 H52" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" opacity="0.4" />
@@ -40,11 +40,11 @@
   </g>
 
   <!-- Gold Accent Sparkle (Top Left) -->
-  <path d="M52,42 L52,52 M47,47 L57,47" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M52,42 L52,52 M47,47 L57,47" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
   <circle cx="52" cy="47" r="1.5" fill="#1F2A27" />
 
   <!-- Floating Decorative Dots -->
-  <circle cx="188" cy="54" r="3" fill="#B8923F" />
+  <circle cx="188" cy="54" r="3" fill="#E85D04" />
   <circle cx="48" cy="154" r="3.5" fill="#0F5C4D" />
   <circle cx="192" cy="120" r="2" fill="#1F2A27" />
 </svg>

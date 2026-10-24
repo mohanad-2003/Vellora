@@ -158,7 +158,7 @@ class _Chip extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Material(
-                          color: kBrandGold,
+                          color: kBrandAccent,
                           shape: const StadiumBorder(),
                           clipBehavior: Clip.antiAlias,
                           child: InkWell(

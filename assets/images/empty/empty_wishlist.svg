@@ -7,21 +7,21 @@
   <path d="M120,80 C105,65 75,75 75,105 C75,135 120,170 120,170 C120,170 165,135 165,105 C165,75 135,65 120,80 Z" fill="#CFE5DE" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
 
   <!-- Gold Dotted Outline Inside Heart (waiting for items) -->
-  <path d="M120,90 C110,80 90,85 90,105 C90,125 120,155 120,155 C120,155 150,125 150,105 C150,85 130,80 120,90 Z" stroke="#B8923F" stroke-width="3" stroke-dasharray="0 6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <path d="M120,90 C110,80 90,85 90,105 C90,125 120,155 120,155 C120,155 150,125 150,105 C150,85 130,80 120,90 Z" stroke="#E85D04" stroke-width="3" stroke-dasharray="0 6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
 
   <!-- Attached Tag/Hanger -->
   <g transform="translate(110, 50)">
     <!-- Small Tag Body with soft fill -->
     <rect x="0" y="10" width="20" height="15" rx="3" fill="#CFE5DE" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
     <!-- Small Gold Hook on Tag -->
-    <path d="M10,10 V0" stroke="#B8923F" stroke-width="3" stroke-linecap="round" fill="none" />
-    <path d="M10,0 A5,5 0 0,1 15,-5" stroke="#B8923F" stroke-width="3" stroke-linecap="round" fill="none" />
+    <path d="M10,10 V0" stroke="#E85D04" stroke-width="3" stroke-linecap="round" fill="none" />
+    <path d="M10,0 A5,5 0 0,1 15,-5" stroke="#E85D04" stroke-width="3" stroke-linecap="round" fill="none" />
   </g>
 
   <!-- Two Tiny Decorative Sparkles -->
   <!-- Upper Left Sparkle -->
-  <path d="M60,65 L60,75 M55,70 L65,70" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M60,65 L60,75 M55,70 L65,70" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
   <!-- Lower Right Sparkle -->
-  <path d="M180,145 L180,155 M175,150 L185,150" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M180,145 L180,155 M175,150 L185,150" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
 
 </svg>

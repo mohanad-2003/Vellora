@@ -106,7 +106,7 @@ class _OnboardingViewState extends State<_OnboardingView> {
                   width: i == index ? 26 : 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: i == index ? kBrandGold : Colors.white24,
+                    color: i == index ? kBrandAccent : Colors.white24,
                     borderRadius: AppRadius.rPill,
                   ),
                 ),
@@ -194,7 +194,7 @@ class _GoldButton extends StatelessWidget {
         onPressed();
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: kBrandGold,
+        backgroundColor: kBrandAccent,
         foregroundColor: const Color(0xFF0A2620),
         minimumSize: const Size(0, 56),
         padding: const EdgeInsets.symmetric(horizontal: 28),

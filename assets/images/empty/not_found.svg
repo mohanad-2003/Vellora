@@ -28,20 +28,20 @@
   <path d="M126,128 L146,146 L130,138 Z" fill="#CFE5DE" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
 
   <!-- Gold Fracture/Break Fragment Line at Center -->
-  <path d="M116,115 L124,122 M121,117 L127,125" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M116,115 L124,122 M121,117 L127,125" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
 
   <!-- Center Pivot Pin -->
-  <circle cx="120" cy="120" r="4.5" fill="#B8923F" stroke="#0F5C4D" stroke-width="3" />
+  <circle cx="120" cy="120" r="4.5" fill="#E85D04" stroke="#0F5C4D" stroke-width="3" />
 
   <!-- Tiny Gold Star 1 (Top Right) -->
-  <path d="M182,72 L182,80 M178,76 L186,76" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M182,72 L182,80 M178,76 L186,76" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
   <circle cx="182" cy="76" r="1.5" fill="#1F2A27" />
 
   <!-- Tiny Gold Star 2 (Bottom Left) -->
-  <path d="M58,110 L58,118 M54,114 L62,114" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M58,110 L58,118 M54,114 L62,114" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
 
   <!-- Decorative Floating Dots -->
-  <circle cx="188" cy="124" r="3" fill="#B8923F" />
+  <circle cx="188" cy="124" r="3" fill="#E85D04" />
   <circle cx="68" cy="74" r="3.5" fill="#0F5C4D" />
   <circle cx="162" cy="166" r="2" fill="#1F2A27" />
 </svg>

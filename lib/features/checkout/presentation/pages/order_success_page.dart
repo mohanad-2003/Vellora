@@ -79,7 +79,7 @@ class _OrderSuccessPageState extends State<OrderSuccessPage>
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: kBrandGold.withValues(alpha: 0.18),
+                            color: kBrandAccent.withValues(alpha: 0.18),
                           ),
                           child: Container(
                             width: 92,
@@ -87,7 +87,7 @@ class _OrderSuccessPageState extends State<OrderSuccessPage>
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: kBrandGold,
+                              color: kBrandAccent,
                             ),
                             child: const Icon(
                               Icons.check_rounded,

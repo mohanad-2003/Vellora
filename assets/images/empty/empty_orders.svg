@@ -36,17 +36,17 @@
     <path d="M0,60 Q20,30 40,60" fill="none" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 6" />
     
     <!-- Gold Location Pin at End -->
-    <path d="M40,60 C50,60 55,65 50,75 L40,95 L30,75 C25,65 30,60 40,60 Z" fill="#B8923F" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M40,60 C50,60 55,65 50,75 L40,95 L30,75 C25,65 30,60 40,60 Z" fill="#E85D04" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
     <!-- Small Emerald Circle in Pin Center -->
     <circle cx="40" cy="70" r="3" fill="#0F5C4D" />
   </g>
 
   <!-- Decorative Sparkles and Dots -->
   <!-- Upper Left Gold Sparkle -->
-  <path d="M45,40 L45,50 M40,45 L50,45" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M45,40 L45,50 M40,45 L50,45" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
   <!-- Small Ink Dot (bottom right) -->
   <circle cx="195" cy="175" r="2.5" fill="#1F2A27" />
   <!-- Small Gold Dot (above delivery path) -->
-  <circle cx="215" cy="60" r="3" fill="#B8923F" />
+  <circle cx="215" cy="60" r="3" fill="#E85D04" />
 
 </svg>

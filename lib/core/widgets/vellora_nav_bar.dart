@@ -127,7 +127,7 @@ class _NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // Champagne capsule with deep emerald content on the glass; pale icons for
     // the rest. The same in light and dark, so the bar is one brand object.
-    const capsule = kBrandGold;
+    const capsule = kBrandAccent;
     const onCapsule = kBrandNavy;
     final iconColor = selected ? onCapsule : GlassPanel.inkMuted(context);
     const labelColor = onCapsule;

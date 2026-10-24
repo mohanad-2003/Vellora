@@ -7,6 +7,7 @@ import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/routing/route_names.dart';
 import 'package:vellora/core/widgets/vellora_logo.dart';
 import 'package:vellora/features/splash/presentation/cubit/splash_cubit.dart';
+import 'package:vellora/core/theme/app_colors.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
@@ -196,7 +197,7 @@ class _SplashViewState extends State<_SplashView>
   }
 }
 
-const _gold = Color(0xFFE9B861);
+const _gold = kBrandAccent;
 
 /// Two gold rings that swell and fade out of the mark, and a few sparks that
 /// drift around it.

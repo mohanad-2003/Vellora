@@ -208,7 +208,7 @@ class _Rail extends StatelessWidget {
       indicatorColor: dark ? colors.primaryContainer : colors.primary,
       indicatorShape: const StadiumBorder(),
       selectedIconTheme: IconThemeData(
-        color: dark ? colors.primary : kBrandGold,
+        color: dark ? colors.primary : kBrandAccent,
       ),
       unselectedIconTheme: IconThemeData(color: colors.onSurfaceVariant),
       selectedLabelTextStyle: context.textTheme.labelMedium?.copyWith(

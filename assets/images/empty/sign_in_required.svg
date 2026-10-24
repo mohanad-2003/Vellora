@@ -31,23 +31,23 @@
     <!-- Decorative Gold Accents and Key Teeth Detail -->
     <g transform="translate(0, 68)">
       <!-- Gold Rim/Base of Teeth -->
-      <path d="M-6,0 C-10,4 -10,10 0,10 C10,10 10,4 6,0 Z" fill="#B8923F" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M-6,0 C-10,4 -10,10 0,10 C10,10 10,4 6,0 Z" fill="#E85D04" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
       
       <!-- Specialized Key Teeth -->
-      <path d="M0,10 L0,22 M-8,14 H8 M-8,20 L8,20" fill="none" stroke="#B8923F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-      <path d="M-4,20 L0,22 L4,20" fill="none" stroke="#B8923F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M0,10 L0,22 M-8,14 H8 M-8,20 L8,20" fill="none" stroke="#E85D04" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M-4,20 L0,22 L4,20" fill="none" stroke="#E85D04" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
     </g>
 
     <!-- Small Gold Detail on Padlock -->
-    <circle cx="30" cy="-6" r="3" fill="#B8923F" />
+    <circle cx="30" cy="-6" r="3" fill="#E85D04" />
   </g>
 
   <!-- Decorative Sparkle (Top Right) -->
-  <path d="M194,50 L194,60 M189,55 L199,55" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M194,50 L194,60 M189,55 L199,55" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
   <circle cx="194" cy="55" r="1.5" fill="#1F2A27" />
 
   <!-- Floating Decorative Dots -->
-  <circle cx="62" cy="74" r="3" fill="#B8923F" />
+  <circle cx="62" cy="74" r="3" fill="#E85D04" />
   <circle cx="58" cy="156" r="3.5" fill="#0F5C4D" />
   <circle cx="192" cy="140" r="2" fill="#1F2A27" />
 </svg>

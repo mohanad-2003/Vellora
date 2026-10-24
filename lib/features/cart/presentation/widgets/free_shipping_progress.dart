@@ -35,7 +35,7 @@ class FreeShippingProgress extends StatelessWidget {
     final unlocked = subtotal >= threshold;
     final remaining = (threshold - subtotal).clamp(0, threshold).toDouble();
     final progress = (subtotal / threshold).clamp(0.0, 1.0);
-    const accent = kBrandGold;
+    const accent = kBrandAccent;
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
