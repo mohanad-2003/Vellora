@@ -1670,6 +1670,30 @@ abstract class AppLocalizations {
   /// **'Grocery'**
   String get categoryGrocery;
 
+  /// No description provided for @categoryHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get categoryHome;
+
+  /// No description provided for @categoryKitchen.
+  ///
+  /// In en, this message translates to:
+  /// **'Kitchen'**
+  String get categoryKitchen;
+
+  /// No description provided for @categorySports.
+  ///
+  /// In en, this message translates to:
+  /// **'Sports'**
+  String get categorySports;
+
+  /// No description provided for @categoryAutomotive.
+  ///
+  /// In en, this message translates to:
+  /// **'Automotive'**
+  String get categoryAutomotive;
+
   /// No description provided for @colorBlack.
   ///
   /// In en, this message translates to:

@@ -61,20 +61,11 @@ class _FilterSheetState extends State<FilterSheet> {
     final hi = prices.isEmpty ? 100.0 : prices.reduce((a, b) => a > b ? a : b);
     _hi = hi.ceilToDouble() <= _lo ? _lo + 1 : hi.ceilToDouble();
     _brands = ({for (final p in widget.baseProducts) p.brand}.toList()..sort());
+    // Whatever categories the shop sells, in the order its products list them.
     _categories = [
-      for (final id in _categoryOrder)
-        if (widget.baseProducts.any((p) => p.category == id)) id,
+      ...{for (final p in widget.baseProducts) p.category},
     ];
   }
-
-  static const _categoryOrder = [
-    'men',
-    'women',
-    'shoes',
-    'accessories',
-    'beauty',
-    'electronics',
-  ];
 
   RangeValues get _range => RangeValues(
         (_draft.minPrice ?? _lo).clamp(_lo, _hi),

@@ -850,6 +850,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryGrocery => 'Grocery';
 
   @override
+  String get categoryHome => 'Home';
+
+  @override
+  String get categoryKitchen => 'Kitchen';
+
+  @override
+  String get categorySports => 'Sports';
+
+  @override
+  String get categoryAutomotive => 'Automotive';
+
+  @override
   String get colorBlack => 'Black';
 
   @override

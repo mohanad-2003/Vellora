@@ -852,6 +852,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get categoryGrocery => 'بقالة';
 
   @override
+  String get categoryHome => 'المنزل';
+
+  @override
+  String get categoryKitchen => 'المطبخ';
+
+  @override
+  String get categorySports => 'رياضة';
+
+  @override
+  String get categoryAutomotive => 'سيارات ودراجات';
+
+  @override
   String get colorBlack => 'أسود';
 
   @override
