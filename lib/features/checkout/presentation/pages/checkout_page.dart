@@ -104,7 +104,7 @@ class _CheckoutBody extends StatelessWidget {
                   height: 26,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: kBrandGold,
+                    color: kBrandAccent,
                     shape: BoxShape.circle,
                   ),
                   child: Text(

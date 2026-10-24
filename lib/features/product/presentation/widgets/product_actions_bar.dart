@@ -237,7 +237,7 @@ class _GoldButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final enabled = onTap != null;
-    final edge = context.isDark ? kBrandGold : kBrandNavy;
+    final edge = context.isDark ? kBrandAccent : kBrandNavy;
     final fg = outlined ? edge : kBrandNavy;
     return Semantics(
       button: true,
@@ -248,7 +248,7 @@ class _GoldButton extends StatelessWidget {
       child: Opacity(
         opacity: enabled ? 1 : 0.4,
         child: Material(
-          color: outlined ? Colors.transparent : kBrandGold,
+          color: outlined ? Colors.transparent : kBrandAccent,
           shape: StadiumBorder(
             side: outlined
                 ? BorderSide(color: edge, width: 1.4)

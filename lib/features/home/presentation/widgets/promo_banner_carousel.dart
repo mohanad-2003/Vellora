@@ -6,6 +6,7 @@ import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/responsive/responsive.dart';
 import 'package:vellora/core/widgets/promo_banner.dart';
 import 'package:vellora/features/home/domain/entities/banner_entity.dart';
+import 'package:vellora/core/theme/app_colors.dart';
 
 /// Promotional banners that loop endlessly and advance on their own.
 ///
@@ -170,7 +171,7 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel>
         return const PromoBannerStyle(
           background: [Color(0xFF0A2620), Color(0xFF0F5C4D)],
           foreground: Colors.white,
-          cta: Color(0xFFE9B861),
+          cta: kBrandAccent,
           ctaForeground: Color(0xFF2A1F00),
         );
       case 'summer':

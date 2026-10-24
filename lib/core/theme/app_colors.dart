@@ -13,25 +13,25 @@ class AppColors {
   static const Color primarySoft = Color(0xFFE4F1EC);
   static const Color primarySoftDark = Color(0xFF14302A);
   static const Color secondary = Color(0xFF14201D);
-  static const Color accent = Color(0xFFB8923F);
+  static const Color accent = Color(0xFFE85D04);
 
   // Semantic.
   static const Color success = Color(0xFF16A34A);
   static const Color warning = Color(0xFFF59E0B);
   static const Color error = Color(0xFFD9423E);
 
-  /// Discount / sale red. Distinct from the champagne accent.
+  /// Discount / sale red. Distinct from the orange accent.
   static const Color sale = Color(0xFFD9423E);
   static const Color star = Color(0xFFFFB400);
 
   // Light surfaces.
-  static const Color lightBackground = Color(0xFFF8F6F1);
+  static const Color lightBackground = Color(0xFFF5F6F7);
   static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightSurfaceVariant = Color(0xFFEFEBE3);
-  static const Color lightDivider = Color(0xFFE3DED3);
+  static const Color lightSurfaceVariant = Color(0xFFE9EEEC);
+  static const Color lightDivider = Color(0xFFDFE4E2);
   static const Color lightTextPrimary = Color(0xFF14201D);
   static const Color lightTextSecondary = Color(0xFF5F6B67);
-  static const Color lightImageBackdrop = Color(0xFFEFEBE3);
+  static const Color lightImageBackdrop = Color(0xFFE9EEEC);
 
   // Dark surfaces.
   static const Color darkBackground = Color(0xFF0B0F0E);
@@ -80,13 +80,13 @@ class VelloraColors extends ThemeExtension<VelloraColors> {
     warning: AppColors.warning,
     star: AppColors.star,
     imageBackdrop: AppColors.lightImageBackdrop,
-    skeletonBase: Color(0xFFE8E3D9),
-    skeletonHighlight: Color(0xFFF5F2EC),
+    skeletonBase: Color(0xFFE2E8E6),
+    skeletonHighlight: Color(0xFFF2F5F4),
     primarySoft: AppColors.primarySoft,
   );
 
   static const dark = VelloraColors(
-    accent: Color(0xFFE3C27A),
+    accent: Color(0xFFFF9A4D),
     sale: Color(0xFFFF7A74),
     success: Color(0xFF34D27B),
     warning: Color(0xFFFBBF4A),
@@ -141,7 +141,7 @@ class VelloraColors extends ThemeExtension<VelloraColors> {
   }
 }
 
-/// Vellora signature gold and the deep navy it sits on. Used on the dark brand
+/// Vellora signature orange and the deep green it sits on. Used on the dark brand
 /// moments (language, onboarding, welcome) regardless of the app theme.
-const Color kBrandGold = Color(0xFFE9B861);
+const Color kBrandAccent = Color(0xFFFF7A1A);
 const Color kBrandNavy = Color(0xFF0A2620);

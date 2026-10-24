@@ -207,7 +207,7 @@ class _LightButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: kBrandGold,
+          backgroundColor: kBrandAccent,
           foregroundColor: const Color(0xFF0A2620),
           shape: const RoundedRectangleBorder(borderRadius: AppRadius.rMd),
         ),

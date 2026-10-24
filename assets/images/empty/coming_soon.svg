@@ -15,10 +15,10 @@
     <path d="M193 101.5L135 77.3L77 101.5L135 125.7L193 101.5Z" fill="#CFE5DE" />
     
     <!-- Champagne gold ribbon and bow -->
-    <path d="M135 77.3V125.7" stroke="#B8923F" />
-    <path d="M106 89.4L164 113.6" stroke="#B8923F" />
-    <path d="M135 200.7V125.7M77 101.5L135 125.7L193 101.5" stroke="#B8923F" />
-    <path d="M135 77.3C135 77.3 125.3 58.6 113.2 63.6C101.1 68.6 113.2 81.2 113.2 81.2M135 77.3C135 77.3 144.7 58.6 156.8 63.6C168.9 68.6 156.8 81.2 156.8 81.2" stroke="#B8923F" fill="none" />
+    <path d="M135 77.3V125.7" stroke="#E85D04" />
+    <path d="M106 89.4L164 113.6" stroke="#E85D04" />
+    <path d="M135 200.7V125.7M77 101.5L135 125.7L193 101.5" stroke="#E85D04" />
+    <path d="M135 77.3C135 77.3 125.3 58.6 113.2 63.6C101.1 68.6 113.2 81.2 113.2 81.2M135 77.3C135 77.3 144.7 58.6 156.8 63.6C168.9 68.6 156.8 81.2 156.8 81.2" stroke="#E85D04" fill="none" />
     <circle cx="135" cy="77.3" r="4.8" fill="#CFE5DE" />
   </g>
   
@@ -26,7 +26,7 @@
   <path d="M72.3 162.7C67.5 156 67.5 149.3 72.3 142.7" stroke="#1F2A27" stroke-width="3" stroke-linecap="round" opacity="0.6" />
   
   <!-- Decorative champagne gold sparkles -->
-  <g stroke="#B8923F" stroke-width="3" stroke-linecap="round">
+  <g stroke="#E85D04" stroke-width="3" stroke-linecap="round">
     <path d="M71.7 51.1V63.1M65.7 57.1H77.7" />
     <path d="M185 184V196M179 190H191" />
   </g>

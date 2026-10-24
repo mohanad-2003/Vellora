@@ -32,7 +32,7 @@ class ProductImage extends StatelessWidget {
     final packshot = path.contains('packshot=1');
     final effectiveFit = fit ?? (packshot ? BoxFit.contain : BoxFit.cover);
     final backdrop = packshot
-        ? const Color(0xFFEFEBE3)
+        ? const Color(0xFFE9EEEC)
         : context.vellora.imageBackdrop;
     final contain = effectiveFit == BoxFit.contain;
 

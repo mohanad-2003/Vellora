@@ -19,19 +19,19 @@
   <path d="M72,154 C72,148 168,148 168,154 C168,162 160,166 120,166 C80,166 72,162 72,154 Z" fill="#E4F1EC" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
 
   <!-- Bell Internal Clapper (Rests peacefully at center) -->
-  <path d="M120,166 C114,166 112,174 120,178 C128,174 126,166 120,166 Z" fill="#B8923F" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M120,166 C114,166 112,174 120,178 C128,174 126,166 120,166 Z" fill="#E85D04" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
 
   <!-- Champagne Gold Accent Line on Bell Surface -->
-  <path d="M96,128 C108,132 132,132 144,128" fill="none" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M96,128 C108,132 132,132 144,128" fill="none" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
 
   <!-- Tiny Gold Star 1 (Lower Right - Replaces Z) -->
-  <path d="M178,74 L178,82 M174,78 L182,78" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M178,74 L178,82 M174,78 L182,78" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
   <circle cx="178" cy="78" r="1.5" fill="#1F2A27" />
 
   <!-- Tiny Gold Star 2 (Upper Right - Replaces Z) -->
-  <path d="M192,52 L192,58 M189,55 L195,55" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M192,52 L192,58 M189,55 L195,55" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
 
   <!-- Quiet Floating Decorative Dots -->
-  <circle cx="58" cy="120" r="3" fill="#B8923F" />
+  <circle cx="58" cy="120" r="3" fill="#E85D04" />
   <circle cx="182" cy="128" r="3.5" fill="#0F5C4D" />
 </svg>

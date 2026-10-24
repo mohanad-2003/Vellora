@@ -9,7 +9,7 @@
   <path d="M148,148 L182,182" stroke="#0F5C4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
         
   <!-- Handle Grip / Metallic Cap Detail -->
-  <path d="M140,140 L148,148" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M140,140 L148,148" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
 
   <!-- Magnifying Glass Rim & Lens -->
   <circle cx="106" cy="106" r="46" fill="#CFE5DE" stroke="#0F5C4D" stroke-width="3" />
@@ -23,11 +23,11 @@
   <circle cx="108" cy="126" r="2" fill="#0F5C4D" />
 
   <!-- Gold Accent Sparkle (Top Left) -->
-  <path d="M52,52 L52,62 M47,57 L57,57" stroke="#B8923F" stroke-width="3" stroke-linecap="round" />
+  <path d="M52,52 L52,62 M47,57 L57,57" stroke="#E85D04" stroke-width="3" stroke-linecap="round" />
   <circle cx="52" cy="57" r="1.5" fill="#1F2A27" />
 
   <!-- Scattered Floating Dots (Evoking "Nothing Found / Empty Space") -->
-  <circle cx="178" cy="76" r="3" fill="#B8923F" />
+  <circle cx="178" cy="76" r="3" fill="#E85D04" />
   <circle cx="168" cy="120" r="3.5" fill="#0F5C4D" />
   <circle cx="54" cy="138" r="2.5" fill="#1F2A27" />
   <circle cx="70" cy="172" r="3" fill="#0F5C4D" />

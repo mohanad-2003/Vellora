@@ -14,7 +14,7 @@ class GlassPanel extends StatelessWidget {
   final Widget child;
   final double radius;
 
-  /// Light mode glass: warm white, the page's own family (F8F6F1), so the bar
+  /// Light mode glass: warm white, the page's own family (F5F6F7), so the bar
   /// melts into it; the champagne button is the accent.
   static const Color glassLight = Color(0xFFFFFFFF);
 

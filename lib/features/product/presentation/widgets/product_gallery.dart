@@ -95,7 +95,7 @@ class _ProductGalleryState extends State<ProductGallery> {
                         height: 6,
                         decoration: BoxDecoration(
                           color: i == _index
-                              ? kBrandGold
+                              ? kBrandAccent
                               : Colors.white.withValues(alpha: 0.5),
                           borderRadius: AppRadius.rPill,
                         ),

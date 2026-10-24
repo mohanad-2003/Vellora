@@ -152,7 +152,7 @@ class _DarkArtColors extends ColorMapper {
     0xFFE4F1EC: Color(0xFF17382F), // the disc behind the picture
     0xFFCFE5DE: Color(0xFF24574A), // soft fills on the object
     0xFF1F2A27: Color(0xFFE4F1EC), // small dark dots
-    0xFFB8923F: Color(0xFFDDB865), // champagne accents
+    0xFFE85D04: Color(0xFFFF9A4D), // orange accents
   };
 
   @override
