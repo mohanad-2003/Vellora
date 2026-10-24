@@ -27,6 +27,7 @@ import 'package:vellora/features/home/domain/entities/product_entity.dart';
 import 'package:vellora/features/home/presentation/bloc/home_bloc.dart';
 import 'package:vellora/features/home/presentation/widgets/category_list.dart';
 import 'package:vellora/features/home/presentation/widgets/home_extras.dart';
+import 'package:vellora/features/home/presentation/widgets/home_feed.dart';
 import 'package:vellora/features/home/presentation/widgets/home_header.dart';
 import 'package:vellora/features/home/presentation/widgets/home_sections.dart';
 import 'package:vellora/features/home/presentation/widgets/promo_banner_carousel.dart';
@@ -69,9 +70,17 @@ class _HomeViewState extends State<_HomeView> {
   final _scroll = ScrollController();
   StreamSubscription<int>? _reselect;
 
+  /// Whether the page is scrolled far enough for the back-to-top button.
+  final _showTop = ValueNotifier<bool>(false);
+
   @override
   void initState() {
     super.initState();
+    _scroll.addListener(() {
+      if (!_scroll.hasClients) return;
+      final far = _scroll.offset > 1400;
+      if (far != _showTop.value) _showTop.value = far;
+    });
     // Tapping Home while on Home goes back to the top.
     _reselect = TabReselect.stream.where((i) => i == TabReselect.home).listen((
       _,
@@ -89,8 +98,15 @@ class _HomeViewState extends State<_HomeView> {
   void dispose() {
     _reselect?.cancel();
     _scroll.dispose();
+    _showTop.dispose();
     super.dispose();
   }
+
+  void _toTop() => _scroll.animateTo(
+    0,
+    duration: const Duration(milliseconds: 450),
+    curve: Curves.easeOutCubic,
+  );
 
   Future<void> _refresh(BuildContext context) async {
     final bloc = context.read<HomeBloc>();
@@ -106,6 +122,31 @@ class _HomeViewState extends State<_HomeView> {
     final gutter = context.pageGutter;
 
     return Scaffold(
+      floatingActionButton: ValueListenableBuilder<bool>(
+        valueListenable: _showTop,
+        builder: (context, show, _) => AnimatedSlide(
+          offset: show ? Offset.zero : const Offset(0, 2),
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
+          child: AnimatedOpacity(
+            opacity: show ? 1 : 0,
+            duration: const Duration(milliseconds: 180),
+            child: IgnorePointer(
+              ignoring: !show,
+              child: Padding(
+                // Above the floating navigation bar.
+                padding: EdgeInsets.only(bottom: 72 + context.navClearance),
+                child: FloatingActionButton.small(
+                  heroTag: 'home-top',
+                  tooltip: context.l10n.backToTop,
+                  onPressed: _toTop,
+                  child: const Icon(Icons.keyboard_arrow_up_rounded),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
       body: SafeArea(
         bottom: false,
         child: ResponsiveCenter(
@@ -378,17 +419,13 @@ class _HomeViewState extends State<_HomeView> {
         actions: actions,
         heroPrefix: 'home_rec',
       ),
-      if (!data.stats.isEmpty) ...[
-        gap(),
-        SliverToBoxAdapter(
-          child: CatalogueStatsCard(
-            productCount: data.stats.productCount,
-            brandCount: data.stats.brandCount,
-            categoryCount: data.stats.categoryCount,
-            onExplore: () => context.goNamed(RouteNames.nExplore),
-          ),
-        ),
-      ],
+      gap(),
+      HomeFeedSection(
+        key: const ValueKey('home-feed'),
+        scroll: _scroll,
+        categories: data.categories,
+        actions: actions,
+      ),
     ];
   }
 }

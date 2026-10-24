@@ -1685,4 +1685,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get deleteAccountWithGoogle => 'التأكيد عبر Google';
+
+  @override
+  String get allProducts => 'كل المنتجات';
+
+  @override
+  String get chipAll => 'الكل';
+
+  @override
+  String get feedEnd => 'وصلت إلى نهاية القائمة';
+
+  @override
+  String get backToTop => 'للأعلى';
 }
