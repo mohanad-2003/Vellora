@@ -120,6 +120,9 @@ void main() {
     expect(find.text('Guest'), findsNothing,
         reason: 'A signed-in user is greeted by name, not as a guest');
 
+    // The "all products" feed at the bottom of Home loads its own list (mock delay ~0.8s).
+    await tester.pump(const Duration(seconds: 1));
+
     // Unmount so periodic timers (banner autoplay, countdown) are released.
     await tester.pumpWidget(
       const Directionality(textDirection: TextDirection.ltr, child: SizedBox()),

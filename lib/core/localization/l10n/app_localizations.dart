@@ -3115,6 +3115,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm with Google'**
   String get deleteAccountWithGoogle;
+
+  /// No description provided for @allProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'All products'**
+  String get allProducts;
+
+  /// No description provided for @chipAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get chipAll;
+
+  /// No description provided for @feedEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve seen everything'**
+  String get feedEnd;
+
+  /// No description provided for @backToTop.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to top'**
+  String get backToTop;
 }
 
 class _AppLocalizationsDelegate

@@ -1670,4 +1670,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteAccountWithGoogle => 'Confirm with Google';
+
+  @override
+  String get allProducts => 'All products';
+
+  @override
+  String get chipAll => 'All';
+
+  @override
+  String get feedEnd => 'You\'ve seen everything';
+
+  @override
+  String get backToTop => 'Back to top';
 }

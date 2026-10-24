@@ -697,5 +697,9 @@
   "googleSignInNotConfigured": "Google sign-in is not set up in this version of the app.",
   "shopReply": "Reply from Vellora",
   "deleteAccountGoogleHint": "You signed up with Google, so there is no password. Confirm with your Google account to continue.",
-  "deleteAccountWithGoogle": "Confirm with Google"
+  "deleteAccountWithGoogle": "Confirm with Google",
+  "allProducts": "All products",
+  "chipAll": "All",
+  "feedEnd": "You've seen everything",
+  "backToTop": "Back to top"
 }
