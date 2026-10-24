@@ -119,6 +119,14 @@ String categoryLabel(BuildContext context, String id, {String? fallback}) {
       return l.categoryElectronics;
     case 'grocery':
       return l.categoryGrocery;
+    case 'home':
+      return l.categoryHome;
+    case 'kitchen':
+      return l.categoryKitchen;
+    case 'sports':
+      return l.categorySports;
+    case 'automotive':
+      return l.categoryAutomotive;
     default:
       return fallback ?? id;
   }
@@ -167,6 +175,14 @@ IconData categoryIcon(String id) {
       return Icons.devices_rounded;
     case 'grocery':
       return Icons.local_grocery_store_rounded;
+    case 'home':
+      return Icons.chair_rounded;
+    case 'kitchen':
+      return Icons.kitchen_rounded;
+    case 'sports':
+      return Icons.sports_soccer_rounded;
+    case 'automotive':
+      return Icons.directions_car_rounded;
     default:
       return Icons.category_rounded;
   }

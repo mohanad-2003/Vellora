@@ -69,21 +69,20 @@ class _SearchViewState extends State<_SearchView> {
 
   /// Search keywords that match the mock catalogue (data, not UI copy).
   static const _popularTerms = [
-    'Nike',
-    'Sneakers',
-    'Dress',
-    'Watch',
-    'Hoodie',
-    'Camera',
+    'Table',
+    'Football',
+    'Blender',
+    'Steak',
+    'Sofa',
+    'Cricket',
   ];
 
   static const _browseCategories = [
-    'men',
-    'women',
-    'shoes',
-    'accessories',
-    'beauty',
-    'electronics',
+    'home',
+    'kitchen',
+    'grocery',
+    'sports',
+    'automotive',
   ];
 
   @override
