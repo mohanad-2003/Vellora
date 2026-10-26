@@ -12,25 +12,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'Vellora';
 
   @override
-  String get onboardingTitle1 => 'Discover Premium Products';
+  String get onboardingTitle1 => 'Find your kind of everyday';
 
   @override
   String get onboardingBody1 =>
-      'Browse a curated collection of the finest products, handpicked just for you.';
+      'From everyday looks to your favourite details, discover products that fit your style.';
 
   @override
-  String get onboardingTitle2 => 'Effortless Shopping';
+  String get onboardingTitle2 => 'Your picks. A few simple steps.';
 
   @override
   String get onboardingBody2 =>
-      'Add to cart, track your bag and check out in just a few taps.';
+      'Save what you love, add it to your bag, and place your order in one place.';
 
   @override
-  String get onboardingTitle3 => 'Fast & Secure Delivery';
+  String get onboardingTitle3 => 'From your bag to your door';
 
   @override
   String get onboardingBody3 =>
-      'Enjoy safe payments and lightning-fast delivery right to your door.';
+      'Follow your order status and delivery details, every step of the way.';
 
   @override
   String get skip => 'Skip';
@@ -103,11 +103,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backToLogin => 'Back to Log In';
 
   @override
-  String get welcomeTitle => 'Welcome to Vellora';
+  String get welcomeTitle => 'Your style starts here';
 
   @override
   String get welcomeTagline =>
-      'Shop smarter. Discover premium products and enjoy a seamless, delightful shopping experience.';
+      'Discover your next favourites with Vellora. Create an account or take a look around as a guest.';
 
   @override
   String get continueAsGuest => 'Continue as Guest';

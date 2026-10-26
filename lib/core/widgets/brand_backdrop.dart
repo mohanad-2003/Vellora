@@ -14,7 +14,7 @@ class BrandBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lifted = Color.lerp(kBrandNavy, AppColors.primary, 0.5)!;
+    final lifted = Color.lerp(kBrandNavy, AppColors.primary, 0.18)!;
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -31,7 +31,7 @@ class BrandBackdrop extends StatelessWidget {
             center: const Alignment(0, -0.2),
             radius: 0.75,
             colors: [
-              kBrandAccent.withValues(alpha: 0.18),
+              kBrandAccent.withValues(alpha: 0.035),
               kBrandAccent.withValues(alpha: 0),
             ],
           ),

@@ -34,30 +34,31 @@ void main() {
   late Directory hiveDir;
 
   setUpAll(() async {
-    const channel =
-        MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
+    const channel = MethodChannel(
+      'plugins.it_nomads.com/flutter_secure_storage',
+    );
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (call) async {
-      final args = (call.arguments as Map?)?.cast<String, dynamic>() ?? {};
-      final key = args['key'] as String?;
-      switch (call.method) {
-        case 'write':
-          secureStore[key!] = args['value'] as String;
-          return null;
-        case 'read':
-          return secureStore[key];
-        case 'readAll':
-          return Map<String, String>.from(secureStore);
-        case 'delete':
-          secureStore.remove(key);
-          return null;
-        case 'deleteAll':
-          secureStore.clear();
-          return null;
-        default:
-          return null;
-      }
-    });
+          final args = (call.arguments as Map?)?.cast<String, dynamic>() ?? {};
+          final key = args['key'] as String?;
+          switch (call.method) {
+            case 'write':
+              secureStore[key!] = args['value'] as String;
+              return null;
+            case 'read':
+              return secureStore[key];
+            case 'readAll':
+              return Map<String, String>.from(secureStore);
+            case 'delete':
+              secureStore.remove(key);
+              return null;
+            case 'deleteAll':
+              secureStore.clear();
+              return null;
+            default:
+              return null;
+          }
+        });
 
     hiveDir = await Directory.systemTemp.createTemp('hive_overflow_test');
     Hive.init(hiveDir.path);
@@ -71,15 +72,25 @@ void main() {
     await sl.reset();
   });
 
-  Widget harness(Widget page) {
+  Widget harness(
+    Widget page, {
+    Locale locale = const Locale('en'),
+    double textScale = 1,
+  }) {
     return Builder(
       builder: (context) => BlocProvider.value(
         value: sl<LocaleCubit>(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('en'),
+          theme: AppTheme.forLocale(Brightness.light, locale),
+          darkTheme: AppTheme.forLocale(Brightness.dark, locale),
+          locale: locale,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: TextScaler.linear(textScale)),
+            child: child!,
+          ),
           supportedLocales: LocaleCubit.supportedLocales,
           localizationsDelegates: const [
             AppLocalizations.delegate,
@@ -121,10 +132,41 @@ void main() {
     'CreateNewPassword',
   };
 
+  for (final (name, builder) in pages.take(2)) {
+    for (final scale in [1.0, 1.6]) {
+      testWidgets('$name supports Arabic and text scale $scale', (
+        tester,
+      ) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await tester.pumpWidget(
+          harness(builder(), locale: const Locale('ar'), textScale: scale),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        if (name == 'Onboarding') {
+          for (var i = 0; i < 2; i++) {
+            await tester.tap(find.widgetWithText(ElevatedButton, 'التالي'));
+            await tester.pumpAndSettle();
+            expect(tester.takeException(), isNull);
+          }
+          expect(find.text('لنبدأ'), findsOneWidget);
+        } else {
+          final guest = find.widgetWithText(TextButton, 'المتابعة كضيف');
+          await tester.ensureVisible(guest);
+          expect(guest.hitTestable(), findsOneWidget);
+        }
+      });
+    }
+  }
+
   for (final (sizeName, size) in sizes) {
     for (final (pageName, builder) in pages) {
-      testWidgets('$pageName renders without overflow @ $sizeName',
-          (tester) async {
+      testWidgets('$pageName renders without overflow @ $sizeName', (
+        tester,
+      ) async {
         tester.view.physicalSize = size;
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.resetPhysicalSize);
@@ -138,8 +180,11 @@ void main() {
         await tester.pumpWidget(harness(page));
         await tester.pump(const Duration(milliseconds: 300));
 
-        expect(tester.takeException(), isNull,
-            reason: '$pageName overflowed at $sizeName');
+        expect(
+          tester.takeException(),
+          isNull,
+          reason: '$pageName overflowed at $sizeName',
+        );
       });
     }
   }

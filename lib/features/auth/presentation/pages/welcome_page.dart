@@ -5,18 +5,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/asset_paths.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/responsive/responsive.dart';
 import '../../../../core/routing/route_names.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/brand_artwork.dart';
 import '../../../../core/widgets/brand_backdrop.dart';
 import '../../../../core/widgets/vellora_logo.dart';
-import '../../../../core/widgets/staggered_reveal.dart';
 
-/// First impression: a full-bleed fashion photograph, the brand, one line of
-/// value proposition and the two entry actions. Everything else (social
-/// sign-in, forms) lives on the Login / Register screens.
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
 
@@ -38,205 +32,161 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final text = context.textTheme;
-    final gutter = context.pageGutter;
+    final content = Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F3EC),
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            header: true,
+            child: Text(
+              l10n.welcomeTitle,
+              style: text.displayMedium?.copyWith(color: kBrandNavy),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            l10n.welcomeTagline,
+            style: text.bodyMedium?.copyWith(color: const Color(0xFF52655E)),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () => context.pushNamed(RouteNames.nRegister),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: kBrandNavy,
+              foregroundColor: Colors.white,
+              minimumSize: const Size(0, 54),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+            child: Text(l10n.createAccount, textAlign: TextAlign.center),
+          ),
+          const SizedBox(height: 10),
+          OutlinedButton(
+            onPressed: () => context.pushNamed(RouteNames.nLogin),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: kBrandNavy,
+              minimumSize: const Size(0, 54),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              side: const BorderSide(color: Color(0xFFC5CEC6)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+            child: Text(l10n.login, textAlign: TextAlign.center),
+          ),
+          const SizedBox(height: 4),
+          TextButton(
+            onPressed: () => context.goNamed(RouteNames.nHome),
+            style: TextButton.styleFrom(
+              foregroundColor: kBrandNavy,
+              minimumSize: const Size(0, 48),
+            ),
+            child: Text(l10n.continueAsGuest, textAlign: TextAlign.center),
+          ),
+          const SizedBox(height: 8),
+          Text.rich(
+            TextSpan(
+              style: text.bodySmall?.copyWith(color: const Color(0xFF52655E)),
+              children: [
+                TextSpan(text: l10n.agreeToTerms),
+                TextSpan(
+                  text: l10n.termsAndPrivacy,
+                  style: const TextStyle(
+                    color: kBrandNavy,
+                    fontWeight: FontWeight.w600,
+                    decoration: TextDecoration.underline,
+                  ),
+                  recognizer: _termsTap,
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: kBrandNavy,
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            const BrandBackdrop(),
-            // The cut-out sits in the upper part; the copy below it.
-            Align(
-              alignment: Alignment.topCenter,
-              child: FractionallySizedBox(
-                heightFactor: 0.52,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    32,
-                    MediaQuery.paddingOf(context).top + 72,
-                    32,
-                    8,
-                  ),
-                  child: Image.asset(
-                    AssetPaths.onboardingRack,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, _, _) => const SizedBox.shrink(),
+        body: BrandBackdrop(
+          child: SafeArea(
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(28, 20, 28, 8),
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: VelloraLogo(height: 32, onDark: true),
                   ),
                 ),
-              ),
-            ),
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color(0x00000000), Color(0xE60A2620)],
-                  stops: [0.45, 0.8],
-                ),
-              ),
-            ),
-            SafeArea(
-              child: LayoutBuilder(
-                builder: (context, constraints) => SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: gutter),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(top: AppSpacing.lg),
-                            child: Align(
-                              alignment: AlignmentDirectional.centerStart,
-                              child: VelloraLogo(height: 44, onDark: true),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final wide = constraints.maxWidth >= 760;
+                      const artwork = BrandArtwork(
+                        imagePath: AssetPaths.onboardingRack,
+                      );
+                      return SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: (constraints.maxHeight - 20).clamp(
+                              0.0,
+                              double.infinity,
                             ),
                           ),
-                          const SizedBox(height: AppSpacing.huge),
-                          ResponsiveCenter(
-                            child: StaggeredReveal(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  bottom: AppSpacing.xl,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Semantics(
-                                      header: true,
-                                      child: Text(
-                                        l10n.welcomeTitle,
-                                        style: text.displayMedium?.copyWith(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: AppSpacing.md),
-                                    Text(
-                                      l10n.welcomeTagline,
-                                      style: text.bodyLarge?.copyWith(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.85,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: AppSpacing.xxl),
-                                    _LightButton(
-                                      label: l10n.createAccount,
-                                      onPressed: () => context.pushNamed(
-                                        RouteNames.nRegister,
-                                      ),
-                                    ),
-                                    const SizedBox(height: AppSpacing.md),
-                                    _GhostButton(
-                                      label: l10n.login,
-                                      onPressed: () =>
-                                          context.pushNamed(RouteNames.nLogin),
-                                    ),
-                                    const SizedBox(height: AppSpacing.sm),
-                                    Center(
-                                      child: TextButton(
-                                        onPressed: () =>
-                                            context.goNamed(RouteNames.nHome),
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: Colors.white,
-                                        ),
-                                        child: Text(l10n.continueAsGuest),
-                                      ),
-                                    ),
-                                    const SizedBox(height: AppSpacing.xs),
-                                    Text.rich(
-                                      TextSpan(
-                                        style: text.bodySmall?.copyWith(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.7,
-                                          ),
-                                        ),
-                                        children: [
-                                          TextSpan(text: l10n.agreeToTerms),
-                                          TextSpan(
-                                            text: l10n.termsAndPrivacy,
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w600,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                              decorationColor: Colors.white,
-                                            ),
-                                            recognizer: _termsTap,
-                                          ),
-                                        ],
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: wide ? 1000 : 460,
                               ),
+                              child: wide
+                                  ? Row(
+                                      children: [
+                                        Expanded(
+                                          child: SizedBox(
+                                            height: (constraints.maxHeight - 40)
+                                                .clamp(120.0, 430.0),
+                                            child: artwork,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 40),
+                                        Expanded(child: content),
+                                      ],
+                                    )
+                                  : Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                          height: (constraints.maxHeight * 0.30)
+                                              .clamp(130.0, 260.0),
+                                          child: artwork,
+                                        ),
+                                        const SizedBox(height: 12),
+                                        content,
+                                      ],
+                                    ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
-    );
-  }
-}
-
-/// Brand-gold filled CTA for use over photography.
-class _LightButton extends StatelessWidget {
-  const _LightButton({required this.label, required this.onPressed});
-
-  final String label;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: kBrandAccent,
-          foregroundColor: const Color(0xFF0A2620),
-          shape: const RoundedRectangleBorder(borderRadius: AppRadius.rMd),
-        ),
-        child: Text(label, textAlign: TextAlign.center),
-      ),
-    );
-  }
-}
-
-/// Outlined CTA for use over photography.
-class _GhostButton extends StatelessWidget {
-  const _GhostButton({required this.label, required this.onPressed});
-
-  final String label;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor: Colors.white.withValues(alpha: 0.10),
-          side: BorderSide(color: Colors.white.withValues(alpha: 0.55)),
-          shape: const RoundedRectangleBorder(borderRadius: AppRadius.rMd),
-        ),
-        child: Text(label, textAlign: TextAlign.center),
       ),
     );
   }

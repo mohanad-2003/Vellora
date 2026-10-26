@@ -97,6 +97,7 @@ class _HomeViewState extends State<_HomeView> {
   @override
   void dispose() {
     _reselect?.cancel();
+
     _scroll.dispose();
     _showTop.dispose();
     super.dispose();

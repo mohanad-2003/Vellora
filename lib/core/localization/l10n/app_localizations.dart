@@ -107,37 +107,37 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTitle1.
   ///
   /// In en, this message translates to:
-  /// **'Discover Premium Products'**
+  /// **'Find your kind of everyday'**
   String get onboardingTitle1;
 
   /// No description provided for @onboardingBody1.
   ///
   /// In en, this message translates to:
-  /// **'Browse a curated collection of the finest products, handpicked just for you.'**
+  /// **'From everyday looks to your favourite details, discover products that fit your style.'**
   String get onboardingBody1;
 
   /// No description provided for @onboardingTitle2.
   ///
   /// In en, this message translates to:
-  /// **'Effortless Shopping'**
+  /// **'Your picks. A few simple steps.'**
   String get onboardingTitle2;
 
   /// No description provided for @onboardingBody2.
   ///
   /// In en, this message translates to:
-  /// **'Add to cart, track your bag and check out in just a few taps.'**
+  /// **'Save what you love, add it to your bag, and place your order in one place.'**
   String get onboardingBody2;
 
   /// No description provided for @onboardingTitle3.
   ///
   /// In en, this message translates to:
-  /// **'Fast & Secure Delivery'**
+  /// **'From your bag to your door'**
   String get onboardingTitle3;
 
   /// No description provided for @onboardingBody3.
   ///
   /// In en, this message translates to:
-  /// **'Enjoy safe payments and lightning-fast delivery right to your door.'**
+  /// **'Follow your order status and delivery details, every step of the way.'**
   String get onboardingBody3;
 
   /// No description provided for @skip.
@@ -281,13 +281,13 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Vellora'**
+  /// **'Your style starts here'**
   String get welcomeTitle;
 
   /// No description provided for @welcomeTagline.
   ///
   /// In en, this message translates to:
-  /// **'Shop smarter. Discover premium products and enjoy a seamless, delightful shopping experience.'**
+  /// **'Discover your next favourites with Vellora. Create an account or take a look around as a guest.'**
   String get welcomeTagline;
 
   /// No description provided for @continueAsGuest.

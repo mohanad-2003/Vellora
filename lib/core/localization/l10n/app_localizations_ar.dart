@@ -12,25 +12,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appName => 'Vellora';
 
   @override
-  String get onboardingTitle1 => 'اكتشف منتجات مميزة';
+  String get onboardingTitle1 => 'اكتشف ما يشبهك';
 
   @override
   String get onboardingBody1 =>
-      'تصفّح مجموعة منتقاة من أفضل المنتجات المختارة خصيصًا لك.';
+      'من إطلالتك اليومية إلى تفاصيلك المفضّلة، اكتشف منتجات تناسب ذوقك.';
 
   @override
-  String get onboardingTitle2 => 'تسوّق بلا عناء';
+  String get onboardingTitle2 => 'اختياراتك، بخطوات بسيطة';
 
   @override
   String get onboardingBody2 =>
-      'أضف إلى السلة وتابع مشترياتك وأكمل الطلب بنقرات قليلة.';
+      'احفظ ما يعجبك، أضفه إلى السلة، وأكمل طلبك من مكان واحد.';
 
   @override
-  String get onboardingTitle3 => 'توصيل سريع وآمن';
+  String get onboardingTitle3 => 'من سلّتك إلى بابك';
 
   @override
   String get onboardingBody3 =>
-      'استمتع بمدفوعات آمنة وتوصيل فائق السرعة حتى باب منزلك.';
+      'تابع حالة طلبك وتفاصيل التوصيل، وابقَ على اطلاع بكل خطوة.';
 
   @override
   String get skip => 'تخطّي';
@@ -103,11 +103,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get backToLogin => 'العودة لتسجيل الدخول';
 
   @override
-  String get welcomeTitle => 'أهلًا بك في Vellora';
+  String get welcomeTitle => 'ذوقك يبدأ من هنا';
 
   @override
   String get welcomeTagline =>
-      'تسوّق بذكاء. اكتشف منتجات مميّزة واستمتع بتجربة تسوّق سلسة وممتعة.';
+      'اكتشف مفضّلاتك الجديدة مع Vellora. أنشئ حسابك أو تصفّح المنتجات كضيف.';
 
   @override
   String get continueAsGuest => 'المتابعة كضيف';
