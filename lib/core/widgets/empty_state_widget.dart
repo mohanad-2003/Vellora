@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../extensions/context_extensions.dart';
 import '../theme/app_spacing.dart';
 import 'app_button.dart';
 
-/// The drawn pictures for empty states, in `assets/images/empty/`.
+/// The illustrated pictures for empty states, in `assets/images/empty/`.
 class EmptyArt {
   EmptyArt._();
 
   static const String _dir = 'assets/images/empty/';
-  static const String cart = '${_dir}empty_cart.svg';
-  static const String wishlist = '${_dir}empty_wishlist.svg';
-  static const String orders = '${_dir}empty_orders.svg';
-  static const String notifications = '${_dir}empty_notifications.svg';
-  static const String addresses = '${_dir}empty_addresses.svg';
-  static const String payment = '${_dir}empty_payment.svg';
-  static const String search = '${_dir}empty_search.svg';
-  static const String products = '${_dir}empty_products.svg';
-  static const String filters = '${_dir}empty_filters.svg';
-  static const String signInRequired = '${_dir}sign_in_required.svg';
-  static const String notFound = '${_dir}not_found.svg';
-  static const String comingSoon = '${_dir}coming_soon.svg';
+  static const String cart = '${_dir}empty_cart.png';
+  static const String wishlist = '${_dir}empty_wishlist.png';
+  static const String orders = '${_dir}empty_orders.png';
+  static const String notifications = '${_dir}empty_notifications.png';
+  static const String addresses = '${_dir}empty_addresses.png';
+  static const String payment = '${_dir}empty_payment.png';
+  static const String search = '${_dir}empty_search.png';
+  static const String products = '${_dir}empty_products.png';
+  static const String filters = '${_dir}empty_filters.png';
+  static const String signInRequired = '${_dir}sign_in_required.png';
+  static const String notFound = '${_dir}not_found.png';
+  static const String comingSoon = '${_dir}coming_soon.png';
 }
 
 /// Empty-state placeholder: a drawn picture (or a soft icon medallion when none
-/// is given), title, short message and an optional call to action. Scrolls when space is tight (landscape, large
-/// text) so it can never overflow.
+/// is given), title, short message and an optional call to action. Scrolls when
+/// space is tight (landscape, large text) so it can never overflow.
 class EmptyStateWidget extends StatelessWidget {
   const EmptyStateWidget({
     super.key,
@@ -68,10 +67,7 @@ class EmptyStateWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (illustration != null)
-                      _Illustration(
-                        path: illustration!,
-                        fallback: _Medallion(icon: icon, color: colors.primary),
-                      )
+                      _Illustration(path: illustration!)
                     else
                       _Medallion(icon: icon, color: colors.primary),
                     const SizedBox(height: AppSpacing.xxl),
@@ -116,56 +112,61 @@ class EmptyStateWidget extends StatelessWidget {
   }
 }
 
-/// One of the [EmptyArt] pictures, drawn for the light page and recoloured in
-/// dark mode (see [_DarkArtColors]).
+/// Transparent artwork sits on a theme-aware halo so ivory details stay legible
+/// in light mode and the emerald and gold edges stay clear in dark mode.
 class _Illustration extends StatelessWidget {
-  const _Illustration({required this.path, required this.fallback});
+  const _Illustration({required this.path});
 
   final String path;
-
-  /// Shown if the picture cannot be read, so a bad file never breaks a screen.
-  final Widget fallback;
 
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
+    final primary = context.colors.primary;
     return ExcludeSemantics(
-      child: SvgPicture.asset(
-        path,
+      child: Container(
         width: 200,
         height: 200,
-        colorMapper: dark ? const _DarkArtColors() : null,
-        errorBuilder: (_, _, _) => fallback,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(
+            colors: dark
+                ? const [Color(0xFF1C4137), Color(0xFF112B24)]
+                : const [Color(0xFFFFFFFF), Color(0xFFE4F1EC)],
+          ),
+          border: Border.all(
+            color: primary.withValues(alpha: dark ? 0.28 : 0.10),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: primary.withValues(alpha: dark ? 0.10 : 0.06),
+              blurRadius: 22,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Image.asset(
+            path,
+            width: 184,
+            height: 184,
+            fit: BoxFit.contain,
+            filterQuality: FilterQuality.high,
+            errorBuilder: (_, _, _) => _Medallion(
+              icon: Icons.image_not_supported_outlined,
+              color: primary,
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-/// The pictures are drawn in pale greens for the light page. In dark mode the
-/// whole set is recoloured together (disc, fills, lines, accents) so it stays one
-/// matching family instead of a light disc glaring on a dark page.
-class _DarkArtColors extends ColorMapper {
-  const _DarkArtColors();
-
-  static const Map<int, Color> _swap = {
-    0xFF0F5C4D: Color(0xFF6FE0BC), // lines and pins
-    0xFFE4F1EC: Color(0xFF17382F), // the disc behind the picture
-    0xFFCFE5DE: Color(0xFF24574A), // soft fills on the object
-    0xFF1F2A27: Color(0xFFE4F1EC), // small dark dots
-    0xFFE85D04: Color(0xFFFF9A4D), // orange accents
-  };
-
-  @override
-  Color substitute(
-    String? id,
-    String elementName,
-    String attributeName,
-    Color color,
-  ) => _swap[color.toARGB32()] ?? color;
-}
-
 /// Icon on a gradient disc inside two soft rings, with a few champagne sparks —
-/// the shared "illustration" for empty and error states.
+/// the shared fallback illustration for an empty or error state.
 class _Medallion extends StatelessWidget {
   const _Medallion({required this.icon, required this.color});
 
@@ -180,7 +181,6 @@ class _Medallion extends StatelessWidget {
         dimension: 148,
         child: Stack(
           alignment: Alignment.center,
-
           children: [
             Container(
               width: 148,
