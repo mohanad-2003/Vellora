@@ -2,15 +2,15 @@ import 'dart:convert';
 
 import 'package:hive/hive.dart';
 
-/// The last Home response that arrived, kept on the phone, so Home can still
-/// show something when the shop cannot be reached (no signal, or a sleeping
-/// server). Every failure here is swallowed: a broken cache only means no
-/// fallback, never a broken Home.
+/// The last valid Home response for each language, kept on the phone.
 class HomeCache {
   const HomeCache();
 
   static const String boxName = 'home_cache';
-  static const String _key = 'home';
+  static const String _legacyKey = 'home';
+
+  String _key(String? languageCode) =>
+      languageCode == null ? _legacyKey : 'home:$languageCode';
 
   Future<Box<String>?> _box() async {
     try {
@@ -22,16 +22,17 @@ class HomeCache {
     }
   }
 
-  Future<void> save(Map<String, dynamic> json) async {
+  Future<void> save(String languageCode, Map<String, dynamic> json) async {
     try {
-      await (await _box())?.put(_key, jsonEncode(json));
+      await (await _box())?.put(_key(languageCode), jsonEncode(json));
     } catch (_) {}
   }
 
   /// The saved response, or null when there is none (or it cannot be read).
-  Future<Map<String, dynamic>?> read() async {
+  /// A null language reads the unlabelled response from older app versions.
+  Future<Map<String, dynamic>?> read(String? languageCode) async {
     try {
-      final text = (await _box())?.get(_key);
+      final text = (await _box())?.get(_key(languageCode));
       if (text == null) return null;
       return jsonDecode(text) as Map<String, dynamic>;
     } catch (_) {
@@ -41,7 +42,7 @@ class HomeCache {
 
   Future<void> clear() async {
     try {
-      await (await _box())?.delete(_key);
+      await (await _box())?.clear();
     } catch (_) {}
   }
 }

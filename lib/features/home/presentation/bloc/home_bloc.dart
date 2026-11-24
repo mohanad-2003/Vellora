@@ -26,18 +26,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeRefreshed>(_onRefreshed);
     on<HomeFavoriteToggled>(_onFavoriteToggled);
     on<HomeAddToCartRequested>(_onAddToCart);
-    on<HomeFavoritesSynced>(_onFavoritesSynced);
+    on<HomeFavoritesSynced>((_, emit) => _syncFavorites(emit));
   }
 
   final GetHomeDataUseCase _getHomeData;
   final ToggleFavoriteUseCase _toggleFavorite;
   final AddToCartUseCase _addToCart;
   final GetFavoriteIdsUseCase _getFavoriteIds;
+  String? _displayedLanguage;
+  int _loadVersion = 0;
 
-  void _onFavoritesSynced(
-    HomeFavoritesSynced event,
-    Emitter<HomeState> emit,
-  ) {
+  void _syncFavorites(Emitter<HomeState> emit) {
     final data = state.data;
     if (data == null) return;
     final ids = _getFavoriteIds().getOrElse((_) => <String>{});
@@ -49,75 +48,74 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     final p = event.product;
-    await _addToCart(CartItemEntity(
-      id: '${p.id}__',
-      productId: p.id,
-      name: p.name,
-      imagePath: p.imagePath,
-      price: p.price,
-      quantity: 1,
-    ));
-  }
-
-  Future<void> _load(Emitter<HomeState> emit, {required bool showLoader}) async {
-    if (showLoader) emit(state.copyWith(status: HomeStatus.loading));
-    final result = await _getHomeData(const NoParams());
-    final refreshCount = showLoader ? null : state.refreshCount + 1;
-    result.match(
-      (failure) => emit(
-        state.copyWith(
-          // A failed pull-to-refresh keeps the content that is already shown.
-          status: showLoader || state.data == null
-              ? HomeStatus.error
-              : HomeStatus.loaded,
-          failureKey: failure.l10nKey,
-          refreshCount: refreshCount,
-        ),
-      ),
-      (data) => emit(
-        state.copyWith(
-          status: HomeStatus.loaded,
-          data: data,
-          refreshCount: refreshCount,
-        ),
+    await _addToCart(
+      CartItemEntity(
+        id: '${p.id}__',
+        productId: p.id,
+        name: p.name,
+        imagePath: p.imagePath,
+        price: p.price,
+        quantity: 1,
       ),
     );
   }
 
+  Future<void> _load(
+    Emitter<HomeState> emit,
+    String languageCode, {
+    required bool showLoader,
+  }) async {
+    final version = ++_loadVersion;
+    if (showLoader && state.data == null) {
+      emit(state.copyWith(status: HomeStatus.loading));
+    }
+
+    final remote = _getHomeData(const NoParams(), languageCode: languageCode);
+    if (_displayedLanguage != languageCode) {
+      final cached = await _getHomeData.cached(languageCode);
+      if (cached != null && !emit.isDone && version == _loadVersion) {
+        _displayedLanguage = languageCode;
+        emit(state.copyWith(status: HomeStatus.loaded, data: cached));
+      }
+    }
+
+    final result = await remote;
+    if (emit.isDone || version != _loadVersion) return;
+
+    final refreshCount = showLoader ? null : state.refreshCount + 1;
+    result.match(
+      (failure) => emit(
+        state.copyWith(
+          status: state.data == null ? HomeStatus.error : HomeStatus.loaded,
+          failureKey: failure.l10nKey,
+          refreshCount: refreshCount,
+        ),
+      ),
+      (data) {
+        _displayedLanguage = languageCode;
+        emit(
+          state.copyWith(
+            status: HomeStatus.loaded,
+            data: data,
+            refreshCount: refreshCount,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _onStarted(HomeStarted event, Emitter<HomeState> emit) =>
-      _load(emit, showLoader: true);
+      _load(emit, event.languageCode, showLoader: true);
 
   Future<void> _onRefreshed(HomeRefreshed event, Emitter<HomeState> emit) =>
-      _load(emit, showLoader: false);
+      _load(emit, event.languageCode, showLoader: false);
 
   Future<void> _onFavoriteToggled(
     HomeFavoriteToggled event,
     Emitter<HomeState> emit,
   ) async {
-    final data = state.data;
-    if (data == null) return;
+    if (state.data == null) return;
     final result = await _toggleFavorite(event.productId);
-    result.match(
-      (_) {},
-      (isNowFavorite) {
-        final favIds = <String>{
-          for (final p in data.featured
-              .followedBy(data.flashSale)
-              .followedBy(data.newArrivals)
-              .followedBy(data.bestSellers)
-              .followedBy(data.recommended))
-            if (p.isFavorite) p.id,
-        };
-        if (isNowFavorite) {
-          favIds.add(event.productId);
-        } else {
-          favIds.remove(event.productId);
-        }
-        emit(state.copyWith(
-          status: HomeStatus.loaded,
-          data: data.withFavorites(favIds),
-        ));
-      },
-    );
+    if (!emit.isDone && result.isRight()) _syncFavorites(emit);
   }
 }

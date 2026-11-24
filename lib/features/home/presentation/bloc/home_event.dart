@@ -8,11 +8,21 @@ sealed class HomeEvent extends Equatable {
 }
 
 class HomeStarted extends HomeEvent {
-  const HomeStarted();
+  const HomeStarted(this.languageCode);
+
+  final String languageCode;
+
+  @override
+  List<Object?> get props => [languageCode];
 }
 
 class HomeRefreshed extends HomeEvent {
-  const HomeRefreshed();
+  const HomeRefreshed(this.languageCode);
+
+  final String languageCode;
+
+  @override
+  List<Object?> get props => [languageCode];
 }
 
 class HomeFavoriteToggled extends HomeEvent {

@@ -13,6 +13,11 @@ class GetHomeDataUseCase implements UseCase<HomeDataEntity, NoParams> {
   final HomeRepository _repository;
 
   @override
-  Future<Either<Failure, HomeDataEntity>> call(NoParams params) =>
-      _repository.getHomeData();
+  Future<Either<Failure, HomeDataEntity>> call(
+    NoParams params, {
+    String? languageCode,
+  }) => _repository.getHomeData(languageCode: languageCode);
+
+  Future<HomeDataEntity?> cached(String languageCode) =>
+      _repository.getCachedHomeData(languageCode);
 }
