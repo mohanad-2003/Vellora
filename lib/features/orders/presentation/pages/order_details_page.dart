@@ -189,130 +189,98 @@ class _Details extends StatelessWidget {
   final OrderEntity order;
   final VoidCallback onCancel;
 
-  String _paymentLabel(BuildContext context) {
-    final l10n = context.l10n;
-    return switch (order.paymentKind) {
-      OrderPaymentKind.cashOnDelivery => l10n.cashOnDelivery,
-      _ => order.paymentDetail,
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final text = context.textTheme;
-    final colors = context.colors;
-
-    Widget section(String title, Widget child) => Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(header: true, child: Text(title, style: text.titleLarge)),
-          const SizedBox(height: AppSpacing.md),
-          child,
+    final address = _DetailSection(
+      title: l10n.shippingAddress,
+      icon: Icons.location_on_outlined,
+      child: _InfoBlock(
+        title: order.recipient,
+        lines: [order.addressLine, order.city],
+      ),
+    );
+    final payment = _DetailSection(
+      title: l10n.paymentMethod,
+      icon: order.paymentKind == OrderPaymentKind.cashOnDelivery
+          ? Icons.payments_outlined
+          : Icons.credit_card_rounded,
+      child: _InfoBlock(
+        title: order.paymentKind == OrderPaymentKind.cashOnDelivery
+            ? l10n.cashOnDelivery
+            : order.paymentDetail,
+        lines: [
+          if (order.paymentKind == OrderPaymentKind.cashOnDelivery)
+            l10n.payOnArrival,
         ],
       ),
     );
 
     return ResponsiveCenter(
-      maxWidth: 720,
+      maxWidth: 800,
       child: ListView(
         padding: EdgeInsets.fromLTRB(
           context.pageGutter,
-          AppSpacing.sm,
+          AppSpacing.md,
           context.pageGutter,
-          AppSpacing.xxl,
+          AppSpacing.xxxl,
         ),
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(order.number, style: text.headlineSmall),
-                    Text(
-                      formatOrderDateTime(context, order.createdAt),
-                      style: text.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-              OrderStatusChip(status: order.status),
-            ],
-          ),
+          _OrderOverview(order: order),
           const SizedBox(height: AppSpacing.xxl),
-          section(l10n.orderTracking, OrderTimeline(order: order)),
-          section(
-            l10n.orderItems,
-            Column(
+          _DetailSection(
+            title: l10n.orderTracking,
+            icon: Icons.route_outlined,
+            child: OrderTimeline(order: order),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          _DetailSection(
+            title: l10n.orderItems,
+            icon: Icons.shopping_bag_outlined,
+            subtitle: l10n.cartItemsCount(order.itemCount),
+            child: Column(
               children: [
-                for (final item in order.items)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                    child: _ItemRow(item: item),
-                  ),
+                for (var i = 0; i < order.items.length; i++) ...[
+                  if (i > 0)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                      child: Divider(),
+                    ),
+                  _ItemRow(item: order.items[i]),
+                ],
               ],
             ),
           ),
-          section(
-            l10n.shippingAddress,
-            _InfoBlock(
-              icon: Icons.location_on_outlined,
-              title: order.recipient,
-              lines: [order.addressLine, order.city],
-            ),
-          ),
-          section(
-            l10n.paymentMethod,
-            _InfoBlock(
-              icon: Icons.credit_card_rounded,
-              title: _paymentLabel(context),
-            ),
-          ),
-          section(
-            l10n.orderSummary,
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              decoration: BoxDecoration(
-                color: colors.surfaceContainerHighest,
-                borderRadius: AppRadius.rLg,
-              ),
-              child: Column(
+          const SizedBox(height: AppSpacing.lg),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < 600 || context.textScale > 1.3) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    address,
+                    const SizedBox(height: AppSpacing.lg),
+                    payment,
+                  ],
+                );
+              }
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _line(context, l10n.subtotal, order.subtotal.toPrice()),
-                  if (order.discount > 0)
-                    _line(
-                      context,
-                      l10n.discount,
-                      '-${order.discount.toPrice()}',
-                      color: context.vellora.success,
-                    ),
-                  _line(
-                    context,
-                    l10n.shipping,
-                    order.shipping == 0 ? l10n.free : order.shipping.toPrice(),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    child: Divider(),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(child: Text(l10n.total, style: text.titleLarge)),
-                      Text(
-                        order.total.toPrice(),
-                        style: text.headlineMedium?.copyWith(
-                          color: colors.primary,
-                        ),
-                      ),
-                    ],
-                  ),
+                  Expanded(child: address),
+                  const SizedBox(width: AppSpacing.lg),
+                  Expanded(child: payment),
                 ],
-              ),
-            ),
+              );
+            },
           ),
+          const SizedBox(height: AppSpacing.lg),
+          _DetailSection(
+            title: l10n.orderSummary,
+            icon: Icons.receipt_long_outlined,
+            child: _OrderReceipt(order: order),
+          ),
+          const SizedBox(height: AppSpacing.xxl),
           OrderReturnsSection(order: order),
           if (order.status == OrderStatus.processing)
             AppButton(
@@ -325,23 +293,250 @@ class _Details extends StatelessWidget {
       ),
     );
   }
+}
+
+class _OrderOverview extends StatelessWidget {
+  const _OrderOverview({required this.order});
+
+  final OrderEntity order;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final text = context.textTheme;
+    final statusColor = orderStatusColor(context, order.status);
+    final icon = switch (order.status) {
+      OrderStatus.processing => Icons.inventory_2_outlined,
+      OrderStatus.shipped => Icons.local_shipping_outlined,
+      OrderStatus.delivered => Icons.task_alt_rounded,
+      OrderStatus.cancelled => Icons.cancel_outlined,
+    };
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.xxl),
+      decoration: BoxDecoration(
+        borderRadius: AppRadius.rXxl,
+        gradient: LinearGradient(
+          begin: AlignmentDirectional.topStart,
+          end: AlignmentDirectional.bottomEnd,
+          colors: [colors.primaryContainer, colors.surface],
+        ),
+        border: Border.all(color: colors.primary.withValues(alpha: 0.12)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.md,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.12),
+                  borderRadius: AppRadius.rLg,
+                ),
+                child: Icon(icon, color: statusColor, size: 28),
+              ),
+              OrderStatusChip(status: order.status),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          Text(context.l10n.orderNumber, style: text.bodySmall),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            order.number,
+            textDirection: TextDirection.ltr,
+            style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            formatOrderDateTime(context, order.createdAt),
+            style: text.bodySmall?.copyWith(color: colors.onSurfaceVariant),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: AppSpacing.xl),
+            child: Divider(),
+          ),
+          Wrap(
+            spacing: AppSpacing.xxl,
+            runSpacing: AppSpacing.md,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                order.total.toPrice(),
+                style: text.headlineSmall?.copyWith(
+                  color: colors.primary,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              Text(
+                context.l10n.cartItemsCount(order.itemCount),
+                style: text.bodyMedium?.copyWith(
+                  color: colors.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailSection extends StatelessWidget {
+  const _DetailSection({
+    required this.title,
+    required this.icon,
+    required this.child,
+    this.subtitle,
+  });
+
+  final String title;
+  final IconData icon;
+  final Widget child;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: AppRadius.rXl,
+        border: Border.all(
+          color: colors.outlineVariant.withValues(alpha: 0.65),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: colors.primary.withValues(alpha: 0.07),
+                  borderRadius: AppRadius.rMd,
+                ),
+                child: Icon(icon, size: 20, color: colors.primary),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Semantics(
+                      header: true,
+                      child: Text(
+                        title,
+                        style: context.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    if (subtitle != null)
+                      Text(subtitle!, style: context.textTheme.bodySmall),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class _OrderReceipt extends StatelessWidget {
+  const _OrderReceipt({required this.order});
+
+  final OrderEntity order;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = context.colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _line(context, l10n.subtotal, order.subtotal.toPrice()),
+        if (order.discount > 0)
+          _line(
+            context,
+            l10n.discount,
+            '-${order.discount.toPrice()}',
+            color: context.vellora.success,
+          ),
+        _line(
+          context,
+          l10n.shipping,
+          order.shipping == 0 ? l10n.free : order.shipping.toPrice(),
+          color: order.shipping == 0 ? context.vellora.success : null,
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        Container(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            color: colors.primary.withValues(alpha: 0.07),
+            borderRadius: AppRadius.rMd,
+          ),
+          child: _line(context, l10n.total, order.total.toPrice(), total: true),
+        ),
+      ],
+    );
+  }
 
   Widget _line(
     BuildContext context,
     String label,
     String value, {
     Color? color,
+    bool total = false,
   }) {
+    final labelWidget = Text(
+      label,
+      style: total
+          ? context.textTheme.titleMedium
+          : context.textTheme.bodyMedium?.copyWith(
+              color: context.colors.onSurfaceVariant,
+            ),
+    );
+    final valueWidget = Text(
+      value,
+      style:
+          (total ? context.textTheme.titleLarge : context.textTheme.titleSmall)
+              ?.copyWith(
+                color: total ? context.colors.primary : color,
+                fontWeight: total ? FontWeight.w800 : FontWeight.w600,
+              ),
+    );
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-      child: Row(
-        children: [
-          Expanded(child: Text(label, style: context.textTheme.bodyMedium)),
-          Text(
-            value,
-            style: context.textTheme.titleSmall?.copyWith(color: color),
-          ),
-        ],
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth < 250 || context.textScale > 1.3) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                labelWidget,
+                const SizedBox(height: AppSpacing.xs),
+                valueWidget,
+              ],
+            );
+          }
+          return Row(
+            children: [
+              Expanded(child: labelWidget),
+              const SizedBox(width: AppSpacing.md),
+              Flexible(child: valueWidget),
+            ],
+          );
+        },
       ),
     );
   }
@@ -360,12 +555,13 @@ class _ItemRow extends StatelessWidget {
       if (item.size != null) item.size!,
     ].join(' · ');
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ClipRRect(
           borderRadius: AppRadius.rMd,
           child: SizedBox.square(
-            dimension: 64,
-            child: ProductImage(path: item.imagePath),
+            dimension: 76,
+            child: ProductImage(path: item.imagePath, semanticLabel: item.name),
           ),
         ),
         const SizedBox(width: AppSpacing.md),
@@ -373,63 +569,51 @@ class _ItemRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                item.name,
-                style: text.titleSmall,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (variant.isNotEmpty) Text(variant, style: text.bodySmall),
+              Text(item.name, style: text.titleSmall),
+              if (variant.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.xs),
+                Text(variant, style: text.bodySmall),
+              ],
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 '${item.quantity} × ${item.price.toPrice()}',
                 style: text.bodySmall,
               ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                item.lineTotal.toPrice(),
+                style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+              ),
             ],
           ),
         ),
-        const SizedBox(width: AppSpacing.sm),
-        Text(item.lineTotal.toPrice(), style: text.titleSmall),
       ],
     );
   }
 }
 
 class _InfoBlock extends StatelessWidget {
-  const _InfoBlock({
-    required this.icon,
-    required this.title,
-    this.lines = const [],
-  });
+  const _InfoBlock({required this.title, this.lines = const []});
 
-  final IconData icon;
   final String title;
   final List<String> lines;
 
   @override
   Widget build(BuildContext context) {
-    final text = context.textTheme;
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: context.colors.primaryContainer,
-            borderRadius: AppRadius.rMd,
+        Text(title, style: context.textTheme.titleSmall),
+        for (final line in lines.where((line) => line.trim().isNotEmpty)) ...[
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            line,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colors.onSurfaceVariant,
+              height: 1.6,
+            ),
           ),
-          child: Icon(icon, size: 20, color: context.colors.primary),
-        ),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: text.titleSmall),
-              for (final l in lines) Text(l, style: text.bodySmall),
-            ],
-          ),
-        ),
+        ],
       ],
     );
   }

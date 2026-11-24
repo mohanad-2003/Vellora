@@ -248,7 +248,7 @@ flutter run
 ```
 
 **Which server does it talk to?** Release builds use the live API
-(`https://vellora-api-pptv.onrender.com`). Debug builds default to an API on your own machine:
+(`https://vellora-api-3kxz.onrender.com`). Debug builds default to an API on your own machine:
 `http://10.0.2.2:3000` on the Android emulator, `http://localhost:3000` elsewhere. So either start
 the API locally (needs Node 22+, see its README):
 
@@ -260,7 +260,7 @@ cd vellora-api && npm install && npm start      # http://localhost:3000
 or point the app at the live one (or any other server) when you run it:
 
 ```bash
-flutter run --dart-define=API_BASE_URL=https://vellora-api-pptv.onrender.com
+flutter run --dart-define=API_BASE_URL=https://vellora-api-3kxz.onrender.com
 flutter run --dart-define=API_BASE_URL=http://192.168.1.20:3000    # a real phone on your Wi-Fi
 ```
 
