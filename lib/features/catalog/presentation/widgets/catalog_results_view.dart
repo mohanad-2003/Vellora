@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/utils/quick_add_to_cart.dart';
+import 'package:vellora/core/widgets/failure_state_view.dart';
+import 'package:vellora/core/widgets/shimmer_widgets.dart';
+import 'package:vellora/core/widgets/slow_load_hint.dart';
+import 'package:vellora/features/catalog/domain/catalog_filter.dart';
+import 'package:vellora/features/catalog/presentation/cubit/catalog_cubit.dart';
 
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/utils/quick_add_to_cart.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
-import '../../../../core/widgets/shimmer_widgets.dart';
-import '../../domain/catalog_filter.dart';
-import '../cubit/catalog_cubit.dart';
 import 'catalog_toolbar.dart';
 import 'filter_sheet.dart';
 import 'product_results.dart';
-import '../../../../core/widgets/failure_state_view.dart';
-import '../../../../core/widgets/slow_load_hint.dart';
 
 /// Loading / error / empty / results presentation shared by the Catalog and
 /// Search screens. Owns the sort + filter + view-mode plumbing so both screens
@@ -30,6 +30,7 @@ class CatalogResultsView extends StatelessWidget {
     required this.emptyTitle,
     required this.emptyMessage,
     this.emptyArt = EmptyArt.products,
+    this.emptySuggestions,
   });
 
   final CatalogState state;
@@ -40,6 +41,7 @@ class CatalogResultsView extends StatelessWidget {
   final String emptyTitle;
   final String emptyMessage;
   final String emptyArt;
+  final Widget? emptySuggestions;
 
   Future<void> _openFilters(BuildContext context) async {
     final cubit = context.read<CatalogCubit>();
@@ -88,12 +90,14 @@ class CatalogResultsView extends StatelessWidget {
       onSort: () => _openSort(context),
       onFilter: () => _openFilters(context),
       onViewModeChanged: onViewModeChanged,
-      onRemoveCategory: (id) => cubit.applyFilter(state.filter.copyWith(
-        categories: {...state.filter.categories}..remove(id),
-      )),
-      onRemoveBrand: (b) => cubit.applyFilter(state.filter.copyWith(
-        brands: {...state.filter.brands}..remove(b),
-      )),
+      onRemoveCategory: (id) => cubit.applyFilter(
+        state.filter.copyWith(
+          categories: {...state.filter.categories}..remove(id),
+        ),
+      ),
+      onRemoveBrand: (b) => cubit.applyFilter(
+        state.filter.copyWith(brands: {...state.filter.brands}..remove(b)),
+      ),
       onClearPrice: () =>
           cubit.applyFilter(state.filter.copyWith(clearPrice: true)),
       onClearRating: () =>
@@ -107,20 +111,21 @@ class CatalogResultsView extends StatelessWidget {
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
         SliverToBoxAdapter(child: toolbar),
-        if (state.status == CatalogStatus.empty)
+        if (state.status == CatalogStatus.empty) ...[
+          if (!filtersActive && emptySuggestions != null)
+            SliverToBoxAdapter(child: emptySuggestions),
           SliverFillRemaining(
             // The placeholder scrolls by itself and takes the whole remaining height.
             hasScrollBody: true,
             child: EmptyStateWidget(
               illustration: filtersActive ? EmptyArt.filters : emptyArt,
               title: filtersActive ? l10n.noFilterResultsTitle : emptyTitle,
-              message:
-                  filtersActive ? l10n.noFilterResultsBody : emptyMessage,
+              message: filtersActive ? l10n.noFilterResultsBody : emptyMessage,
               actionLabel: filtersActive ? l10n.clearAll : null,
               onAction: filtersActive ? cubit.clearFilter : null,
             ),
-          )
-        else ...[
+          ),
+        ] else ...[
           const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
           SliverProductResults(
             products: state.products,

@@ -7,6 +7,7 @@ class TabReselect {
 
   /// The tab indexes in the main shell.
   static const int home = 0;
+  static const int explore = 1;
 
   static final StreamController<int> _controller =
       StreamController<int>.broadcast();

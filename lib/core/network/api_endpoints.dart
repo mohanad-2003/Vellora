@@ -40,6 +40,7 @@ class ApiEndpoints {
   static const String deliveryOptions = '/delivery-options';
   static const String paymentOptions = '/payment-options';
   static const String storeInfo = '/store-info';
+  static const String features = '/features';
 
   // Wishlist.
   static const String wishlist = '/wishlist';

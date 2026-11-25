@@ -38,8 +38,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = sl<LocaleCubit>();
     return BlocProvider(
-      create: (_) => sl<HomeBloc>()..add(const HomeStarted()),
+      create: (_) =>
+          sl<HomeBloc>()..add(HomeStarted(locale.state.languageCode)),
       child: Builder(
         builder: (context) => FavoritesListener(
           onChanged: () =>
@@ -47,10 +49,11 @@ class HomePage extends StatelessWidget {
           // The feed (banner copy, category names) comes in the app's
           // language, so a language switch fetches it again.
           child: BlocListener<LocaleCubit, Locale>(
-            bloc: sl<LocaleCubit>(),
+            bloc: locale,
             listenWhen: (a, b) => a.languageCode != b.languageCode,
-            listener: (context, _) =>
-                context.read<HomeBloc>().add(const HomeRefreshed()),
+            listener: (context, locale) => context.read<HomeBloc>().add(
+              HomeRefreshed(locale.languageCode),
+            ),
             child: const _HomeView(),
           ),
         ),
@@ -112,7 +115,7 @@ class _HomeViewState extends State<_HomeView> {
   Future<void> _refresh(BuildContext context) async {
     final bloc = context.read<HomeBloc>();
     final before = bloc.state.refreshCount;
-    bloc.add(const HomeRefreshed());
+    bloc.add(HomeRefreshed(sl<LocaleCubit>().state.languageCode));
     await bloc.stream
         .firstWhere((s) => s.refreshCount > before)
         .timeout(const Duration(seconds: 10), onTimeout: () => bloc.state);
@@ -184,8 +187,9 @@ class _HomeViewState extends State<_HomeView> {
                         hasScrollBody: true,
                         child: FailureStateView(
                           failureKey: state.failureKey,
-                          onRetry: () =>
-                              context.read<HomeBloc>().add(const HomeStarted()),
+                          onRetry: () => context.read<HomeBloc>().add(
+                            HomeStarted(sl<LocaleCubit>().state.languageCode),
+                          ),
                         ),
                       )
                     else if (state.status == HomeStatus.loaded &&

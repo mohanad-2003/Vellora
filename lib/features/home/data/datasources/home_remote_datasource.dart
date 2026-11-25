@@ -19,14 +19,18 @@ import '../home_cache.dart';
 /// Mocked home backend. Builds the home payload from the shared [MockCatalog]
 /// with a simulated delay. A real datasource would deserialize JSON models.
 abstract class HomeRemoteDataSource {
-  Future<HomeDataEntity> getHomeData();
+  Future<HomeDataEntity> getHomeData({String? languageCode});
+  Future<HomeDataEntity?> getCachedHomeData(String languageCode);
 }
 
 @mockOnly
 @LazySingleton(as: HomeRemoteDataSource)
 class MockHomeRemoteDataSource implements HomeRemoteDataSource {
   @override
-  Future<HomeDataEntity> getHomeData() async {
+  Future<HomeDataEntity?> getCachedHomeData(String languageCode) async => null;
+
+  @override
+  Future<HomeDataEntity> getHomeData({String? languageCode}) async {
     await Future<void>.delayed(AppConstants.mockDelay);
 
     final products = MockCatalog.products;
@@ -143,30 +147,62 @@ class ApiHomeRemoteDataSource implements HomeRemoteDataSource {
 
   final Dio _dio;
   static const _cache = HomeCache();
+  static const _languageHeader = 'Accept-Language';
+  final _savedRequests = <String, int>{};
+  int _nextRequest = 0;
 
-  /// The response from the shop, saved for next time. When the shop cannot be
-  /// reached (no signal, a server that is asleep or failing) the last saved
-  /// response is used instead; with none saved the failure is passed on.
-  Future<Map<String, dynamic>> _fetch() async {
+  String _responseLanguage(RequestOptions request) =>
+      request.headers[_languageHeader] as String? ?? 'en';
+
+  @override
+  Future<HomeDataEntity?> getCachedHomeData(String languageCode) =>
+      _readCached(languageCode);
+
+  Future<HomeDataEntity?> _readCached(String? languageCode) async {
+    final json = await _cache.read(languageCode);
+    if (json == null) return null;
     try {
-      final res = await _dio.get<Map<String, dynamic>>(ApiEndpoints.home);
+      return _decode(json);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<HomeDataEntity> getHomeData({String? languageCode}) async {
+    final request = ++_nextRequest;
+    try {
+      final res = await _dio.get<Map<String, dynamic>>(
+        ApiEndpoints.home,
+        options: languageCode == null
+            ? null
+            : Options(headers: {_languageHeader: languageCode}),
+      );
       final json = res.data!;
-      await _cache.save(json);
-      return json;
+      final data = _decode(json);
+      final language = _responseLanguage(res.requestOptions);
+      // A slow earlier request must not overwrite a newer saved response.
+      if (request > (_savedRequests[language] ?? 0)) {
+        _savedRequests[language] = request;
+        await _cache.save(language, json);
+      }
+      return data;
     } on DioException catch (e) {
       final cause = e.error;
-      final unreachable = cause is NetworkException ||
+      final unreachable =
+          cause is NetworkException ||
           cause is ServerException ||
           cause is UnexpectedFallback;
-      final saved = unreachable ? await _cache.read() : null;
+      if (!unreachable) rethrow;
+      final saved =
+          await getCachedHomeData(_responseLanguage(e.requestOptions)) ??
+          await _readCached(null);
       if (saved == null) rethrow;
       return saved;
     }
   }
 
-  @override
-  Future<HomeDataEntity> getHomeData() async {
-    final j = await _fetch();
+  HomeDataEntity _decode(Map<String, dynamic> j) {
     final featured = ApiMappers.products(j['featured']);
     final flashSale = ApiMappers.products(j['flashSale']);
     final newArrivals = ApiMappers.products(j['newArrivals']);

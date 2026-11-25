@@ -13,7 +13,7 @@ class AppConstants {
 
   /// The deployed Vellora API (Render).
   static const String productionApiUrl =
-      'https://vellora-api-pptv.onrender.com';
+      'https://vellora-api-3kxz.onrender.com';
 
   /// Vellora API root. Override at build time:
   /// `flutter run --dart-define=API_BASE_URL=https://api.example.com`.

@@ -642,5 +642,11 @@
   "allProducts": "كل المنتجات",
   "chipAll": "الكل",
   "feedEnd": "وصلت إلى نهاية القائمة",
-  "backToTop": "للأعلى"
+  "backToTop": "للأعلى",
+  "games": "الألعاب",
+  "gamesSubtitle": "اكتشف ألعاب الكمبيوتر والمتصفح المجانية",
+  "gamesSearchHint": "ابحث بالاسم أو النوع أو المنصة",
+  "gamesSource": "بيانات الألعاب من FreeToGame",
+  "gamesLoadError": "تعذّر تحميل الألعاب. حاول مرة أخرى.",
+  "gamesLinkError": "تعذّر فتح الرابط. حاول مرة أخرى."
 }

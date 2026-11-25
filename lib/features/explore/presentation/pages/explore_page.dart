@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +10,7 @@ import 'package:vellora/core/extensions/context_extensions.dart';
 import 'package:vellora/core/localization/l10n_lookup.dart';
 import 'package:vellora/core/responsive/responsive.dart';
 import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/routing/tab_reselect.dart';
 import 'package:vellora/core/theme/app_spacing.dart';
 import 'package:vellora/core/usecases/usecase.dart';
 import 'package:vellora/core/utils/safe_emit.dart';
@@ -17,10 +20,12 @@ import 'package:vellora/core/theme/app_radius.dart';
 import 'package:vellora/core/widgets/failure_state_view.dart';
 import 'package:vellora/core/widgets/section_header.dart';
 import 'package:vellora/core/widgets/shimmer_widgets.dart';
+import 'package:vellora/core/widgets/settings_tile.dart';
 import 'package:vellora/core/widgets/slow_load_hint.dart';
 import 'package:vellora/core/widgets/tab_page_header.dart';
 import 'package:vellora/features/catalog/domain/catalog_filter.dart';
 import 'package:vellora/features/catalog/presentation/pages/catalog_page.dart';
+import 'package:vellora/features/games/data/games_availability.dart';
 import 'package:vellora/features/home/domain/entities/brand_entity.dart';
 import 'package:vellora/features/home/domain/entities/category_entity.dart';
 import 'package:vellora/features/home/domain/entities/home_data_entity.dart';
@@ -86,8 +91,47 @@ class ExplorePage extends StatelessWidget {
   }
 }
 
-class _ExploreView extends StatelessWidget {
+class _ExploreView extends StatefulWidget {
   const _ExploreView();
+
+  @override
+  State<_ExploreView> createState() => _ExploreViewState();
+}
+
+class _ExploreViewState extends State<_ExploreView> {
+  final _scroll = ScrollController();
+  late Future<bool> _gamesEnabled;
+  late final StreamSubscription<int> _reselect;
+  late final AppLifecycleListener _lifecycle;
+
+  @override
+  void initState() {
+    super.initState();
+    _gamesEnabled = isGamesEnabled();
+    _lifecycle = AppLifecycleListener(onResume: _refreshGames);
+    _reselect = TabReselect.stream
+        .where((index) => index == TabReselect.explore)
+        .listen((_) {
+          _refreshGames();
+          if (_scroll.hasClients) {
+            _scroll.animateTo(
+              0,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeOut,
+            );
+          }
+        });
+  }
+
+  void _refreshGames() => setState(() => _gamesEnabled = isGamesEnabled());
+
+  @override
+  void dispose() {
+    _reselect.cancel();
+    _lifecycle.dispose();
+    _scroll.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +146,7 @@ class _ExploreView extends StatelessWidget {
           child: BlocBuilder<ExploreCubit, ExploreState>(
             builder: (context, state) {
               return CustomScrollView(
+                controller: _scroll,
                 slivers: [
                   SliverToBoxAdapter(
                     child: Padding(
@@ -120,6 +165,32 @@ class _ExploreView extends StatelessWidget {
                           ),
                           const SizedBox(height: AppSpacing.xl),
                           const SearchBarEntry(),
+                          FutureBuilder<bool>(
+                            future: _gamesEnabled,
+                            builder: (context, snapshot) {
+                              if (snapshot.data != true) {
+                                return const SizedBox.shrink();
+                              }
+                              return Padding(
+                                padding: const EdgeInsets.only(
+                                  top: AppSpacing.lg,
+                                ),
+                                child: Material(
+                                  color: context.colors.surfaceContainer,
+                                  borderRadius: AppRadius.rLg,
+                                  child: SettingsTile(
+                                    icon: Icons.sports_esports_outlined,
+                                    title: l10n.games,
+                                    subtitle: l10n.gamesSubtitle,
+                                    onTap: () async {
+                                      await context.pushNamed(RouteNames.nGames);
+                                      if (mounted) _refreshGames();
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),

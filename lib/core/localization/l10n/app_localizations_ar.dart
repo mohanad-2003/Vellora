@@ -978,6 +978,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get exploreSubtitle => 'تصفّح جميع الفئات';
 
   @override
+  String get games => 'الألعاب';
+
+  @override
+  String get gamesSubtitle => 'اكتشف ألعاب الكمبيوتر والمتصفح المجانية';
+
+  @override
+  String get gamesSearchHint => 'ابحث بالاسم أو النوع أو المنصة';
+
+  @override
+  String get gamesSource => 'بيانات الألعاب من FreeToGame';
+
+  @override
+  String get gamesLoadError => 'تعذّر تحميل الألعاب. حاول مرة أخرى.';
+
+  @override
+  String get gamesLinkError => 'تعذّر فتح الرابط. حاول مرة أخرى.';
+
+  @override
   String get exploreProducts => 'استكشف المنتجات';
 
   @override

@@ -20,6 +20,8 @@ import '../../features/catalog/presentation/pages/search_page.dart';
 import '../../features/checkout/presentation/pages/checkout_page.dart';
 import '../../features/checkout/presentation/pages/order_success_page.dart';
 import '../../features/explore/presentation/pages/explore_page.dart';
+import '../../features/games/data/games_availability.dart';
+import '../../features/games/presentation/pages/games_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/notifications/presentation/pages/notifications_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_page.dart';
@@ -203,6 +205,14 @@ class AppRouter {
             ),
           );
         },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootKey,
+        path: RouteNames.games,
+        name: RouteNames.nGames,
+        redirect: (_, _) async =>
+            await isGamesEnabled() ? null : RouteNames.explore,
+        pageBuilder: (_, state) => _slide(state, const GamesPage()),
       ),
       GoRoute(
         parentNavigatorKey: _rootKey,

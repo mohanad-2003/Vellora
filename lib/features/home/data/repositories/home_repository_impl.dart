@@ -16,14 +16,24 @@ class HomeRepositoryImpl implements HomeRepository {
   final FavoritesRepository _favorites;
 
   @override
-  Future<Either<Failure, HomeDataEntity>> getHomeData() async {
+  Future<Either<Failure, HomeDataEntity>> getHomeData({
+    String? languageCode,
+  }) async {
     try {
-      final data = await _remote.getHomeData();
-      final favoriteIds =
-          _favorites.getFavoriteIds().getOrElse((_) => <String>{});
-      return Right(data.withFavorites(favoriteIds));
+      final data = await _remote.getHomeData(languageCode: languageCode);
+      return Right(_withFavorites(data));
     } catch (e) {
       return Left(mapExceptionToFailure(e));
     }
   }
+
+  @override
+  Future<HomeDataEntity?> getCachedHomeData(String languageCode) async {
+    final data = await _remote.getCachedHomeData(languageCode);
+    return data == null ? null : _withFavorites(data);
+  }
+
+  HomeDataEntity _withFavorites(HomeDataEntity data) => data.withFavorites(
+    _favorites.getFavoriteIds().getOrElse((_) => <String>{}),
+  );
 }

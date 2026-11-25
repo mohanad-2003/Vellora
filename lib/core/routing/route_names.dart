@@ -19,6 +19,7 @@ class RouteNames {
   static const String cart = '/cart';
   static const String catalog = '/catalog';
   static const String explore = '/explore';
+  static const String games = '/games';
   static const String orderDetails = '/orders/:id';
   static const String orderSuccess = '/order-success';
 
@@ -66,6 +67,7 @@ class RouteNames {
   static const String nSettings = 'settings';
   static const String nSearch = 'search';
   static const String nExplore = 'explore';
+  static const String nGames = 'games';
   static const String nOrderDetails = 'orderDetails';
   static const String nOrderSuccess = 'orderSuccess';
 }
