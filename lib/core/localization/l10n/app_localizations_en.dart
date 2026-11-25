@@ -975,6 +975,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exploreSubtitle => 'Browse every category';
 
   @override
+  String get games => 'Games';
+
+  @override
+  String get gamesSubtitle => 'Discover free PC and browser games';
+
+  @override
+  String get gamesSearchHint => 'Search by title, genre or platform';
+
+  @override
+  String get gamesSource => 'Game data by FreeToGame';
+
+  @override
+  String get gamesLoadError => 'We couldn\'t load games. Please try again.';
+
+  @override
+  String get gamesLinkError => 'We couldn\'t open the link. Please try again.';
+
+  @override
   String get exploreProducts => 'Explore products';
 
   @override

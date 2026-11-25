@@ -1892,6 +1892,42 @@ abstract class AppLocalizations {
   /// **'Browse every category'**
   String get exploreSubtitle;
 
+  /// No description provided for @games.
+  ///
+  /// In en, this message translates to:
+  /// **'Games'**
+  String get games;
+
+  /// No description provided for @gamesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover free PC and browser games'**
+  String get gamesSubtitle;
+
+  /// No description provided for @gamesSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by title, genre or platform'**
+  String get gamesSearchHint;
+
+  /// No description provided for @gamesSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Game data by FreeToGame'**
+  String get gamesSource;
+
+  /// No description provided for @gamesLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t load games. Please try again.'**
+  String get gamesLoadError;
+
+  /// No description provided for @gamesLinkError.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t open the link. Please try again.'**
+  String get gamesLinkError;
+
   /// No description provided for @exploreProducts.
   ///
   /// In en, this message translates to:

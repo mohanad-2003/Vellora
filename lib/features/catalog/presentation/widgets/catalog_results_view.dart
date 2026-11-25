@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/utils/quick_add_to_cart.dart';
+import 'package:vellora/core/widgets/failure_state_view.dart';
+import 'package:vellora/core/widgets/shimmer_widgets.dart';
+import 'package:vellora/core/widgets/slow_load_hint.dart';
+import 'package:vellora/features/catalog/domain/catalog_filter.dart';
+import 'package:vellora/features/catalog/presentation/cubit/catalog_cubit.dart';
 
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/utils/quick_add_to_cart.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
-import '../../../../core/widgets/shimmer_widgets.dart';
-import '../../domain/catalog_filter.dart';
-import '../cubit/catalog_cubit.dart';
 import 'catalog_toolbar.dart';
 import 'filter_sheet.dart';
 import 'product_results.dart';
-import '../../../../core/widgets/failure_state_view.dart';
-import '../../../../core/widgets/slow_load_hint.dart';
 
 /// Loading / error / empty / results presentation shared by the Catalog and
 /// Search screens. Owns the sort + filter + view-mode plumbing so both screens
