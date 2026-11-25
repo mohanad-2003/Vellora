@@ -30,6 +30,7 @@ class CatalogResultsView extends StatelessWidget {
     required this.emptyTitle,
     required this.emptyMessage,
     this.emptyArt = EmptyArt.products,
+    this.emptySuggestions,
   });
 
   final CatalogState state;
@@ -40,6 +41,7 @@ class CatalogResultsView extends StatelessWidget {
   final String emptyTitle;
   final String emptyMessage;
   final String emptyArt;
+  final Widget? emptySuggestions;
 
   Future<void> _openFilters(BuildContext context) async {
     final cubit = context.read<CatalogCubit>();
@@ -88,12 +90,14 @@ class CatalogResultsView extends StatelessWidget {
       onSort: () => _openSort(context),
       onFilter: () => _openFilters(context),
       onViewModeChanged: onViewModeChanged,
-      onRemoveCategory: (id) => cubit.applyFilter(state.filter.copyWith(
-        categories: {...state.filter.categories}..remove(id),
-      )),
-      onRemoveBrand: (b) => cubit.applyFilter(state.filter.copyWith(
-        brands: {...state.filter.brands}..remove(b),
-      )),
+      onRemoveCategory: (id) => cubit.applyFilter(
+        state.filter.copyWith(
+          categories: {...state.filter.categories}..remove(id),
+        ),
+      ),
+      onRemoveBrand: (b) => cubit.applyFilter(
+        state.filter.copyWith(brands: {...state.filter.brands}..remove(b)),
+      ),
       onClearPrice: () =>
           cubit.applyFilter(state.filter.copyWith(clearPrice: true)),
       onClearRating: () =>
@@ -107,20 +111,21 @@ class CatalogResultsView extends StatelessWidget {
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
         SliverToBoxAdapter(child: toolbar),
-        if (state.status == CatalogStatus.empty)
+        if (state.status == CatalogStatus.empty) ...[
+          if (!filtersActive && emptySuggestions != null)
+            SliverToBoxAdapter(child: emptySuggestions),
           SliverFillRemaining(
             // The placeholder scrolls by itself and takes the whole remaining height.
             hasScrollBody: true,
             child: EmptyStateWidget(
               illustration: filtersActive ? EmptyArt.filters : emptyArt,
               title: filtersActive ? l10n.noFilterResultsTitle : emptyTitle,
-              message:
-                  filtersActive ? l10n.noFilterResultsBody : emptyMessage,
+              message: filtersActive ? l10n.noFilterResultsBody : emptyMessage,
               actionLabel: filtersActive ? l10n.clearAll : null,
               onAction: filtersActive ? cubit.clearFilter : null,
             ),
-          )
-        else ...[
+          ),
+        ] else ...[
           const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
           SliverProductResults(
             products: state.products,

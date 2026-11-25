@@ -3,22 +3,25 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vellora/core/di/injection.dart';
+import 'package:vellora/core/extensions/context_extensions.dart';
+import 'package:vellora/core/localization/l10n_lookup.dart';
+import 'package:vellora/core/responsive/responsive.dart';
+import 'package:vellora/core/routing/route_names.dart';
+import 'package:vellora/core/theme/app_radius.dart';
+import 'package:vellora/core/theme/app_spacing.dart';
+import 'package:vellora/core/usecases/usecase.dart';
+import 'package:vellora/core/widgets/app_icon_button.dart';
+import 'package:vellora/core/widgets/empty_state_widget.dart';
+import 'package:vellora/core/widgets/favorites_listener.dart';
+import 'package:vellora/features/catalog/data/recent_searches_store.dart';
+import 'package:vellora/features/catalog/presentation/cubit/catalog_cubit.dart';
+import 'package:vellora/features/catalog/presentation/widgets/catalog_results_view.dart';
+import 'package:vellora/features/catalog/presentation/widgets/catalog_toolbar.dart';
+import 'package:vellora/features/catalog/presentation/widgets/filter_sheet.dart';
+import 'package:vellora/features/home/domain/entities/home_data_entity.dart';
+import 'package:vellora/features/home/domain/usecases/get_home_data_usecase.dart';
 
-import '../../../../core/di/injection.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/localization/l10n_lookup.dart';
-import '../../../../core/responsive/responsive.dart';
-import '../../../../core/routing/route_names.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/app_icon_button.dart';
-import '../../../../core/widgets/empty_state_widget.dart';
-import '../../../../core/widgets/favorites_listener.dart';
-import '../../data/recent_searches_store.dart';
-import '../cubit/catalog_cubit.dart';
-import '../widgets/catalog_results_view.dart';
-import '../widgets/catalog_toolbar.dart';
-import '../widgets/filter_sheet.dart';
 import 'catalog_page.dart';
 
 /// Optional payload for the Search route.
@@ -67,15 +70,20 @@ class _SearchViewState extends State<_SearchView> {
   late List<String> _recent = _store.read();
   CatalogViewMode _viewMode = CatalogViewMode.grid;
 
-  /// Search keywords that match the mock catalogue (data, not UI copy).
-  static const _popularTerms = [
-    'Table',
-    'Football',
-    'Blender',
-    'Steak',
-    'Sofa',
-    'Cricket',
-  ];
+  HomeDataEntity? _suggestionFeed;
+  String? _suggestionLanguage;
+
+  List<String> get _popularTerms {
+    final feed = _suggestionFeed;
+    if (feed == null) return const [];
+    final names = feed.bestSellers
+        .followedBy(feed.featured)
+        .followedBy(feed.newArrivals)
+        .map((product) => product.name.trim())
+        .where((name) => name.isNotEmpty)
+        .toSet();
+    return names.take(6).toList();
+  }
 
   static const _browseCategories = [
     'home',
@@ -108,6 +116,31 @@ class _SearchViewState extends State<_SearchView> {
         _focus.requestFocus();
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final language = Localizations.localeOf(context).languageCode;
+    if (_suggestionLanguage == language) return;
+    _suggestionLanguage = language;
+    _suggestionFeed = null;
+    unawaited(_loadSuggestions(language));
+  }
+
+  Future<void> _loadSuggestions(String language) async {
+    final getHomeData = sl<GetHomeDataUseCase>();
+    var feed = await getHomeData.cached(language);
+    if (!mounted || _suggestionLanguage != language) return;
+    if (feed == null) {
+      final result = await getHomeData(
+        const NoParams(),
+        languageCode: language,
+      );
+      feed = result.match((_) => null, (data) => data);
+    }
+    if (!mounted || _suggestionLanguage != language || feed == null) return;
+    setState(() => _suggestionFeed = feed);
   }
 
   @override
@@ -150,6 +183,54 @@ class _SearchViewState extends State<_SearchView> {
     context.read<CatalogCubit>().reset();
     setState(() {});
     _focus.requestFocus();
+  }
+
+  Widget? _buildEmptySuggestions(BuildContext context) {
+    final feed = _suggestionFeed;
+    if (feed == null || feed.categories.isEmpty) return null;
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.l10n.browseCategories,
+            style: context.textTheme.titleMedium,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: [
+              for (final category in feed.categories.take(4))
+                ActionChip(
+                  label: Text(
+                    categoryLabel(
+                      context,
+                      category.id,
+                      fallback: category.name,
+                    ),
+                  ),
+                  onPressed: () {
+                    _focus.unfocus();
+                    context.pushNamed(
+                      RouteNames.nCatalog,
+                      extra: CatalogArgs(
+                        title: categoryLabel(
+                          context,
+                          category.id,
+                          fallback: category.id,
+                        ),
+                        categoryId: category.id,
+                      ),
+                    );
+                  },
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -227,6 +308,9 @@ class _SearchViewState extends State<_SearchView> {
                       emptyTitle: l10n.noResultsTitle,
                       emptyMessage: l10n.noResultsBody(state.query),
                       emptyArt: EmptyArt.search,
+                      emptySuggestions: state.status == CatalogStatus.empty
+                          ? _buildEmptySuggestions(context)
+                          : null,
                     );
                   },
                 ),
@@ -358,20 +442,22 @@ class _Suggestions extends StatelessWidget {
             ),
           const SizedBox(height: AppSpacing.xl),
         ],
-        Text(l10n.popularSearches, style: text.titleMedium),
-        const SizedBox(height: AppSpacing.md),
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.sm,
-          children: [
-            for (final term in popular)
-              ActionChip(
-                label: Text(term),
-                avatar: const Icon(Icons.trending_up_rounded, size: 16),
-                onPressed: () => onTerm(term),
-              ),
-          ],
-        ),
+        if (popular.isNotEmpty) ...[
+          Text(l10n.popularSearches, style: text.titleMedium),
+          const SizedBox(height: AppSpacing.md),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: [
+              for (final term in popular)
+                ActionChip(
+                  label: Text(term),
+                  avatar: const Icon(Icons.trending_up_rounded, size: 16),
+                  onPressed: () => onTerm(term),
+                ),
+            ],
+          ),
+        ],
         const SizedBox(height: AppSpacing.xl),
         Text(l10n.browseCategories, style: text.titleMedium),
         const SizedBox(height: AppSpacing.md),
